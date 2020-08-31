@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build-client": "node node_modules/react-scripts/bin/react-scripts.js build",
+    "build-server": "node node_modules/nexe server.js -5 x86-8.0.0",
+    "client-dev": "node node_modules/react-scripts/bin/react-scripts.js start"
   },
   "repository": {
     "type": "git",
@@ -16,9 +19,25 @@
   "bugs": {
     "url": "https://github.com/xXDerpyXx/space-sim/issues"
   },
-  "homepage": "https://github.com/xXDerpyXx/space-sim#readme",
+  "homepage": "./",
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.3",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

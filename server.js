@@ -223,32 +223,32 @@ class body{
 setInterval(function(){
 	for(var i = 0; i < bodies.length; i++){
 		if(bodies[i].shipId != null){
-			var id = bodies[i].shipId
+			var player = players[bodies[i].shipId];
 			//io.to(id).emit("center",i);
 			var speed = 0.01;
 			var walkspeed = 1
-			if(players[id].dirs[0]){
+			if(player.dirs[0]){
 				bodies[i].xVel+=speed;
 				if(bodies[i].colliding){
 					bodies[i].x+=walkspeed;
 					bodies[i].xVel+=walkspeed;
 				}
 			}
-			if(players[id].dirs[1]){
+			if(player.dirs[1]){
 				bodies[i].xVel-=speed;
 				if(bodies[i].colliding){
 					bodies[i].x-=walkspeed;
 					bodies[i].xVel-=walkspeed;
 				}
 			}
-			if(players[id].dirs[2]){
+			if(player.dirs[2]){
 				bodies[i].yVel+=speed;
 				if(bodies[i].colliding){
 					bodies[i].y+=walkspeed;
 					bodies[i].yVel+=walkspeed;
 				}
 			}
-			if(players[id].dirs[3]){
+			if(player.dirs[3]){
 				bodies[i].yVel-=speed;
 				if(bodies[i].colliding){
 					bodies[i].y-=walkspeed;
