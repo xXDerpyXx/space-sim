@@ -1,0 +1,24 @@
+{
+  "name": "space-sim",
+  "version": "1.0.0",
+  "description": "1. `npm install`",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xXDerpyXx/space-sim.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xXDerpyXx/space-sim/issues"
+  },
+  "homepage": "https://github.com/xXDerpyXx/space-sim#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
