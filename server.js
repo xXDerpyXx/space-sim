@@ -1,4 +1,3 @@
-
 var bodies = [];
 var val = "";
 var players = [];
@@ -11,7 +10,7 @@ var config = {
 	startpop:50
 }
 var express = require('express');
-var app     = express();
+var app     = express(); 
 //var server  = app.listen(port);
 var server      = app.listen(port);
 var io = require('socket.io').listen(server,{pingTimeout: 30000, pingInterval: 100});
@@ -95,11 +94,22 @@ function angle(a,b){
     return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
 }
 
+function normalize(vec){
+	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
+	return {"x":vec.x/mag,"y":vec.y/mag}
+}
+
+function dotProduct(vec1,vec2){
+	var ang = angle(vec1,vec2);
+	return {"x":Math.abs(vec1.x*vec2.x*Math.cos(ang)),"y":Math.abs(vec1.y*vec2.y*Math.cos(ang))}
+}
+
 
 var airResistance = 0;
 var gravity = 0;
 var g = 0.00667;
 var starmin = 500;
+var explodemin = 1;
 
 class body{
     constructor(x,y){
@@ -120,35 +130,29 @@ class body{
 		this.colliding = false;
 		this.shipId = null;
 		this.density = 0.1;
+		this.invincibilityCooldown = 0;
+	}
+
+	explode(other){
+		this.delete = true;
+		var parts = Math.floor(Math.random()*10)+2
+		var plane = angle(this,other)
+		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
+		var v = {"x":this.xVel,"y":this.yVel}
+		var refang = dotProduct(v,n)
+		var r = {"x":v.x-(2*refang.x*n.x),"y":v.y-(2*refang.y*n.y)}
+		
+		
 	}
 	
     collide(other){
-        //if(this.collided || other.delete)
-            //return;
-        //if(other.mass > this.mass){
-            //return;
-        //}
         var totalmass = this.mass + other.mass
         var myportion = this.mass/totalmass
         var otherportion = other.mass/totalmass
-        console.log(myportion+", "+otherportion)
         this.xVel = ((this.xVel*myportion) + (other.xVel*otherportion))/2
         this.yVel = ((this.yVel*myportion) + (other.yVel*otherportion))/2
 		this.mass += other.mass;
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
-        //this.size = totalmass
-            /*
-        var oldxVel = this.xVel;
-        var oldyVel = this.yVel;
-        var thisProportion = this.mass/other.mass;
-        var otherProportion = other.mass/this.mass;
-        this.xVel = other.xVel * otherProportion;
-        this.yVel = other.yVel * otherProportion;
-        other.yVel = oldyVel * thisProportion;
-        other.xVel = oldxVel * thisProportion;
-        this.collided = true;
-        other.collided = true;
-        */
     }
 
     move(){
