@@ -47,3 +47,7 @@
     border: 3px outset rgb(115, 115, 216);
     border-radius: 4px;
 }
+
+#pauseMenuContents p {
+    color: white;
+}

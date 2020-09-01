@@ -414,7 +414,6 @@ setInterval(function(){
         }
     }
 },1);
-/*
 var spacing = 200;
 for(var i = -15; i < 15; i++){
     for(var j = -15; j < 15; j++){
@@ -428,7 +427,7 @@ for(var i = -15; i < 15; i++){
         bodies.push(temp);
     }
 }
-*/
+
 /*
 temp = new body(250,250);
 temp.xVel = 0//(Math.random()*2)-1;
@@ -446,7 +445,7 @@ m = 20
 temp.size = m/10;
 temp.mass = m;
 bodies.push(temp);
-*/
+
 
 temp = new body(250,250);
 temp.xVel = 0//(Math.random()*2)-1;
@@ -455,9 +454,9 @@ m = 700
 temp.size = m/10;
 temp.mass = m;
 bodies.push(temp);
-
+*/
 var swarm = [
-    {swarmSize:10,centerx:250,centery:250,d:400,vel:0.10,m:40,off:0},
+    //{swarmSize:10,centerx:250,centery:250,d:400,vel:0.10,m:40,off:0},
     /*{swarmSize:1,centerx:250,centery:250,d:380,vel:0.561,m:2,off:0},*/
     /*{swarmSize:1,centerx:250,centery:250,d:200,vel:0.1,m:5,off:Math.PI}*/
 ]

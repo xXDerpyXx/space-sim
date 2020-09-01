@@ -402,10 +402,8 @@ function startGame() {
     
     d.socket.on("disconnect", () => {
         setTimeout(() => {
-            if (window.performance && performance.navigation.type == 1) {
-                disconnect();
-                alert("Communication between you and the server was interrupted.")
-            }
+            disconnect();
+            alert("Communication between you and the server was interrupted.");
         }, 500);
     });
     

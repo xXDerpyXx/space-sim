@@ -36,6 +36,11 @@ function PauseMenu() {
                     <button onClick={reconnect}>New ship</button><br />
                     <button onClick={disconnect}>Disconnect</button><br />
                     <ColorPicker />
+                    <hr />
+                    <p>
+                        Server: {d.server.url}<br />
+                        Ping: <span id="ping">(pinging...)</span>ms
+                    </p>
                 </center>
             </div>
         </div>
