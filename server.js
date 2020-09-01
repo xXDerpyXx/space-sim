@@ -1,8 +1,8 @@
+const cfg = require('./cfg');
 
 var bodies = [];
 var val = "";
 var players = [];
-var port = 3979;
 var userTotal = 0;
 var config = {
 	width:30,
@@ -10,10 +10,8 @@ var config = {
 	sealevel:55,
 	startpop:50
 }
-var express = require('express');
-var app     = express();
-//var server  = app.listen(port);
-var server      = app.listen(port);
+var app = require('express')();
+var server = app.listen(cfg.port);
 var io = require('socket.io').listen(server,{pingTimeout: 30000, pingInterval: 100});
 io.set('heartbeat timeout', 30000);
 io.set('heartbeat interval', 4);
@@ -27,7 +25,25 @@ class player{
 }
 
 //done
-app.use(express.static("public"));
+//app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+    res.send("This is a space-sim server.");
+})
+
+app.get("/basicinfo", (req, res) => {
+    res.json({
+        name: cfg.name,
+        players: `${userTotal}/${cfg.playerLimit}`,
+        location: cfg.location,
+    });
+});
+
+app.get("/detailedinfo", (req, res) => {
+    res.json({
+        desc: cfg.desc,
+    });
+});
 
 io.on('connection', function(socket){
 	userTotal += 1;

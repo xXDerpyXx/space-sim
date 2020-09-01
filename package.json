@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "build-client": "node node_modules/react-scripts/bin/react-scripts.js build",
-    "build-server": "node node_modules/nexe server.js -5 x86-8.0.0",
     "client-dev": "node node_modules/react-scripts/bin/react-scripts.js start"
   },
   "repository": {
