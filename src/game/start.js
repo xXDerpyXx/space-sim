@@ -398,8 +398,9 @@ function startGame() {
         if(bodies[center] == null){
             return;
         }
-        document.getElementById("speedspan").innerHTML = "velocity: "+(Math.round(Math.sqrt((bodies[center].yVel*bodies[center].yVel)+(bodies[center].xVel*bodies[center].xVel))*100)/100)+"km/s"
-        document.getElementById("coordinates").innerHTML = "X: "+Math.round(bodies[center].x)/1000+", Y: "+Math.round(bodies[center].y)/1000
+        document.getElementById("speedspan").innerHTML = Math.round(Math.sqrt((bodies[center].yVel*bodies[center].yVel)+(bodies[center].xVel*bodies[center].xVel))*100)/100
+        document.getElementById("xcoord").innerHTML = Math.round(bodies[center].x)
+        document.getElementById("ycoord").innerHTML = Math.round(bodies[center].y)
         let playerList = "";
         for (let i of players) {
             playerList += bodies[i].color+": X: "+Math.round(bodies[i].x)+" Y: "+Math.round(bodies[i].y)+"</br>"
@@ -423,10 +424,18 @@ function startGame() {
     d.socket.on("connect",function(){
         myid = d.socket.id;
     });
+
+    d.socket.on("pong", ms => {
+        document.getElementById('ping').innerHTML = ms;
+    });
     
     d.socket.on("disconnect", () => {
-        alert("You've been disconnected from the server.")
-        disconnect();
+        setTimeout(() => {
+            if (window.performance && performance.navigation.type == 1) {
+                alert("You've been disconnected from the server.")
+                disconnect();
+            }
+        }, 500);
     });
     
     d.socket.on("bodyupdate",function(b){

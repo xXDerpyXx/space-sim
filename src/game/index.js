@@ -9,8 +9,9 @@ class Game extends React.Component {
             <div>
                 <canvas id="mainCanvas" />
                 <div id="info">
-                    <span id="speedspan"></span><br />
-                    <span id="coordinates"></span><br />
+                    ping: <span id="ping">(pinging...)</span>ms<br />
+                    velocity: <span id="speedspan"></span>km/s<br />
+                    x: <span id="xcoord"></span> y: <span id="ycoord"></span><br />
                     <span id="playerlist"></span>
                 </div>
             </div>
