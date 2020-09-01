@@ -12,7 +12,10 @@ function ServerBrowser() {
     }
     
     let servers = [];
+    let secure = window.location.protocol == "https:";
     for (let server of serverList) {
+        if (secure && !server.secure)
+            return;
         servers.push(
             <div>
                 <button onClick={() => connect(server)}>{server.url}</button>
