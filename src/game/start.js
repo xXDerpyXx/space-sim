@@ -237,6 +237,10 @@ function startGame() {
         var scale = 20;
         ctx.lineTo((body.xVel*scale)+body.x-cOffsetx,(body.yVel*scale)+body.y-cOffsety);
         ctx.stroke();
+        if(body.nuke){
+            ctx.fillStyle = "#FFFF00";
+            ctx.fillText("*",body.x,body.y)
+        }
         //ctx.fillRect(this.x-offset,this.y-offset,this.size,this.size);
     }
     
@@ -250,9 +254,8 @@ function startGame() {
     
     window.addEventListener("keydown",function(e){
         var launchVel = 1;
-        if(e.code == "Space" && bodies[0].colliding){
-            bodies[0].x+=launchVel
-            bodies[0].xVel = launchVel
+        if(e.code == "Space"){
+            d.socket.emit("nuke");
         }
         if (directions.hasOwnProperty(e.code)) {
             e.preventDefault();
