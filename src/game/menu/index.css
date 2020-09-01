@@ -1,0 +1,51 @@
+#pauseButton {
+    position: absolute;
+    top: 0;
+    margin-top: 3px;
+    right: 0;
+    margin-right: 3px;
+    width: 32px;
+    height: 32px;
+    background: url('./pausebutton/normal.png');
+    opacity: 0.22;
+    border: none;
+}
+
+#pauseButton:hover {
+    background: url('./pausebutton/hover.png');
+    opacity: 0.8;
+}
+
+#pauseButton:active {
+    background: url('./pausebutton/active.png');
+    opacity: 0.7;
+}
+
+#pauseMenu {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    left: 50%;
+    margin-left: -175px;
+    top: 50%;
+    margin-top: -175px;
+
+    text-align: center;
+    
+    background: rgba(23, 10, 97, 0.7);
+    border: 1px solid rgba(37, 34, 71, 0.9);
+    border-radius: 20px 0 0 20px;
+    z-index: 0;
+}
+
+#pauseMenuContents {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+#pauseMenuContents button {
+    background: rgb(91, 91, 194);
+    border: 3px outset rgb(115, 115, 216);
+    border-radius: 4px;
+}
