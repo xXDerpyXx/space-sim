@@ -15,7 +15,7 @@ function ServerBrowser() {
     for (let server of serverList) {
         servers.push(
             <div>
-                <button onClick={() => connect(server)}>{server}</button>
+                <button onClick={() => connect(server)}>{server.url}</button>
             </div>
         );
     }

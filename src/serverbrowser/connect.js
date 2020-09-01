@@ -4,8 +4,12 @@ import socketIOClient from "socket.io-client";
 import Game from '../game';
 import d from '../d';
 
-function connect(url) {
-    d.socket = socketIOClient("http://"+url, {transports: [ 'websocket']});
+function connect(server) {
+    d.socket = socketIOClient(`ws${server.secure ? "s" : ""}://${server.url}`, {transports: ['websocket']});
+    // on reconnection, reset the transports option, as the Websocket connection may have failed (caused by proxy, firewall, browser, ...)
+    d.socket.on('reconnect_attempt', () => {
+        d.socket.io.opts.transports = ['polling', 'websocket'];
+    });
     ReactDOM.render(<Game />, d.root);
 }
 
