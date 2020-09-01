@@ -227,12 +227,13 @@ class body{
     }
 
     move(){
+		if(this.delete){
+            return;
+        }
         this.y += this.yVel;
         this.x += this.xVel;
         this.yVel += gravity;
-        if(this.delete){
-            return;
-        }
+        
     }
 
     update(){
@@ -255,7 +256,7 @@ class body{
 				if(bodies[i].invincibilityCooldown > 0 || bodies[i].delete){
 					continue;
 				}
-				if(bodies[i].nuke){
+				if(bodies[i].nuke || bodies[i].delete || this.delete){
 					continue;
 				}
 				//bodies[i].size = Math.sqrt(Math.PI/(bodies[i].mass/bodies[i].density))
@@ -263,9 +264,9 @@ class body{
 					if(distance(bodies[i],this) < ((this.size/2)+(bodies[i].size/2)) && !this.collided){
 						this.colliding = true;
 						if(this.nuke && !bodies[i].invincible && bodies[i].mass > explodemin){
-							bodies[i].explode(this,5);
 							this.delete = true;
-							return;
+							bodies[i].explode(this,bodies[i].size/5);
+							
 						}
 						if(this.nuke){
 							continue;
@@ -282,7 +283,7 @@ class body{
 						
 						}else{
 							if(this.mass > bodies[i].mass || this.mass == bodies[i].mass){
-								if(!bodies[i].invincible){
+								if(!bodies[i].invincible && !bodies[i].nuke){
 									this.collide(bodies[i]);
 									bodies[i].delete = true;
 									bodies[i].collided = true;
