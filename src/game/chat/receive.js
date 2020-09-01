@@ -6,12 +6,15 @@ import { chatIsShown } from './toggle';
 
 function receiveMessages() {
     d.socket.on("message", (player, content) => {
-        console.log(player, content);
-        document.getElementById('chatMessages').innerHTML += renderToString(
+        let chatDiv = document.getElementById('chatMessages')
+        chatDiv.innerHTML += renderToString(
             <Message player={player}>
                 {content}
             </Message>
         );
+        if (chatDiv.scrollTopMax - chatDiv.scrollTop < 20) {
+            chatDiv.scrollTop = chatDiv.scrollTopMax;
+        }
     });
 }
 
