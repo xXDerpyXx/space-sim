@@ -45,7 +45,7 @@ app.get("/detailedinfo", (req, res) => {
     });
 });
 
-function getUserBody(socket) {
+function getPlayerBody(socket) {
 	return bodies.filter(body => body.shipId == socket.id)[0];
 }
 
@@ -119,8 +119,18 @@ io.on('connection', function(socket){
 		players[socket.id].ship = bodies.length-1
 	});
 
+	socket.on("sendMessage", content => {
+		if (typeof content != "string" || content.length > 100)
+			return;
+		let userBody = getPlayerBody(socket);
+		io.emit("message", {
+			color: userBody.color
+		}, content);
+	});
+
 	socket.on("changeColor", hex => {
-		console.log(hex);
+		if (typeof hex != "string")
+			return;
 		color = hex.match(/^#([0-9a-f]{6})$/i)[1];
 		if (color) {
 			let vals = [];
@@ -128,7 +138,7 @@ io.on('connection', function(socket){
 				vals.push(parseInt(color.substr(i, 2), 16));
 			}
 			console.log(players[socket.id].ship, bodies.length)
-			getUserBody(socket).color = `rgb(${vals.join(",")})`;
+			getPlayerBody(socket).color = `rgb(${vals.join(",")})`;
 		}
 	})
 });

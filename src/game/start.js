@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import d from '../d';
 import Events from './events';
+import receiveMessages from './chat/receive';
 import disconnect from './disconnect';
 
 function startGame() {
@@ -402,8 +403,8 @@ function startGame() {
     d.socket.on("disconnect", () => {
         setTimeout(() => {
             if (window.performance && performance.navigation.type == 1) {
-                alert("You've been disconnected from the server.")
                 disconnect();
+                alert("Communication between you and the server was interrupted.")
             }
         }, 500);
     });
@@ -429,6 +430,8 @@ function startGame() {
     d.socket.on("center",function(k){
         center = k;
     });
+
+    receiveMessages();
 }
 
 export default startGame;

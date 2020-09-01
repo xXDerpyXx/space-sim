@@ -16,6 +16,10 @@ function unpause() {
     document.getElementById('pauseButton').style.display = 'block';
 }
 
+function isPaused() {
+    return document.getElementById('pauseMenu').style.display == 'block';
+}
+
 function reconnect() {
     unpause();
     disconnect();
@@ -39,3 +43,10 @@ function PauseMenu() {
 }
 
 export default PauseMenu;
+
+export {
+    PauseMenu,
+    pause,
+    unpause,
+    isPaused,
+};

@@ -9,10 +9,10 @@ class ColorPicker extends React.Component {
     };
 
     handleClick = () => {
-        this.setState({ displayColorPicker: !this.state.displayColorPicker })
+        this.setState({ displayColorPicker: !this.state.displayColorPicker });
     };
 
-    handleChangeComplete = (color, event) => {
+    handleChangeComplete = (color, event = null) => {
         d.socket.emit('changeColor', color.hex);
     };
 
@@ -33,12 +33,7 @@ class ColorPicker extends React.Component {
         return (
             <div>
                 <button onClick={this.handleClick}>Toggle ship color picker</button>
-                {this.state.displayColorPicker ? (
-                    <div style={{position: 'absolute',zIndex: '2'}}>
-                        <SketchPicker width="130px" disableAlpha={true} presetColors={this.colors} onChangeComplete={this.handleChangeComplete} />
-                    </div>
-                ) : null}
-                
+                {this.state.displayColorPicker ? <SketchPicker width="130px" disableAlpha={true} presetColors={this.colors} onChangeComplete={this.handleChangeComplete} /> : null}
             </div>
         );
     }
