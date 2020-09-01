@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import d from '../d';
+import Events from './events';
 import disconnect from './disconnect';
 
 function startGame() {
     var c = document.getElementById("mainCanvas");
+    d.c = c;
     var ctx = c.getContext("2d");
     
     var airResistance = 0;
@@ -243,40 +245,8 @@ function startGame() {
         }
         //ctx.fillRect(this.x-offset,this.y-offset,this.size,this.size);
     }
-    
-    
-    var directions = {
-        "ArrowUp": 3,
-        "ArrowRight": 0,
-        "ArrowDown": 2,
-        "ArrowLeft": 1,
-    }
-    
-    window.addEventListener("keydown",function(e){
-        var launchVel = 1;
-        if(e.code == "Space"){
-            d.socket.emit("nuke");
-        }
-        if (directions.hasOwnProperty(e.code)) {
-            e.preventDefault();
-            d.socket.emit("dir", directions[e.code], true)
-        }
-    });
-    
-    window.addEventListener("keyup",function(e){
-        if (directions.hasOwnProperty(e.code)) {
-            e.preventDefault();
-            d.socket.emit("dir", directions[e.code], false)
-        }
-    })
-    
-    function resize() {
-        c.width = document.documentElement.clientWidth;
-        c.height = document.documentElement.clientHeight;
-    }
-    
-    resize();
-    window.addEventListener("resize", e => resize());
+
+    Events.register();
     
     d.intervals.colliding = setInterval(function(){
         var speed = 0.01;

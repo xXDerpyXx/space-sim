@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ServerBrowser from '../serverbrowser';
 import d from '../d';
+import Events from './events';
 
 function disconnect() {
+    Events.unregister();
     d.socket.removeAllListeners();
     d.socket.close();
     d.socket = null;
