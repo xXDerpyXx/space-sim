@@ -1,5 +1,5 @@
 import React from 'react';
-import { CirclePicker } from 'react-color';
+import { SketchPicker } from 'react-color';
 import './index.css';
 import d from '../../../d';
 
@@ -8,8 +8,11 @@ class ColorPicker extends React.Component {
         background: '#000000',
     };
 
+    handleClick = () => {
+        this.setState({ displayColorPicker: !this.state.displayColorPicker })
+    };
+
     handleChangeComplete = (color, event) => {
-        this.setState({ background: color.hex });
         d.socket.emit('changeColor', color.hex);
     };
 
@@ -24,56 +27,20 @@ class ColorPicker extends React.Component {
         "#00bcd4",
         "#009688",
         "#4caf50",
-        "#8bc34a",
-        "#cddc39",
-        "#ffeb3b",
-        "#ffc107",
-        "#ff9800",
-        "#ff5722",
-        "#795548",
-        "#607d8b",
-        //line break
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        //line break
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
-        "#673ab7",
     ];
 
     render() {
-        return <CirclePicker width="310px" colors={this.colors} circleSize={12} onChangeComplete={ this.handleChangeComplete } />;
+        return (
+            <div>
+                <button onClick={this.handleClick}>Toggle ship color picker</button>
+                {this.state.displayColorPicker ? (
+                    <div style={{position: 'absolute',zIndex: '2'}}>
+                        <SketchPicker width="130px" disableAlpha={true} presetColors={this.colors} onChangeComplete={this.handleChangeComplete} />
+                    </div>
+                ) : null}
+                
+            </div>
+        );
     }
 }
 

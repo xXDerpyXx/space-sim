@@ -21,11 +21,11 @@ function PauseMenu() {
         <div>
             <button id="pauseButton" onClick={pause} style={{display: "block"}} />
             <div id="pauseMenu" style={{display: "none"}}>
-                <div id="pauseMenuContents">
+                <center id="pauseMenuContents">
                     <button onClick={unpause}>Resume</button><br />
-                    <button onClick={disconnect}>Disconnect</button>
+                    <button onClick={disconnect}>Disconnect</button><br />
                     <ColorPicker />
-                </div>
+                </center>
             </div>
         </div>
     );
