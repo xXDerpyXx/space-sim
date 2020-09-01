@@ -233,15 +233,18 @@ function draw(id){
     var scale = 20;
     ctx.lineTo((bodies[id].xVel*scale)+bodies[id].x-cOffsetx,(bodies[id].yVel*scale)+bodies[id].y-cOffsety);
     ctx.stroke();
+    if(bodies[i].nuke){
+        ctx.fillStyle = "#FFFF00";
+        ctx.fillText("*",bodies[id].x,bodies[id].y)
+    }
     //ctx.fillRect(this.x-offset,this.y-offset,this.size,this.size);
 }
 
 window.addEventListener("keydown",function(e){
     var launchVel = 1;
     //console.log(e);
-    if(e.code == "Space" && bodies[0].colliding){
-        bodies[0].x+=launchVel
-        bodies[0].xVel = launchVel
+    if(e.code == "Space"){
+        socket.emit("nuke");
     }
     if(e.code == "ArrowUp"){
         socket.emit("dir",3,true)

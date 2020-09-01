@@ -40,7 +40,7 @@ io.on('connection', function(socket){
 		}
 	}
 	players[socket.id] = new player(socket.id);
-	var temp = new body(0,0);
+	var temp = new body(Math.random()*20,Math.random()*20);
 	temp.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";
 	temp.mass = 2;
 	temp.shipId = socket.id;
@@ -67,6 +67,21 @@ io.on('connection', function(socket){
 	socket.on("dir",function(d,val){
 		players[socket.id].dirs[d] = val;
 	})
+
+	socket.on("nuke",function(){
+		for(var i = 0; i < bodies.length; i++){
+			if(bodies[i].shipId == socket.id){
+				var nuke = new body(bodies[i].x,bodies[i].y);
+				nuke.nuke = true;
+				nuke.xVel = bodies[i].xVel;
+				nuke.yVel = bodies[i].yVel;
+				nuke.mass = 10;
+				nuke.color = "#FFFF00"
+				console.log("nuke")
+				bodies.push(nuke);
+			}
+		}
+	});
 
 	socket.on("newShip",function(){
 		for(var i = 0; i < bodies.length; i++){
@@ -109,7 +124,8 @@ var airResistance = 0;
 var gravity = 0;
 var g = 0.00667;
 var starmin = 500;
-var explodemin = 1;
+var explodemin = 10;
+var explodeSpeed = 1;
 
 class body{
     constructor(x,y){
@@ -131,17 +147,55 @@ class body{
 		this.shipId = null;
 		this.density = 0.1;
 		this.invincibilityCooldown = 0;
+		this.nuke = false;
 	}
 
-	explode(other){
+	explode(other,force){
+		if(force == null){
+			force = 0.2
+		}
 		this.delete = true;
 		var parts = Math.floor(Math.random()*10)+2
-		var plane = angle(this,other)
+		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
 		var v = {"x":this.xVel,"y":this.yVel}
 		var refang = dotProduct(v,n)
-		var r = {"x":v.x-(2*refang.x*n.x),"y":v.y-(2*refang.y*n.y)}
-		
+		var r = {"x":v.x-(2*refang.x*n.x*n.x),"y":v.y-(2*refang.y*n.y*n.y)}
+		var tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
+		var totalmass = this.mass;
+		var avgmass = this.mass/parts;
+		console.log(parts+" "+r.x+","+r.y)
+		for(var i = 0; i < parts; i++){
+			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
+			if(m > totalmass){
+				m = totalmass;
+			}
+			totalmass -= m;
+			var temp = new body(this.x,this.y);
+			temp.invincibilityCooldown = 10;
+			temp.mass = m;
+			var newxvel = r.x*tvel+((Math.random()*force)-(force/2));
+			var newyvel = r.y*tvel+((Math.random()*force)-(force/2));
+			temp.xVel = newxvel;
+			temp.yVel = newyvel;
+			bodies.push(temp);
+			console.log(temp.mass+","+totalmass)
+			if(totalmass == 0){
+				return;
+			}
+
+		}
+		if(totalmass != 0){
+			var temp = new body(this.x,this.y);
+			temp.invincibilityCooldown = 10;
+			temp.mass = totalmass;
+			var newxvel = r.x*tvel+((Math.random()*tvel/5)-tvel/10);
+			var newyvel = r.y*tvel+((Math.random()*tvel/5)-tvel/10);
+			temp.xVel = newxvel;
+			temp.yVel = newyvel;
+			bodies.push(temp);
+		}
+
 		
 	}
 	
@@ -171,54 +225,88 @@ class body{
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
+		if(this.invincibilityCooldown < 1){
+			
+			var speed = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel));
+			for(var i = 0; i < bodies.length; i++){
+				if(this.invincible && bodies[i].nuke){
+					continue;
+				}
+				if(bodies[i].invincible && this.nuke){
+					continue;
+				}
+				if(bodies[i].invincibilityCooldown > 0 || bodies[i].delete){
+					continue;
+				}
+				if(bodies[i].nuke){
+					continue;
+				}
+				//bodies[i].size = Math.sqrt(Math.PI/(bodies[i].mass/bodies[i].density))
+				if(bodies[i].x != this.x && bodies[i].y != this.y){
+					if(distance(bodies[i],this) < ((this.size/2)+(bodies[i].size/2)) && !this.collided){
+						this.colliding = true;
+						if(this.nuke && !bodies[i].invincible && bodies[i].mass > explodemin){
+							bodies[i].explode(this,5);
+							this.delete = true;
+							return;
+						}
+						if(this.nuke){
+							continue;
+						}
+						
+						var otherspeed = Math.sqrt((bodies[i].xVel*bodies[i].xVel)+(bodies[i].yVel*bodies[i].yVel));
+						//console.log(speed);
+						if(speed > explodeSpeed && this.mass > explodemin && !this.invincible && this.mass < starmin){
+							this.explode(bodies[i]);
+							return;
+						}else if(otherspeed > explodeSpeed && bodies[i].mass > explodemin && !bodies[i].invincible && bodies[i].mass < starmin){
+							bodies[i].explode(this);
+							return;
+						
+						}else{
+							if(this.mass > bodies[i].mass || this.mass == bodies[i].mass){
+								if(!bodies[i].invincible){
+									this.collide(bodies[i]);
+									bodies[i].delete = true;
+									bodies[i].collided = true;
+									this.collided = true;
+								}
+							}else{
+								if(this.invincible){
+									this.xVel = bodies[i].xVel
+									this.yVel = bodies[i].yVel
+								}
+							}
+						}
+						
+						
+						
+						
+					}else{
+						var totalmass = this.mass+bodies[i].mass
+						var r = distance(this,bodies[i]);
+						var f = ((g*((/*this.mass**/bodies[i].mass)/(r*r))))//*(bodies[i].mass/totalmass);
+						var xoff = Math.abs(this.x-bodies[i].x)
+						var yoff = Math.abs(this.y-bodies[i].y)
+						var toff = xoff+yoff;
+						if(this.x < bodies[i].x){
+							this.xVel += f * (xoff/toff);
+						}else{
+							this.xVel += f * ((xoff*-1)/toff);
+						}
+						if(this.y < bodies[i].y){
+							this.yVel += f * (yoff/toff);
+						}else{
+							this.yVel += f * ((yoff*-1)/toff);
+						}
 
-        for(var i = 0; i < bodies.length; i++){
-			//bodies[i].size = Math.sqrt(Math.PI/(bodies[i].mass/bodies[i].density))
-            if(bodies[i].x != this.x && bodies[i].y != this.y){
-                if(distance(bodies[i],this) < ((this.size/2)+(bodies[i].size/2)) && !this.collided){
-                    this.colliding = true;
-                    if(this.mass > bodies[i].mass || this.mass == bodies[i].mass){
-                        if(!bodies[i].invincible){
-                            this.collide(bodies[i]);
-                            bodies[i].delete = true;
-                            bodies[i].collided = true;
-                            this.collided = true;
-                        }
-                    }else{
-                        //bodies[i].collide(bodies[i]);
-                        //this.delete = true;
-                        //this.collided = true;
-                        //bodies[i].collided = true;
-                        if(this.invincible){
-                            this.xVel = bodies[i].xVel
-                            this.yVel = bodies[i].yVel
-                        }
-                    }
-                    
-                    
-                    
-                }else{
-                    var totalmass = this.mass+bodies[i].mass
-                    var r = distance(this,bodies[i]);
-                    var f = ((g*((/*this.mass**/bodies[i].mass)/(r*r))))//*(bodies[i].mass/totalmass);
-                    var xoff = Math.abs(this.x-bodies[i].x)
-                    var yoff = Math.abs(this.y-bodies[i].y)
-                    var toff = xoff+yoff;
-                    if(this.x < bodies[i].x){
-                        this.xVel += f * (xoff/toff);
-                    }else{
-                        this.xVel += f * ((xoff*-1)/toff);
-                    }
-                    if(this.y < bodies[i].y){
-                        this.yVel += f * (yoff/toff);
-                    }else{
-                        this.yVel += f * ((yoff*-1)/toff);
-                    }
-
-                }
-            }
-        }
-        this.collided = false;
+					}
+				}
+			}
+			this.collided = false;
+		}else{
+			this.invincibilityCooldown--;
+		}
     }
 
 }
@@ -298,6 +386,24 @@ for(var i = -15; i < 15; i++){
     }
 }
 
+/*
+temp = new body(250,250);
+temp.xVel = 0//(Math.random()*2)-1;
+temp.yVel = 0//(Math.random()*2)-1;
+m = 100
+temp.size = m/10;
+temp.mass = m;
+bodies.push(temp);
+
+
+temp = new body(-1000,248);
+temp.xVel = 1.1//(Math.random()*2)-1;
+temp.yVel = 0//(Math.random()*2)-1;
+m = 20
+temp.size = m/10;
+temp.mass = m;
+bodies.push(temp);
+*/
 /*
 temp = new body(250,250);
 temp.xVel = 0//(Math.random()*2)-1;
