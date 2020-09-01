@@ -45,6 +45,10 @@ app.get("/detailedinfo", (req, res) => {
     });
 });
 
+function getUserBody(socket) {
+	return bodies.filter(body => body.shipId == socket.id)[0];
+}
+
 io.on('connection', function(socket){
 	userTotal += 1;
 	socket.emit('newVal',val);
@@ -83,7 +87,7 @@ io.on('connection', function(socket){
 
 	socket.on("dir",function(d,val){
 		players[socket.id].dirs[d] = val;
-	})
+	});
 
 	socket.on("nuke",function(){
 		for(var i = 0; i < bodies.length; i++){
@@ -113,9 +117,20 @@ io.on('connection', function(socket){
 		temp.density = 1;
 		bodies.push(temp)
 		players[socket.id].ship = bodies.length-1
-	})
+	});
 
-	
+	socket.on("changeColor", hex => {
+		console.log(hex);
+		color = hex.match(/^#([0-9a-f]{6})$/i)[1];
+		if (color) {
+			let vals = [];
+			for (let i = 0; i < 6; i += 2) {
+				vals.push(parseInt(color.substr(i, 2), 16));
+			}
+			console.log(players[socket.id].ship, bodies.length)
+			getUserBody(socket).color = `rgb(${vals.join(",")})`;
+		}
+	})
 });
 
 function distance(a,b){

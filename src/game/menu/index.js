@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import disconnect from '../disconnect';
+import ColorPicker from './colorpicker/';
 import d from '../../d'
 
 function pause() {
@@ -23,6 +24,7 @@ function PauseMenu() {
                 <div id="pauseMenuContents">
                     <button onClick={unpause}>Resume</button><br />
                     <button onClick={disconnect}>Disconnect</button>
+                    <ColorPicker />
                 </div>
             </div>
         </div>
