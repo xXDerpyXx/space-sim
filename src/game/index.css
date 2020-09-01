@@ -5,6 +5,7 @@
 
 #info {
     display: inline-block;
+    position: absolute;
     background: #ffffff7f;
     width: 200px;
     border: 1px solid #3f3f3f;

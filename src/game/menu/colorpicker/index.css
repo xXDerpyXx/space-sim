@@ -1,0 +1,11 @@
+.circle-picker {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-right: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.circle-picker span div {
+    margin: 2.5px !important;
+}
