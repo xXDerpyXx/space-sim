@@ -100,6 +100,7 @@ io.on('connection', function(socket){
 				nuke.color = "#FFFF00"
 				console.log("nuke")
 				bodies.push(nuke);
+				return;
 			}
 		}
 	});
@@ -166,6 +167,7 @@ var airResistance = 0;
 var gravity = 0;
 var g = 0.00667;
 var starmin = 500;
+var tidalmin = 0.2;
 var explodemin = 10;
 var explodeSpeed = 1;
 
@@ -343,7 +345,9 @@ class body{
 						}else{
 							this.yVel += f * ((yoff*-1)/toff);
 						}
-
+						if(f > tidalmin && this.mass > 1 && this.shipId == null && !this.nuke){
+							this.explode(bodies[i],0.1)
+                        }
 					}
 				}
 			}
