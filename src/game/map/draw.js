@@ -14,10 +14,8 @@ function zoom(event) {
 }
 
 function getMapCanvas() {
-    let firstLoad = canvas == undefined;
     canvas = document.getElementById('map');
-    if (firstLoad)
-        canvas.addEventListener('wheel', zoom);
+    canvas.addEventListener('wheel', zoom);
     ctx = canvas.getContext('2d');
     middleX = canvas.width/2;
     middleY = canvas.height/2;
