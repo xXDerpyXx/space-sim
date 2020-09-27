@@ -3,15 +3,10 @@ const playerWidth = 2;
 const selfWidth = 3;
 const starWidth = 4;
 
-var canvas, ctx, middleX, middleY;
+var canvas, ctx, middleX, middleY, scale, pos;
 
 var mouseDown = false;
 var lastPos = null;
-var scale = 100;
-var pos = {
-    x: 0,
-    y: 0
-}
 
 
 function getMapCanvas() {
