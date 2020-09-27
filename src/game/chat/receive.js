@@ -14,8 +14,9 @@ function receiveMessages() {
         );
         let children = document.getElementById('chatMessages').children;
         let lastMessage = children[children.length - 1];
-        if (chatDiv.scrollTopMax - chatDiv.scrollTop < lastMessage.clientHeight + 5) {
-            chatDiv.scrollTop = chatDiv.scrollTopMax;
+        let scrollTopMax = chatDiv.scrollHeight - chatDiv.clientHeight - chatDiv.clientTop;
+        if (scrollTopMax - chatDiv.scrollTop < lastMessage.clientHeight + 5) {
+            chatDiv.scrollTop = scrollTopMax;
         }
     });
 }
