@@ -39,7 +39,8 @@ function PauseMenu() {
                     <hr />
                     <p>
                         Server: {d.server.url}<br />
-                        Ping: <span id="ping">(pinging...)</span>ms
+                        Ping: <span id="ping">(pinging...)</span>ms<br />
+                        FPS: <span id="FPSDisplay">(waiting for frame...)</span>
                     </p>
                 </center>
             </div>

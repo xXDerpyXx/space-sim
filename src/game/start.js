@@ -18,6 +18,8 @@ function startGame() {
     var center = 0;
     var players = [];
     var bodies = [];
+
+    var lastFrame = Date.now();
     
     function distance(a,b){
         return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
@@ -371,10 +373,16 @@ function startGame() {
         if(bodies[center] == null){
             return;
         }
+
+        let currentFrame = Date.now();
+
         document.getElementById("speedspan").innerHTML = Math.round(Math.sqrt((bodies[center].yVel*bodies[center].yVel)+(bodies[center].xVel*bodies[center].xVel))*100)/100
         document.getElementById("xcoord").innerHTML = Math.round(bodies[center].x)
         document.getElementById("ycoord").innerHTML = Math.round(bodies[center].y)
-        document.getElementById("playersOnline").innerHTML = "Players online: " + (players.length + 1);
+        document.getElementById("playersOnline").innerHTML = players.length + 1;
+        document.getElementById("FPSDisplay").innerHTML = Math.round(1000 / (currentFrame - lastFrame));
+
+        lastFrame = currentFrame;
         /*for(let i = 0; i < bodies.length; i++){
             bodies[i].update();
         }
