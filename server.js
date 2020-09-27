@@ -277,8 +277,8 @@ class body{
 		}
 		if(this.mass > starmin){
 			var percent = this.mass/(starmax-starmin);
-			var blue = Math.round(255*percent);
-			var red = Math.round((1-percent)*255);
+			var red = Math.round(255*percent);
+			var blue = Math.round((1-percent)*255);
 			this.color = "rgb("+red+","+0+","+blue+")";
 
 		}
