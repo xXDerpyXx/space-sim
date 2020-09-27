@@ -374,11 +374,7 @@ function startGame() {
         document.getElementById("speedspan").innerHTML = Math.round(Math.sqrt((bodies[center].yVel*bodies[center].yVel)+(bodies[center].xVel*bodies[center].xVel))*100)/100
         document.getElementById("xcoord").innerHTML = Math.round(bodies[center].x)
         document.getElementById("ycoord").innerHTML = Math.round(bodies[center].y)
-        let playerList = "";
-        for (let i of players) {
-            playerList += bodies[i].color+": X: "+Math.round(bodies[i].x)+" Y: "+Math.round(bodies[i].y)+"</br>"
-        }
-        document.getElementById("playerlist").innerHTML = playerList;
+        document.getElementById("playersOnline").innerHTML = "Players online: " + players.length;
         /*for(let i = 0; i < bodies.length; i++){
             bodies[i].update();
         }
