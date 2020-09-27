@@ -18,6 +18,7 @@ function receiveMessages() {
         if (scrollTopMax - chatDiv.scrollTop < lastMessage.clientHeight + 5) {
             chatDiv.scrollTop = scrollTopMax;
         }
+        document.getElementById('messagesSentNum').innerHTML = children.length; //display the amount of messages sent on the open chat button
     });
 }
 

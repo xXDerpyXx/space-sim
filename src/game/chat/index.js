@@ -23,7 +23,10 @@ class Chat extends React.Component {
     render() {
         return (
             <div id="chat">
-                <button id="openChatButton" onClick={toggleChat}>{chatButtonText.open}</button>
+                <button id="openChatButton" onClick={toggleChat}>
+                    <span id="openChatButtonText">{chatButtonText.open}</span>
+                    (<span id="messagesSentNum">0</span>)
+                </button>
                 <div id="chatBox">
                     <div id="chatMessages">
                         {this.state.messages}

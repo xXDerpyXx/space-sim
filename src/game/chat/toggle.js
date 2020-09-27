@@ -10,7 +10,7 @@ function chatIsShown() {
 function toggleChat() {
     let shown = chatIsShown();
     document.getElementById("chatBox").style.display = (shown ? "none" : "block");
-    document.getElementById("openChatButton").innerHTML = chatButtonText[(shown ? "open" : "close")]
+    document.getElementById("openChatButtonText").innerHTML = chatButtonText[(shown ? "open" : "close")]
 };
 
 export {
