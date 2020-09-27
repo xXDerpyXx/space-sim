@@ -74,7 +74,7 @@ function drawMap(bodies, center) {
             ctx.fillStyle = body.color;
             var tWidth = 0;
             if(isStar){
-                tWidth = (Math.round(Math.sqrt(body.mass)/20)) * (100/scale);
+                tWidth = (Math.round(Math.sqrt(body.mass)/5)) * (100/scale);
             }
             let distanceX = (body.x - me.x) / scale;
             let distanceY = (body.y - me.y) / scale;
