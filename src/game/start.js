@@ -208,10 +208,13 @@ function startGame() {
         var brightnessOffset = 50;
         //body.size = body.mass/10
         var offset = 0
+        
         if(body.mass > starmin){
             for(let i = 0; i < 20; i++){
-                ctx.fillStyle = "rgba(255,255,255,"+0.05+")";
-                ctx.strokeStyle = "rgba(255,255,255,"+0.05+")"
+                var tcolor = body.color;
+                tcolor = tcolor.replace(")",","+0.05+")").replace("rgb(","rgba(");
+                ctx.fillStyle = tcolor;
+                ctx.strokeStyle = tcolor;
                 ctx.beginPath();
                 ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,(body.size/2)+((i*(body.size/starmin))*brightnessOffset),0,2*Math.PI)
                 ctx.fill();

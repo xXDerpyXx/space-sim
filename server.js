@@ -167,6 +167,7 @@ var airResistance = 0;
 var gravity = 0;
 var g = 0.00667;
 var starmin = 500;
+var starmax = 10000;
 var tidalmin = 0.2;
 var explodemin = 10;
 var explodeSpeed = 1;
@@ -180,7 +181,7 @@ class body{
         this.bouncyness = 0.5;
         this.mass = 10;
         this.size = 10;
-        this.color = "#FFFFFF";
+        this.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";;
         this.collided = false;
         this.delete = false;
         this.path = [];
@@ -268,6 +269,13 @@ class body{
 		
         if(this.delete){
             return;
+		}
+		if(this.mass > starmin){
+			var percent = this.mass/(starmax-starmin);
+			var blue = Math.round(255*percent);
+			var red = Math.round((1-percent)*255);
+			this.color = "rgb("+red+","+0+","+blue+")";
+
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
