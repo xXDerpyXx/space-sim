@@ -204,6 +204,7 @@ class body{
 		var refang = dotProduct(v,n)
 		var r = {"x":v.x-(2*refang.x*n.x*n.x),"y":v.y-(2*refang.y*n.y*n.y)}
 		var tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
+		r = normalize(r);
 		var totalmass = this.mass;
 		var avgmass = this.mass/parts;
 		console.log(parts+" "+r.x+","+r.y)
