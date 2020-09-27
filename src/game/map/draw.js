@@ -72,9 +72,13 @@ function drawMap(bodies, center) {
         let isStar = body.mass > planetDisplayMin;
         if (isStar || body.shipId) {
             ctx.fillStyle = body.color;
+            var tWidth = 0;
+            if(isStar){
+                tWidth = Math.round(body.mass/200);
+            }
             let distanceX = (body.x - me.x) / scale;
             let distanceY = (body.y - me.y) / scale;
-            drawDot(middleX + distanceX, middleY + distanceY, isStar ? starWidth : playerWidth)
+            drawDot(middleX + distanceX, middleY + distanceY, isStar ? tWidth : playerWidth)
         }
     }
     //draw the center dot (this client's ship)

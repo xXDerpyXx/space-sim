@@ -419,13 +419,13 @@ setInterval(function(){
         }
     }
 },1);
-var spacing = 200;
+var spacing = 1000;
 for(var i = -15; i < 15; i++){
     for(var j = -15; j < 15; j++){
         var temp = new body(100+(i*spacing),100+(j*spacing));
         temp.xVel = (Math.random()*0.5)-0.25;
         temp.yVel = (Math.random()*0.5)-0.25;
-        var m = (Math.random()*50)+25
+        var m = (Math.random()*800)+10
         temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
         temp.mass = m;
         if((i+j)%2 == 0)
