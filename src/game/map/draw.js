@@ -1,6 +1,6 @@
 const planetDisplayMin = 500;
-const playerWidth = 2;
-const selfWidth = 3;
+const playerWidth = 4;
+const selfWidth = 5;
 const starWidth = 4;
 
 var canvas, ctx, middleX, middleY, scale, pos;
@@ -73,7 +73,7 @@ function drawMap(bodies, center) {
             ctx.fillStyle = body.color;
             var tWidth = 0;
             if(isStar){
-                tWidth = (Math.round(Math.sqrt(body.mass)/10)) * (100/scale);
+                tWidth = (body.size/10) * (100/scale);
             }
             let distanceX = (body.x - me.x) / scale;
             let distanceY = (body.y - me.y) / scale;
