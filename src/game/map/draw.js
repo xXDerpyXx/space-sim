@@ -15,9 +15,11 @@ var pos = {
 
 
 function zoom(event) {
-    console.log(event)
-    if (scale + event.deltaY > 0) {
-        let zoomAmount = 1 + (event.deltaY / 100)
+    let scrollAmount = 3;
+    if (event.deltaY < 0)
+        scrollAmount *= -1;
+    let zoomAmount = 1 + (scrollAmount / 100);
+    if (scale * zoomAmount > 0) {
         scale *= zoomAmount;
         pos.x /= zoomAmount;
         pos.y /= zoomAmount;
