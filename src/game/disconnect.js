@@ -5,6 +5,8 @@ import d from '../d';
 import Events from './events';
 
 function disconnect() {
+    if (d.socket == null)
+        return;
     Events.unregister();
     d.socket.removeAllListeners();
     d.socket.close();

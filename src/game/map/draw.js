@@ -51,7 +51,6 @@ function drag(event) {
             for (let i of ['x', 'y']) {
                 pos[i] += (currentPos[i] - lastPos[i]);
             }
-            //console.log(pos)
         }
         lastPos = currentPos;
     }

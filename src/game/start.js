@@ -408,6 +408,13 @@ function startGame() {
     d.socket.on("pong", ms => {
         document.getElementById('ping').innerHTML = ms;
     });
+
+    d.socket.on("kick", kickMessage => {
+        setTimeout(() => {
+            disconnect();
+            alert(kickMessage);
+        }, 500);
+    })
     
     d.socket.on("disconnect", () => {
         setTimeout(() => {
