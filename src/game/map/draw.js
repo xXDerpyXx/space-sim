@@ -14,6 +14,26 @@ var pos = {
 }
 
 
+function getMapCanvas() {
+    canvas = document.getElementById('map');
+    ctx = canvas.getContext('2d');
+    canvas.addEventListener('wheel', zoom);
+    canvas.addEventListener('mousemove', drag);
+    canvas.addEventListener('mousedown', () => mouseDown = true);
+    canvas.addEventListener('mouseup', () => {
+        mouseDown = false;
+        lastPos = null;
+    });
+    
+    middleX = canvas.width/2;
+    middleY = canvas.height/2;
+    scale = 100;
+    pos = {
+        x: 0,
+        y: 0
+    }
+}
+
 function zoom(event) {
     let scrollAmount = 3;
     if (event.deltaY < 0)
@@ -40,21 +60,6 @@ function drag(event) {
         }
         lastPos = currentPos;
     }
-}
-
-function getMapCanvas() {
-    canvas = document.getElementById('map');
-    canvas.addEventListener('wheel', zoom);
-    canvas.addEventListener('mousemove', drag);
-    canvas.addEventListener('mousedown', () => mouseDown = true);
-    canvas.addEventListener('mouseup', () => {
-        mouseDown = false;
-        lastPos = null;
-    });
-    
-    ctx = canvas.getContext('2d');
-    middleX = canvas.width/2;
-    middleY = canvas.height/2;
 }
 
 function drawDot(x, y, size) {
