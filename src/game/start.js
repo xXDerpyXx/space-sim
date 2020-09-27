@@ -4,6 +4,7 @@ import d from '../d';
 import Events from './events';
 import receiveMessages from './chat/receive';
 import disconnect from './disconnect';
+import { drawMap } from './map/draw';
 
 function startGame() {
     var c = document.getElementById("mainCanvas");
@@ -365,6 +366,7 @@ function startGame() {
         for(let i of bodies){
             draw(i);
         }
+        drawMap(bodies, center);
         
         if(bodies[center] == null){
             return;

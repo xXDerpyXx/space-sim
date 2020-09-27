@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import startGame from './start';
-import PauseMenu from './menu/index'
-import Chat from './chat/'
+import PauseMenu from './menu/';
+import Map from './map/';
+import { getMapCanvas } from './map/draw';
+import Chat from './chat/';
 
 class Game extends React.Component {
     render() {
@@ -16,12 +18,14 @@ class Game extends React.Component {
                     <span id="playerlist"></span>
                 </div>
                 <PauseMenu />
+                <Map />
                 <Chat />
             </div>
         );
     }
 
     componentDidMount() {
+        getMapCanvas();
         startGame();
     }
 }
