@@ -24,6 +24,7 @@
 #chatMessages {
     height: 158px;
     overflow-y: scroll;
+    word-break: break-word;
 }
 
 #sendChat {

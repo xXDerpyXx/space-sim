@@ -12,7 +12,9 @@ function receiveMessages() {
                 {content}
             </Message>
         );
-        if (chatDiv.scrollTopMax - chatDiv.scrollTop < 20) {
+        let children = document.getElementById('chatMessages').children;
+        let lastMessage = children[children.length - 1];
+        if (chatDiv.scrollTopMax - chatDiv.scrollTop < lastMessage.clientHeight + 5) {
             chatDiv.scrollTop = chatDiv.scrollTopMax;
         }
     });
