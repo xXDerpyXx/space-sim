@@ -50,6 +50,11 @@ function getPlayerBody(socket) {
 }
 
 io.on('connection', function(socket){
+	if (userTotal >= cfg.playerLimit) {
+		socket.emit('kick', 'This server is full!');
+		socket.disconnect(true);
+		return;
+	}
 	userTotal += 1;
 	socket.emit('newVal',val);
 	socket.emit("resetplayers");
