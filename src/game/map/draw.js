@@ -36,7 +36,7 @@ function drag(event) {
             for (let i of ['x', 'y']) {
                 pos[i] += (currentPos[i] - lastPos[i]);
             }
-            console.log(pos)
+            //console.log(pos)
         }
         lastPos = currentPos;
     }
@@ -74,7 +74,7 @@ function drawMap(bodies, center) {
             ctx.fillStyle = body.color;
             var tWidth = 0;
             if(isStar){
-                tWidth = Math.round(body.mass/200);
+                tWidth = Math.round(Math.sqrt(body.mass)/10);
             }
             let distanceX = (body.x - me.x) / scale;
             let distanceY = (body.y - me.y) / scale;
