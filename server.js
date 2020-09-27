@@ -438,7 +438,7 @@ for(var i = -15; i < 15; i++){
         var temp = new body(100+(i*spacing),100+(j*spacing));
         temp.xVel = (Math.random()*0.5)-0.25;
         temp.yVel = (Math.random()*0.5)-0.25;
-        var m = (Math.random()*800)+10
+        var m = (Math.random()*600)+10
         temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
         temp.mass = m;
         if((i+j)%2 == 0)
