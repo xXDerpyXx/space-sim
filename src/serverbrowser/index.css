@@ -1,0 +1,35 @@
+h1 {
+    text-align: center;
+}
+
+#githubLogo {
+    position: relative;
+    margin-left: 10px;
+    top: 6px;
+}
+
+#serverList {
+    width: 99%;
+    margin: 0 auto;
+    border: 1px solid grey;
+    background: rgb(209, 209, 209);
+    border-collapse: collapse;
+    border-spacing: 0;
+    padding-bottom: 5px;
+}
+
+#serverList thead th {
+    padding: 0;
+    border-right: 1px dotted rgb(0, 0, 0)
+}
+
+#serverList tr {
+    border: 1px solid rgb(60, 60, 60);
+    background: rgb(172, 172, 172);
+    cursor: pointer;
+}
+
+#serverList tr td {
+    padding: 0;
+    border-right: 1px dotted rgb(0, 0, 0)
+}

@@ -1,4 +1,5 @@
 const cfg = require('./cfg');
+var startDate = Date.now();
 
 var bodies = [];
 var val = "";
@@ -11,6 +12,9 @@ var config = {
 	startpop:50
 }
 var app = require('express')();
+
+app.use(require('cors')());
+
 var server = app.listen(cfg.port);
 var io = require('socket.io').listen(server,{pingTimeout: 30000, pingInterval: 100});
 io.set('heartbeat timeout', 30000);
@@ -35,13 +39,8 @@ app.get("/basicinfo", (req, res) => {
     res.json({
         name: cfg.name,
         players: `${userTotal}/${cfg.playerLimit}`,
-        location: cfg.location,
-    });
-});
-
-app.get("/detailedinfo", (req, res) => {
-    res.json({
-        desc: cfg.desc,
+		location: cfg.location,
+		uptime: Date.now() - startDate,
     });
 });
 
@@ -59,7 +58,7 @@ io.on('connection', function(socket){
 	socket.emit('newVal',val);
 	socket.emit("resetplayers");
 	console.log('a user connected');
-	console.log('user count: '+userTotal)
+	console.log('user count: '+userTotal);
 	for(var i = 0; i < bodies.length; i++){
 		if(bodies[i].shipId == socket.id){
 			bodies[i].delete = true;
@@ -78,6 +77,7 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function(){
 		userTotal -= 1;
 		console.log('a user disconnected');
+		console.log('user count: '+userTotal);
 		for(var i = 0; i < bodies.length; i++){
 			if(bodies[i].shipId == socket.id){
 				players[socket.id].ship = i;
@@ -86,7 +86,7 @@ io.on('connection', function(socket){
 		bodies.splice(players[socket.id].ship,1)
 		players.splice(parseInt(socket.id),1);
 		
-		socket.broadcast.emit("delete",socket.id)
+		socket.broadcast.emit("delete",socket.id);
 	});
     
 
@@ -102,8 +102,7 @@ io.on('connection', function(socket){
 				nuke.xVel = bodies[i].xVel;
 				nuke.yVel = bodies[i].yVel;
 				nuke.mass = 10;
-				nuke.color = "#FFFF00"
-				console.log("nuke")
+				nuke.color = "#FFFF00";
 				bodies.push(nuke);
 				return;
 			}
@@ -143,7 +142,6 @@ io.on('connection', function(socket){
 			for (let i = 0; i < 6; i += 2) {
 				vals.push(parseInt(color.substr(i, 2), 16));
 			}
-			console.log(players[socket.id].ship, bodies.length)
 			getPlayerBody(socket).color = `rgb(${vals.join(",")})`;
 		}
 	})
@@ -215,7 +213,6 @@ class body{
 		r = normalize(r);
 		var totalmass = this.mass;
 		var avgmass = this.mass/parts;
-		console.log(parts+" "+r.x+","+r.y)
 		for(var i = 0; i < parts; i++){
 			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
 			if(m > totalmass){
@@ -230,7 +227,6 @@ class body{
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
 			bodies.push(temp);
-			console.log(temp.mass+","+totalmass)
 			if(totalmass == 0){
 				return;
 			}
@@ -314,7 +310,6 @@ class body{
 						}
 						
 						var otherspeed = Math.sqrt((bodies[i].xVel*bodies[i].xVel)+(bodies[i].yVel*bodies[i].yVel));
-						//console.log(speed);
 						if(speed > explodeSpeed && this.mass > explodemin && !this.invincible && this.mass < starmin){
 							this.explode(bodies[i]);
 							return;
@@ -495,6 +490,6 @@ for(var k = 0; k < swarm.length; k++){
 }
 
 
-console.log("FINISHED");
+console.log(`Server up on port ${cfg.port}!`);
 
 //ref();

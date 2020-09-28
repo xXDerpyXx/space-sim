@@ -13,7 +13,7 @@ function disconnect() {
     d.socket = null;
     clearInterval(d.intervals.colliding);
     clearInterval(d.intervals.draw);
-    ReactDOM.render(ServerBrowser(), d.root);
+    ReactDOM.render(<ServerBrowser />, d.root);
 }
 
 export default disconnect;

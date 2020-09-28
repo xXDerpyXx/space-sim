@@ -5,4 +5,4 @@ import ServerBrowser from './serverbrowser';
 import Game from './game';
 import d from './d';
 
-ReactDOM.render(ServerBrowser(), d.root);
+ReactDOM.render(<ServerBrowser />, d.root);

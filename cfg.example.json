@@ -1,7 +1,6 @@
 {
     "port": 3979,
     "name": "Newly created server",
-    "description": "This server hasn't been given a description yet.",
     "location": "eu",
     "playerLimit": 10
 }
