@@ -9,6 +9,7 @@
     background: url('./pause.png');
     opacity: 0.22;
     border: none;
+    cursor: pointer;
 }
 
 #pauseButton:hover {

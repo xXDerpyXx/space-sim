@@ -1,9 +1,32 @@
-#map {
+#mapContainer {
     position: absolute;
     bottom: 4px;
     left: 4px;
     z-index: 500;
+}
+
+#map {
     background: rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 5px;
+    cursor: all-scroll;
+}
+
+#mapResetButton {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: url('./resetButton.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    opacity: 0.25;
+    cursor: pointer;
+}
+
+#mapResetButton:hover {
+    opacity: 0.6;
+}
+
+#mapResetButton:active {
+    opacity: 0.5;
 }
