@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "build-client": "node node_modules/react-scripts/bin/react-scripts.js build",
-    "client-dev": "node node_modules/react-scripts/bin/react-scripts.js start"
+    "dev-client": "node node_modules/react-scripts/bin/react-scripts.js start"
   },
   "repository": {
     "type": "git",

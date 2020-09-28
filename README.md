@@ -7,8 +7,8 @@
 2. copy `cfg.example.json` to `cfg.json` and edit according to your needs.
 3. `npm start`
 
-### set up a client for editing
-2. `npm run client-dev`
+### set up a client for developing
+2. `npm run dev-client`
 3. go to http://localhost:3000
 
 ### build the client
