@@ -37,6 +37,7 @@ function getMapCanvas() {
 }
 
 function zoom(event) {
+    document.getElementById('mapResetButton').style.display = '';
     let scrollAmount = 3;
     if (event.deltaY < 0)
         scrollAmount *= -1;
