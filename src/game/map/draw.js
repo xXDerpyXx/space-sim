@@ -6,18 +6,22 @@ const starWidth = 4;
 var canvas, ctx, middleX, middleY, scale, pos;
 
 var mouseDown = false;
-var lastPos = null;
 
 
 function getMapCanvas() {
     canvas = document.getElementById('map');
     ctx = canvas.getContext('2d');
+    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     canvas.addEventListener('wheel', zoom);
     canvas.addEventListener('mousemove', drag);
-    canvas.addEventListener('mousedown', () => mouseDown = true);
+    canvas.addEventListener('mousedown', () => {
+        mouseDown = true;
+        canvas.requestPointerLock();
+    });
     canvas.addEventListener('mouseup', () => {
         mouseDown = false;
-        lastPos = null;
+        document.exitPointerLock();
     });
     
     middleX = canvas.width/2;
@@ -43,16 +47,8 @@ function zoom(event) {
 
 function drag(event) {
     if (mouseDown) {
-        let currentPos = {
-            x: event.layerX,
-            y: event.layerY
-        }
-        if (lastPos != null) {
-            for (let i of ['x', 'y']) {
-                pos[i] += (currentPos[i] - lastPos[i]);
-            }
-        }
-        lastPos = currentPos;
+        pos.x += event.movementX;
+        pos.y += event.movementY;
     }
 }
 
