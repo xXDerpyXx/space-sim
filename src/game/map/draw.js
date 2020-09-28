@@ -66,22 +66,30 @@ function drawMap(bodies, center) {
     if (!bodies[center]) return; //skip drawing the map this frame if the client's ship can't be found
     let me = bodies[center];
 
-    for (let body of bodies) {
+    for (let i in bodies) {
+        //skip this body if it is the client's ship
+        if (i == center)
+            continue;
+        let body = bodies[i];
+        if (body.shipId && !document.getElementById('showPlayers').checked)
+            continue;
         let isStar = body.mass > planetDisplayMin;
-        if (isStar || body.shipId) {
-            ctx.fillStyle = body.color;
-            var tWidth = 0;
-            if(isStar){
-                tWidth = (body.size/10) * (100/scale);
-            }
-            let distanceX = (body.x - me.x) / scale;
-            let distanceY = (body.y - me.y) / scale;
-            drawDot(middleX + distanceX, middleY + distanceY, isStar ? tWidth : playerWidth)
-        }
+        if (isStar && !document.getElementById('showStars').checked)
+            continue;
+        if (!isStar && !document.getElementById('showPlanets').checked)
+            continue;
+
+        ctx.fillStyle = body.color;
+        let distanceX = (body.x - me.x) / scale;
+        let distanceY = (body.y - me.y) / scale;
+        drawDot(middleX + distanceX, middleY + distanceY, body.shipId ? playerWidth : ((body.size/10) * (100/scale)));
     }
-    //draw the center dot (this client's ship)
-    ctx.fillStyle = me.color;
-    drawDot(middleX, middleY, selfWidth);
+
+    if (document.getElementById('showSelf').checked) {
+        //draw the center dot (this client's ship)
+        ctx.fillStyle = me.color;
+        drawDot(middleX, middleY, selfWidth);
+    }
 }
 
 export {
