@@ -16,6 +16,7 @@ function getMapCanvas() {
     canvas.addEventListener('wheel', zoom);
     canvas.addEventListener('mousemove', drag);
     canvas.addEventListener('mousedown', () => {
+        document.getElementById('mapResetButton').style.display = '';
         mouseDown = true;
         canvas.requestPointerLock();
     });
@@ -30,7 +31,9 @@ function getMapCanvas() {
     pos = {
         x: 0,
         y: 0
-    }
+    };
+
+    document.getElementById('mapResetButton').style.display = 'none';
 }
 
 function zoom(event) {
@@ -55,7 +58,6 @@ function drag(event) {
 function drawDot(x, y, size) {
     let offset = size/2;
     ctx.fillRect(x - offset + pos.x, y - offset + pos.y, size, size)
-
 }
 
 function drawMap(bodies, center) {
