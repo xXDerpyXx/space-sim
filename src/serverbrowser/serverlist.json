@@ -1,7 +1,0 @@
-[
-    {"url": "localhost:3979", "secure": false},
-    {"url": "derpy.live:3979", "secure": false},
-    {"url": "ssserver.flynna.uk", "secure": true},
-    {"url": "s1.ss.flynna.uk", "secure": false},
-    {"url": "[2a04:92c7:16:335:bf1f:42bc:b67b:565]", "secure": false}
-]
