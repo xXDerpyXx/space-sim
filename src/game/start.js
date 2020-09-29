@@ -234,7 +234,7 @@ function startGame() {
                     var a = angle(body,bodies[i]);
                     ctx.beginPath();
                     ctx.moveTo(bodies[i].x,bodies[i].y)
-                    ctx.lineTo(Math.cos(a)*slength,Math.sin(a)*slength)
+                    ctx.lineTo(bodies[i].x+Math.cos(a)*slength,bodies[i].y+Math.sin(a)*slength)
                     ctx.stroke();
                     ctx.lineWidth = twidth;
                 }
