@@ -231,6 +231,9 @@ function startGame() {
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d
                     var twidth = ctx.lineWidth;
                     ctx.lineWidth = bodies[i].size
+                    if(bodies[i].shipId != null){
+                        ctx.lineWidth = bodies[i].size*2
+                    }
                     var a = angle(body,bodies[i]);
                     ctx.beginPath();
                     ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety)
