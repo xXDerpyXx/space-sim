@@ -259,16 +259,14 @@ function startGame() {
                 
                
             }else{
-                /*
                 ctx.beginPath();
                 ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size*4,0,2*Math.PI)
                 ctx.fill();
                 ctx.stroke();
-*/
                 var a = body.angle * (Math.PI/180)
                 var s = 10;
                 var twidth = ctx.lineWidth;
-                ctx.lineWidth = body.size*8;
+                ctx.lineWidth = body.size*2;
                ctx.beginPath();
                ctx.moveTo(body.x+offset-cOffsetx,body.y+offset-cOffsety)
                ctx.lineTo(((Math.cos(a)*s)+offset-cOffsetx)+body.x,((Math.sin(a)*s)+offset-cOffsety)+body.y)
