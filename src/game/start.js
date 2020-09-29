@@ -231,7 +231,7 @@ function startGame() {
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d
                     var twidth = ctx.lineWidth;
                     ctx.lineWidth = bodies[i].size
-                    var a = angle(body,bodies[i]);
+                    var a = angle(bodies[i],body);
                     ctx.beginPath();
                     ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety)
                     ctx.lineTo((bodies[i].x+(Math.cos(a)*slength))-cOffsetx,(bodies[i].y+(Math.sin(a)*slength))-cOffsety)
