@@ -232,7 +232,7 @@ function startGame() {
                     var twidth = ctx.lineWidth;
                     ctx.lineWidth = bodies[i].size
                     if(bodies[i].shipId != null){
-                        ctx.lineWidth = bodies[i].size*4
+                        ctx.lineWidth = bodies[i].size*8
                     }
                     var a = angle(body,bodies[i]);
                     ctx.beginPath();
