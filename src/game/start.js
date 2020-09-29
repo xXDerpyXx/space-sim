@@ -251,26 +251,29 @@ function startGame() {
             //this.size/2;
             ctx.strokeStyle = body.color;
             if(body.shipId == null){
-                /*
+                
                 ctx.beginPath();
                 ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size/2,0,2*Math.PI)
                 ctx.fill();
                 ctx.stroke();
-                */
-               var a = body.angle * (180/Math.PI)
+                
+               
+            }else{
+                /*
+                ctx.beginPath();
+                ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size*4,0,2*Math.PI)
+                ctx.fill();
+                ctx.stroke();
+*/
+                var a = body.angle * (180/Math.PI)
                 var s = 10;
                 var twidth = ctx.lineWidth;
-                ctx.lineWidth = bodies[i].size*8;
+                ctx.lineWidth = body.size*8;
                ctx.beginPath();
                ctx.moveTo(body.x+offset-cOffsetx,body.y+offset-cOffsety)
                ctx.lineTo((Math.cos(a)*s)+offset-cOffsetx,(Math.sin(a)*s)+offset-cOffsety)
                ctx.stroke();
                ctx.lineWidth = twidth;
-            }else{
-                ctx.beginPath();
-                ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size*4,0,2*Math.PI)
-                ctx.fill();
-                ctx.stroke();
             }
         
         ctx.shadowBlur = 0;
