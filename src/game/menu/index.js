@@ -36,6 +36,11 @@ function PauseMenu() {
                     <button onClick={reconnect}>New ship</button><br />
                     <button onClick={disconnect}>Disconnect</button><br />
                     <ColorPicker />
+                    <label for="controlMethod" style={{color: 'white'}}>Control method: </label>
+                    <select id="controlMethod">
+                        <option value={0}>rotate</option>
+                        <option value={1}>point</option>
+                    </select>
                     <hr />
                     <p>
                         Server: {d.server.url}<br />

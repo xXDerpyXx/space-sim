@@ -112,6 +112,11 @@ io.on('connection', function(socket){
 		console.log(players[socket.id]);
 	});
 
+	socket.on("setangle", angle => {
+		if (typeof angle == "number" && angle >= 0)
+			bodies.find(e => e.shipId == socket.id).angle = angle % 360;
+	});
+
 	socket.on("nuke",function(){
 		for(var i = 0; i < bodies.length; i++){
 			if(bodies[i].shipId == socket.id){
@@ -398,7 +403,7 @@ setInterval(function(){
 		if(bodies[i].shipId != null){
 			var player = players[bodies[i].shipId];
 			//io.to(id).emit("center",i);
-			var speed = 0.05;
+			var speed = 0.03;
 			var walkspeed = 1;
 
 			let xVel = Math.cos(bodies[i].angle * Math.PI / 180);
