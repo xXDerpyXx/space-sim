@@ -23,7 +23,7 @@ h1 {
     border-right: 1px dotted rgb(0, 0, 0)
 }
 
-#serverList tr {
+#serverList tbody tr {
     border: 1px solid rgb(60, 60, 60);
     background: rgb(172, 172, 172);
     cursor: pointer;

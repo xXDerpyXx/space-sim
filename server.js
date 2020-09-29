@@ -6,6 +6,8 @@ var val = "";
 var players = [];
 var userTotal = 0;
 
+const rotationSpeed = 3;
+
 var app = require('express')();
 
 app.use(require('cors')());
@@ -18,7 +20,12 @@ io.set('heartbeat interval', 4);
 class player{
 	constructor(id){
 		this.id = id;
-		this.dirs = [false,false,false,false];
+		this.accelerating = false;
+		this.decelerating = false;
+		this.acceleration = 0;
+		this.direction = 0;
+		this.rotatingLeft = false;
+		this.rotatingRight = false;
 		this.ship = null;
 	}
 }
@@ -85,8 +92,24 @@ io.on('connection', function(socket){
 	});
     
 
-	socket.on("dir",function(d,val){
-		players[socket.id].dirs[d] = val;
+	socket.on("accelerate", stop => {
+		players[socket.id].accelerating = Boolean(stop);
+		console.log(players[socket.id]);
+	});
+
+	socket.on("decelerate", stop => {
+		players[socket.id].decelerating = Boolean(stop);
+		console.log(players[socket.id]);
+	});
+
+	socket.on("rotateleft", stop => {
+		players[socket.id].rotatingLeft = Boolean(stop);
+		console.log(players[socket.id]);
+	});
+
+	socket.on("rotateright", stop => {
+		players[socket.id].rotatingRight = Boolean(stop);
+		console.log(players[socket.id]);
 	});
 
 	socket.on("nuke",function(){
@@ -375,34 +398,32 @@ setInterval(function(){
 			var player = players[bodies[i].shipId];
 			//io.to(id).emit("center",i);
 			var speed = 0.01;
-			var walkspeed = 1
-			if(player.dirs[0]){
-				bodies[i].xVel+=speed;
+			var walkspeed = 1;
+
+			let xVel = Math.sin(player.direction * Math.PI / 180);
+			let yVel = Math.cos(player.direction * Math.PI / 180);
+			bodies[i].xVel += xVel * player.acceleration;
+			bodies[i].yVel += yVel * player.acceleration;
+
+			if (player.accelerating || player.decelerating) {
+				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
+				player.acceleration = speed * moving;
+
 				if(bodies[i].colliding){
-					bodies[i].x+=walkspeed;
-					bodies[i].xVel+=walkspeed;
+					let xWalk = xVel*walkspeed;
+					let yWalk = yVel*walkspeed;
+					bodies[i].x+=xWalk;
+					bodies[i].x+=yWalk;
+					bodies[i].xVel+=xWalk;
+					bodies[i].yVel+=yWalk;
 				}
+			} else {
+				player.acceleration = 0;
 			}
-			if(player.dirs[1]){
-				bodies[i].xVel-=speed;
-				if(bodies[i].colliding){
-					bodies[i].x-=walkspeed;
-					bodies[i].xVel-=walkspeed;
-				}
-			}
-			if(player.dirs[2]){
-				bodies[i].yVel+=speed;
-				if(bodies[i].colliding){
-					bodies[i].y+=walkspeed;
-					bodies[i].yVel+=walkspeed;
-				}
-			}
-			if(player.dirs[3]){
-				bodies[i].yVel-=speed;
-				if(bodies[i].colliding){
-					bodies[i].y-=walkspeed;
-					bodies[i].yVel-=walkspeed;
-				}
+			if (player.rotatingLeft || player.rotatingRight) {
+				player.direction -= rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
+				player.direction += 360; //make sure the direction is positive
+				player.direction %= 360; //if the direction is now more than 360, correct that
 			}
 		}
 	}

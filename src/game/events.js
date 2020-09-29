@@ -3,21 +3,29 @@ import { chatIsShown, toggleChat } from './chat/toggle';
 import sendChat from './chat/send';
 import { isPaused, pause, unpause } from './menu/';
 
-var directions = {
-    "ArrowUp": 3,
-    "ArrowRight": 0,
-    "ArrowDown": 2,
-    "ArrowLeft": 1,
-}
-
 function keydown(e) {
     if (document.activeElement.id == "chatInput")
         return;
-    if (e.code == "Space") {
-        d.socket.emit("nuke");
-    } else if (directions.hasOwnProperty(e.code)) {
-        e.preventDefault();
-        d.socket.emit("dir", directions[e.code], true)
+    switch (e.code) {
+        case "Space":
+            d.socket.emit("nuke");
+            break;
+        
+        case "ArrowUp":
+            d.socket.emit("accelerate", true);
+            break;
+
+        case "ArrowDown":
+            d.socket.emit("decelerate", true);
+            break;
+        
+        case "ArrowLeft":
+            d.socket.emit("rotateleft", true);
+            break;
+
+        case "ArrowRight":
+            d.socket.emit("rotateright", true);
+            break;
     }
 }
 
@@ -42,11 +50,21 @@ function keyup(e) {
                 isPaused() ? unpause() : pause();
             break;
         
-        default:
-            if (directions.hasOwnProperty(e.code)) {
-                e.preventDefault();
-                d.socket.emit("dir", directions[e.code], false)
-            }
+        case "ArrowUp":
+            d.socket.emit("accelerate", false);
+            break;
+
+        case "ArrowDown":
+            d.socket.emit("decelerate", false);
+            break;
+        
+        case "ArrowLeft":
+            d.socket.emit("rotateleft", false);
+            break;
+
+        case "ArrowRight":
+            d.socket.emit("rotateright", false);
+            break;
     }
 }
         

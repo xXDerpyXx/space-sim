@@ -60,11 +60,13 @@ class ServerBrowser extends React.Component {
                 <label>Official serverlist:</label>
                 <table id="serverList">
                     <thead>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Players</th>
-                        <th>Uptime</th>
-                        <th>Location</th>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Players</th>
+                            <th>Uptime</th>
+                            <th>Location</th>
+                        </tr>
                     </thead>
 
                     <tbody>
