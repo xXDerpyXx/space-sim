@@ -222,12 +222,15 @@ function startGame() {
             }
 
             for(var i = 0; i < bodies.length; i++){
+                if(bodies[i].mass > starmin){
+                    continue;
+                }
                 var d = distance(body,bodies[i]) 
                 if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){
                     ctx.strokeStyle = "#000000";
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d
                     var twidth = ctx.lineWidth;
-                    twidth = bodies[i].size
+                    ctx.lineWidth = bodies[i].size
                     var a = angle(body,bodies[i]);
                     ctx.beginPath();
                     ctx.moveTo(bodies[i].x,bodies[i].y)
