@@ -6,7 +6,7 @@ var val = "";
 var players = [];
 var userTotal = 0;
 
-const rotationSpeed = 3;
+const rotationSpeed = 15;
 
 var app = require('express')();
 
@@ -398,11 +398,11 @@ setInterval(function(){
 		if(bodies[i].shipId != null){
 			var player = players[bodies[i].shipId];
 			//io.to(id).emit("center",i);
-			var speed = 0.01;
+			var speed = 0.05;
 			var walkspeed = 1;
 
-			let xVel = Math.sin(player.direction * Math.PI / 180);
-			let yVel = Math.cos(player.direction * Math.PI / 180);
+			let xVel = Math.cos(bodies[i].angle * Math.PI / 180);
+			let yVel = Math.sin(bodies[i].angle * Math.PI / 180);
 			bodies[i].xVel += xVel * player.acceleration;
 			bodies[i].yVel += yVel * player.acceleration;
 
@@ -422,7 +422,7 @@ setInterval(function(){
 				player.acceleration = 0;
 			}
 			if (player.rotatingLeft || player.rotatingRight) {
-				bodies[i].angle -= rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
+				bodies[i].angle += rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
 				bodies[i].angle += 360; //make sure the direction is positive
 				bodies[i].angle %= 360; //if the direction is now more than 360, correct that
 			}

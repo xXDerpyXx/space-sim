@@ -197,7 +197,7 @@ function startGame() {
     function draw(body) {
         body.size = Math.sqrt((body.mass/body.density)/Math.PI)
         body.path.push([body.x,body.y]);
-        ctx.strokeStyle = body.pathColor;
+        ctx.strokeStyle = "#FF0000";//body.pathColor;
         ctx.moveTo(body.path[0][0]-cOffsetx,body.path[0][1]-cOffsety);
         for(let i = 0; i < body.path.length; i++){
             ctx.lineTo(body.path[i][0]-cOffsetx,body.path[i][1]-cOffsety);
@@ -265,13 +265,13 @@ function startGame() {
                 ctx.fill();
                 ctx.stroke();
 */
-                var a = body.angle * (180/Math.PI)
+                var a = body.angle * (Math.PI/180)
                 var s = 10;
                 var twidth = ctx.lineWidth;
                 ctx.lineWidth = body.size*8;
                ctx.beginPath();
                ctx.moveTo(body.x+offset-cOffsetx,body.y+offset-cOffsety)
-               ctx.lineTo((Math.cos(a)*s)+offset-cOffsetx,(Math.sin(a)*s)+offset-cOffsety)
+               ctx.lineTo(((Math.cos(a)*s)+offset-cOffsetx)+body.x,((Math.sin(a)*s)+offset-cOffsety)+body.y)
                ctx.stroke();
                ctx.lineWidth = twidth;
             }
