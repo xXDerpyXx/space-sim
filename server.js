@@ -214,6 +214,7 @@ class body{
 		this.density = 0.1;
 		this.invincibilityCooldown = 0;
 		this.nuke = false;
+		this.angle = 0;
 	}
 
 	explode(other,force){
@@ -421,9 +422,9 @@ setInterval(function(){
 				player.acceleration = 0;
 			}
 			if (player.rotatingLeft || player.rotatingRight) {
-				player.direction -= rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
-				player.direction += 360; //make sure the direction is positive
-				player.direction %= 360; //if the direction is now more than 360, correct that
+				bodies[i].angle -= rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
+				bodies[i].angle += 360; //make sure the direction is positive
+				bodies[i].angle %= 360; //if the direction is now more than 360, correct that
 			}
 		}
 	}
