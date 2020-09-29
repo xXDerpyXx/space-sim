@@ -414,7 +414,7 @@ setInterval(function(){
 					let xWalk = xVel*walkspeed;
 					let yWalk = yVel*walkspeed;
 					bodies[i].x+=xWalk;
-					bodies[i].x+=yWalk;
+					bodies[i].y+=yWalk;
 					bodies[i].xVel+=xWalk;
 					bodies[i].yVel+=yWalk;
 				}
