@@ -76,7 +76,7 @@ function drawMap(bodies, center) {
         let isStar = body.mass > planetDisplayMin;
         if (isStar && !document.getElementById('showStars').checked)
             continue;
-        if (!isStar && !document.getElementById('showPlanets').checked)
+        if (!body.shipId && !isStar && !document.getElementById('showPlanets').checked)
             continue;
 
         ctx.fillStyle = body.color;
