@@ -5,12 +5,7 @@ var bodies = [];
 var val = "";
 var players = [];
 var userTotal = 0;
-var config = {
-	width:30,
-	height:30,
-	sealevel:55,
-	startpop:50
-}
+
 var app = require('express')();
 
 app.use(require('cors')());
@@ -103,7 +98,7 @@ io.on('connection', function(socket){
 				nuke.yVel = bodies[i].yVel;
 				nuke.mass = 10;
 				nuke.color = "#FFFF00";
-				bodies.push(nuke);
+				//bodies.push(nuke);
 				return;
 			}
 		}
@@ -171,8 +166,8 @@ var gravity = 0;
 var g = 0.00667;
 var starmin = 500;
 var starmax = 10000;
-var tidalmin = 0.2;
-var explodemin = 10;
+var tidalmin = 0.002;
+var explodemin = 20;
 var explodeSpeed = 1;
 
 class body{
@@ -199,11 +194,16 @@ class body{
 	}
 
 	explode(other,force){
+		
 		if(force == null){
 			force = 0.2
 		}
+		
 		this.delete = true;
 		var parts = Math.floor(Math.random()*10)+2
+		if(this.mass/parts < explodemin){
+			parts = 2;
+		}
 		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
 		var v = {"x":this.xVel,"y":this.yVel}
@@ -220,8 +220,9 @@ class body{
 			}
 			totalmass -= m;
 			var temp = new body(this.x,this.y);
-			temp.invincibilityCooldown = 10;
+			temp.invincibilityCooldown = 20;
 			temp.mass = m;
+			temp.color = this.color;
 			var newxvel = r.x*tvel+((Math.random()*force)-(force/2));
 			var newyvel = r.y*tvel+((Math.random()*force)-(force/2));
 			temp.xVel = newxvel;
@@ -353,8 +354,8 @@ class body{
 						}else{
 							this.yVel += f * ((yoff*-1)/toff);
 						}
-						if(f > tidalmin && this.mass > 1 && this.shipId == null && !this.nuke){
-							this.explode(bodies[i],0.1)
+						if(f > tidalmin && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke){
+							this.explode(bodies[i],1)
                         }
 					}
 				}
@@ -427,12 +428,29 @@ setInterval(function(){
         }
     }
 },1);
+
 var spacing = 1000;
+var bodyCount = 15*15;
+var universeSize = 10000;
+
+for(var i = 0; i < bodyCount; i++){
+	var temp = new body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
+	temp.xVel = (Math.random()*1)-0.5;
+	temp.yVel = (Math.random()*1)-0.5;
+	var m = (Math.random()*600)+10
+	temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
+	temp.mass = m;
+	//if((i+j)%2 == 0)
+	bodies.push(temp);
+}
+
+
+/*
 for(var i = -15; i < 15; i++){
     for(var j = -15; j < 15; j++){
         var temp = new body(100+(i*spacing),100+(j*spacing));
-        temp.xVel = (Math.random()*0.5)-0.25;
-        temp.yVel = (Math.random()*0.5)-0.25;
+        temp.xVel = (Math.random()*1)-0.5;
+        temp.yVel = (Math.random()*1)-0.5;
         var m = (Math.random()*600)+10
         temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
         temp.mass = m;
@@ -440,36 +458,18 @@ for(var i = -15; i < 15; i++){
         bodies.push(temp);
     }
 }
-
+*/
 /*
 temp = new body(250,250);
 temp.xVel = 0//(Math.random()*2)-1;
 temp.yVel = 0//(Math.random()*2)-1;
-m = 100
-temp.size = m/10;
-temp.mass = m;
-bodies.push(temp);
-
-
-temp = new body(-1000,248);
-temp.xVel = 1.1//(Math.random()*2)-1;
-temp.yVel = 0//(Math.random()*2)-1;
-m = 20
-temp.size = m/10;
-temp.mass = m;
-bodies.push(temp);
-
-
-temp = new body(250,250);
-temp.xVel = 0//(Math.random()*2)-1;
-temp.yVel = 0//(Math.random()*2)-1;
-m = 700
+m = 600
 temp.size = m/10;
 temp.mass = m;
 bodies.push(temp);
 */
 var swarm = [
-    //{swarmSize:10,centerx:250,centery:250,d:400,vel:0.10,m:40,off:0},
+    //{swarmSize:10,centerx:250,centery:250,d:600,vel:0.1,m:40,off:0},
     /*{swarmSize:1,centerx:250,centery:250,d:380,vel:0.561,m:2,off:0},*/
     /*{swarmSize:1,centerx:250,centery:250,d:200,vel:0.1,m:5,off:Math.PI}*/
 ]

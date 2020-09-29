@@ -220,7 +220,25 @@ function startGame() {
                 ctx.fill();
                 ctx.stroke();
             }
+
+            for(var i = 0; i < bodies.length; i++){
+                var d = distance(body,bodies[i]) 
+                if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){
+                    ctx.strokeStyle = "#000000";
+                    var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d
+                    var twidth = ctx.lineWidth;
+                    twidth = bodies[i].size
+                    var a = angle(body,bodies[i]);
+                    ctx.beginPath();
+                    ctx.moveTo(bodies[i].x,bodies[i].y)
+                    ctx.lineTo(Math.cos(a)*slength,Math.sin(a)*slength)
+                    ctx.stroke();
+                    ctx.lineWidth = twidth;
+                }
+            }
         }
+
+
         
         ctx.fillStyle = body.color;
             //this.size/2;
