@@ -102,18 +102,22 @@ io.on('connection', function(socket){
 
 	socket.on("accelerate", stop => {
 		players[socket.id].accelerating = Boolean(stop);
+		//console.log(players[socket.id]);
 	});
 
 	socket.on("decelerate", stop => {
 		players[socket.id].decelerating = Boolean(stop);
+		//console.log(players[socket.id]);
 	});
 
 	socket.on("rotateleft", stop => {
 		players[socket.id].rotatingLeft = Boolean(stop);
+		//console.log(players[socket.id]);
 	});
 
 	socket.on("rotateright", stop => {
 		players[socket.id].rotatingRight = Boolean(stop);
+		//console.log(players[socket.id]);
 	});
 
 	socket.on("setangle", angle => {
@@ -197,7 +201,7 @@ var airResistance = 0;
 var gravity = 0;
 var g = 0.00667;
 var starmin = 1000;
-var starmax = 50000;
+var starmax = 20000;
 var tidalmin = 0.002;
 var explodemin = 20;
 var explodeSpeed = 1;
