@@ -8,6 +8,20 @@ const directions = {
     "ArrowDown": 90,
     "ArrowLeft": 180,
     "ArrowUp": 270,
+
+    "KeyD": 0,
+    "KeyS": 90,
+    "KeyA": 180,
+    "KeyW": 270,
+
+    "Numpad6": 0,
+    "Numpad3": 45,
+    "Numpad2": 90,
+    "Numpad1": 135,
+    "Numpad4": 180,
+    "Numpad7": 225,
+    "Numpad8": 270,
+    "Numpad9": 315,
 };
 
 var keysDown = [];
@@ -45,21 +59,25 @@ function keydown(e) {
             break;
     }
 
-    switch (Number(document.getElementById("controlMethod").value)) {
+    switch (Number(controlMethod.value)) {
         case 0:
             switch (e.code) {
+                case "KeyW":
                 case "ArrowUp":
                     d.socket.emit("accelerate", true);
                     break;
 
+                case "KeyS":
                 case "ArrowDown":
                     d.socket.emit("decelerate", true);
                     break;
                 
+                case "KeyA":
                 case "ArrowLeft":
                     d.socket.emit("rotateleft", true);
                     break;
 
+                case "KeyD":
                 case "ArrowRight":
                     d.socket.emit("rotateright", true);
                     break;
@@ -100,21 +118,25 @@ function keyup(e) {
             break;
     }
 
-    switch (Number(document.getElementById("controlMethod").value)) {
+    switch (Number(controlMethod.value)) {
         case 0:
             switch (e.code) {
+                case "KeyW":
                 case "ArrowUp":
                     d.socket.emit("accelerate", false);
                     break;
 
+                case "KeyS":
                 case "ArrowDown":
                     d.socket.emit("decelerate", false);
                     break;
                 
+                case "KeyA":
                 case "ArrowLeft":
                     d.socket.emit("rotateleft", false);
                     break;
 
+                case "KeyD":
                 case "ArrowRight":
                     d.socket.emit("rotateright", false);
                     break;
@@ -122,7 +144,6 @@ function keyup(e) {
             break;
 
         case 1:
-            console.log(":)")
             if (directions.hasOwnProperty(e.code)) {
                 if (keysDown.indexOf(e.code) != -1)
                     keysDown.splice(keysDown.indexOf(e.code), 1);
@@ -134,24 +155,57 @@ function keyup(e) {
 
     }
 }
+
+function mousemove(e) {
+    if (controlMethod.value == "2") {
+        let x = e.x - d.c.width/2;
+        let y = e.y - d.c.height/2;
+        let angle = Math.atan(y/x) * (180 / Math.PI);
+        if (x < 0)
+            angle += 180;
+        d.socket.emit("setangle", Math.round(angle)+360);
+    }
+}
+
+function mousedown(e) {
+    if (controlMethod.value == "2") {
+        d.socket.emit("accelerate", true);
+    }
+}
+
+function mouseup(e) {
+    if (controlMethod.value == "2") {
+        d.socket.emit("accelerate", false);
+    }
+}
         
 function resize(e) {
     d.c.width = document.documentElement.clientWidth;
     d.c.height = document.documentElement.clientHeight;
 }
 
+var controlMethod;
+
 class Events {
     static register() {
         window.addEventListener("keydown", keydown);
         window.addEventListener("keyup", keyup);
-        resize();
+        window.addEventListener("mousemove", mousemove);
+        window.addEventListener("mousedown", mousedown);
+        window.addEventListener("mouseup", mouseup);
         window.addEventListener("resize", resize);
+        
+        controlMethod = document.getElementById("controlMethod");
+        resize();
     }
 
     static unregister() {
         window.removeEventListener("keydown", keydown);
         window.removeEventListener("keyup", keyup);
         window.removeEventListener("resize", resize);
+        window.removeEventListener("mousemove", mousemove);
+        window.removeEventListener("mousedown", mousedown);
+        window.removeEventListener("mouseup", mouseup);
     }
 }
 

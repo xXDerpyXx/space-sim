@@ -94,22 +94,18 @@ io.on('connection', function(socket){
 
 	socket.on("accelerate", stop => {
 		players[socket.id].accelerating = Boolean(stop);
-		console.log(players[socket.id]);
 	});
 
 	socket.on("decelerate", stop => {
 		players[socket.id].decelerating = Boolean(stop);
-		console.log(players[socket.id]);
 	});
 
 	socket.on("rotateleft", stop => {
 		players[socket.id].rotatingLeft = Boolean(stop);
-		console.log(players[socket.id]);
 	});
 
 	socket.on("rotateright", stop => {
 		players[socket.id].rotatingRight = Boolean(stop);
-		console.log(players[socket.id]);
 	});
 
 	socket.on("setangle", angle => {
