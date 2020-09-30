@@ -23,6 +23,7 @@ class player{
 		this.accelerating = false;
 		this.decelerating = false;
 		this.acceleration = 0;
+		this.throttle = 1;
 		this.direction = 0;
 		this.rotatingLeft = false;
 		this.rotatingRight = false;
@@ -89,6 +90,13 @@ io.on('connection', function(socket){
 		players.splice(parseInt(socket.id),1);
 		
 		socket.broadcast.emit("delete",socket.id);
+	});
+
+	socket.on("throttle", power => {
+		power = Number(power);
+		if (isNaN(power) || power < 0 || power > 1)
+			return;
+		players[socket.id].throttle = power;
 	});
     
 
@@ -399,7 +407,7 @@ setInterval(function(){
 		if(bodies[i].shipId != null){
 			var player = players[bodies[i].shipId];
 			//io.to(id).emit("center",i);
-			var speed = 0.03;
+			var speed = 0.1;
 			var walkspeed = 1;
 
 			let xVel = Math.cos(bodies[i].angle * Math.PI / 180);
@@ -409,7 +417,8 @@ setInterval(function(){
 
 			if (player.accelerating || player.decelerating) {
 				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
-				player.acceleration = speed * moving;
+				player.acceleration = (speed * player.throttle) * moving;
+				console.log(player.throttle);
 
 				if(bodies[i].colliding){
 					let xWalk = xVel*walkspeed;

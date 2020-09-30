@@ -1,0 +1,23 @@
+#throttleDiv {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -100px;
+}
+
+input[type=range][orient=vertical] {
+    opacity: 0.6;
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+    width: 8px;
+    height: 200px;
+    padding: 0 5px;
+}
+
+#throttleDisplay {
+    opacity: 0.4;
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    margin-left: 5px;
+}
