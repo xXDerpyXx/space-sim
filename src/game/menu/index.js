@@ -38,8 +38,9 @@ function PauseMenu() {
                     <ColorPicker />
                     <label for="controlMethod" style={{color: 'white'}}>Control method: </label>
                     <select id="controlMethod">
-                        <option value={0}>rotate</option>
-                        <option value={1}>point</option>
+                        <option value={0}>steer</option>
+                        <option value={1}>d-pad</option>
+                        <option value={2}>mouse</option>
                     </select>
                     <hr />
                     <p>
