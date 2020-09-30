@@ -14,7 +14,7 @@ function startGame() {
     var airResistance = 0;
     var gravity = 0;
     var g = 0.00667;
-    var starmin = 500;
+    var starmin = 1000;
     var center = 0;
     var players = [];
     var bodies = [];

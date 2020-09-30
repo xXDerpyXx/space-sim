@@ -192,8 +192,8 @@ function dotProduct(vec1,vec2){
 var airResistance = 0;
 var gravity = 0;
 var g = 0.00667;
-var starmin = 500;
-var starmax = 10000;
+var starmin = 1000;
+var starmax = 50000;
 var tidalmin = 0.002;
 var explodemin = 20;
 var explodeSpeed = 1;
@@ -457,14 +457,17 @@ setInterval(function(){
 },1);
 
 var spacing = 1000;
-var bodyCount = 15*15;
-var universeSize = 10000;
+var bodyCount = 10*10;
+var universeSize = 20000;
 
 for(var i = 0; i < bodyCount; i++){
 	var temp = new body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
 	temp.xVel = (Math.random()*1)-0.5;
 	temp.yVel = (Math.random()*1)-0.5;
-	var m = (Math.random()*600)+10
+	var m = (Math.random()*900)+50
+	if(Math.random() > 0.95){
+		m = (Math.random()*10000)+1200
+	}
 	temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
 	temp.mass = m;
 	//if((i+j)%2 == 0)
