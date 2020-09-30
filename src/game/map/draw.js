@@ -1,4 +1,4 @@
-const planetDisplayMin = 500;
+const planetDisplayMin = 1000;
 const playerWidth = 4;
 const selfWidth = 5;
 const starWidth = 4;
