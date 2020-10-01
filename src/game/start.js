@@ -405,11 +405,14 @@ function startGame() {
         }
         ctx.fillStyle = "#000000";
         ctx.fillRect(0,0,c.width,c.height);
-        for(let i of bodies){
-            if(distance(i,bodies[center]) < d.c.canvas.width*3){
-                draw(i);
-            } 
+        if(bodies[center] != undefined){
+            for(let i of bodies){
+                if(distance(i,bodies[center]) < d.c.width*3){
+                    draw(i);
+                } 
+            }
         }
+        
         drawMap(bodies, center);
         
         if(bodies[center] == null){
