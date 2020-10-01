@@ -418,7 +418,6 @@ setInterval(function(){
 			if (player.accelerating || player.decelerating) {
 				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
 				player.acceleration = (speed * player.throttle) * moving;
-				console.log(player.throttle);
 
 				if(bodies[i].colliding){
 					let xWalk = xVel*walkspeed;
