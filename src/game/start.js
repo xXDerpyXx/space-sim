@@ -214,7 +214,7 @@ function startGame() {
         if(body.path.length > body.pathMax){
             body.path.splice(0,1)
         }
-        var brightnessOffset = 50;
+        var brightnessOffset = 50*(body.density*10);
         //body.size = body.mass/10
         var offset = 0
         

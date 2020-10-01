@@ -329,10 +329,10 @@ class body{
 			this.color = "rgb("+red+","+green+","+blue+")";
 			this.density += 0.000001;
 			if(this.mass > starmax/2){
-				this.density += 0.000001
+				this.density += 0.000005
 			}
 			if(this.mass > starmax){
-				this.density += 0.000002
+				this.density += 0.00002
 			}
 			if(this.density >= 1){
 				this.density = 0.5;
