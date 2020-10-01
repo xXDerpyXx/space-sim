@@ -438,7 +438,6 @@ setInterval(function(){
 			if (player.accelerating || player.decelerating) {
 				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
 				player.acceleration = (speed * player.throttle) * moving;
-				console.log(player.throttle);
 
 				if(bodies[i].colliding){
 					let xWalk = xVel*walkspeed;
@@ -483,12 +482,12 @@ setInterval(function(){
 
 var spacing = 1000;
 var bodyCount = 10*10;
-var universeSize = 10000;
+var universeSize = 20000;
 
 for(var i = 0; i < bodyCount; i++){
 	var temp = new body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
-	temp.xVel = (Math.random()*2)-1;
-	temp.yVel = (Math.random()*2)-1;
+	temp.xVel = (Math.random()*1)-0.5;
+	temp.yVel = (Math.random()*1)-0.5;
 	var m = (Math.random()*900)+50
 	if(Math.random() > 0.95){
 		m = (Math.random()*10000)+1200

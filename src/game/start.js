@@ -6,6 +6,14 @@ import receiveMessages from './chat/receive';
 import disconnect from './disconnect';
 import { drawMap } from './map/draw';
 
+let shipScale = 1.6;
+var shipShape = new Path2D();
+shipShape.moveTo(0*shipScale, -2*shipScale);
+shipShape.lineTo(-3*shipScale, -4*shipScale);
+shipShape.lineTo(0*shipScale, 4*shipScale);
+shipShape.lineTo(3*shipScale, -4*shipScale);
+shipShape.closePath();
+
 function startGame() {
     var c = document.getElementById("mainCanvas");
     d.c = c;
@@ -259,6 +267,7 @@ function startGame() {
                 
                
             }else{
+                /*
                 ctx.beginPath();
                 ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size*4,0,2*Math.PI)
                 ctx.fill();
@@ -267,11 +276,19 @@ function startGame() {
                 var s = 10;
                 var twidth = ctx.lineWidth;
                 ctx.lineWidth = body.size*2;
-               ctx.beginPath();
-               ctx.moveTo(body.x+offset-cOffsetx,body.y+offset-cOffsety)
-               ctx.lineTo(((Math.cos(a)*s)+offset-cOffsetx)+body.x,((Math.sin(a)*s)+offset-cOffsety)+body.y)
-               ctx.stroke();
-               ctx.lineWidth = twidth;
+                ctx.beginPath();
+                ctx.moveTo(body.x+offset-cOffsetx,body.y+offset-cOffsety)
+                ctx.lineTo(((Math.cos(a)*s)+offset-cOffsetx)+body.x,((Math.sin(a)*s)+offset-cOffsety)+body.y)
+                ctx.stroke();
+                ctx.lineWidth = twidth;
+                */
+                let a = (body.angle - 90) * (Math.PI/180);
+                ctx.translate(body.x+offset-cOffsetx,body.y+offset-cOffsety);
+                ctx.rotate(a);
+                ctx.stroke(shipShape);
+                ctx.fill(shipShape);
+                ctx.rotate(-a);
+                ctx.translate(-(body.x+offset-cOffsetx),-(body.y+offset-cOffsety));
             }
         
         ctx.shadowBlur = 0;
