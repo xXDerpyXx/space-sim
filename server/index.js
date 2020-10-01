@@ -240,12 +240,18 @@ class body{
 		if(this.mass/parts < explodemin){
 			parts = 2;
 		}
+		if(this.mass > starmin){
+			parts = Math.floor(Math.random()*((this.mass/explodemin)*2))+2
+		}
 		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
 		var v = {"x":this.xVel,"y":this.yVel}
 		var refang = dotProduct(v,n)
 		var r = {"x":v.x-(2*refang.x*n.x*n.x),"y":v.y-(2*refang.y*n.y*n.y)}
 		var tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
+		if(other == this){
+			r = {"x":0,"y":0};
+		}
 		r = normalize(r);
 		var totalmass = this.mass;
 		var avgmass = this.mass/parts;
