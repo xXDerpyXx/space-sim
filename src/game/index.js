@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import JoyWrapper from './joystick/';
 import startGame from './start';
 import PauseMenu from './menu/';
 import Throttle from './throttle/';
@@ -18,6 +19,7 @@ class Game extends React.Component {
                     x: <span id="xcoord"></span> y: <span id="ycoord"></span><br />
                     players online: <span id="playersOnline"></span>
                 </div>
+                <JoyWrapper />
                 <PauseMenu />
                 <Throttle />
                 <Map />
