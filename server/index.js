@@ -226,10 +226,13 @@ class body{
 		this.angle = 0;
 	}
 
-	explode(other,force){
+	explode(other,force,density){
 		
 		if(force == null){
 			force = 0.2
+		}
+		if(density == null){
+			density = this.density;
 		}
 		
 		this.delete = true;
@@ -255,11 +258,12 @@ class body{
 			var temp = new body(this.x,this.y);
 			temp.invincibilityCooldown = 20;
 			temp.mass = m;
-			temp.color = this.color;
 			var newxvel = r.x*tvel+((Math.random()*force)-(force/2));
 			var newyvel = r.y*tvel+((Math.random()*force)-(force/2));
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
+			temp.color = this.color;
+			temp.density = density;
 			bodies.push(temp);
 			if(totalmass == 0){
 				return;
@@ -274,6 +278,8 @@ class body{
 			var newyvel = r.y*tvel+((Math.random()*tvel/5)-tvel/10);
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
+			temp.color = this.color;
+			temp.density = density;
 			bodies.push(temp);
 		}
 
@@ -287,7 +293,9 @@ class body{
         this.xVel = ((this.xVel*myportion) + (other.xVel*otherportion))/2
         this.yVel = ((this.yVel*myportion) + (other.yVel*otherportion))/2
 		this.mass += other.mass;
+		this.density = (this.density*myportion)+(other.density*otherportion)
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
+		
     }
 
     move(){
@@ -310,7 +318,7 @@ class body{
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
 			this.color = "rgb("+red+","+0+","+blue+")";
-
+			this.density += this.mass/1000;
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
