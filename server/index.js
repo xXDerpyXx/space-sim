@@ -336,7 +336,7 @@ class body{
 			}
 			if(this.density >= 1){
 				this.density = 0.5;
-				this.explode(bodies[0],4);
+				this.explode(bodies[0],2*(this.mass/2000));
 			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
@@ -493,8 +493,8 @@ var universeSize = 20000;
 
 for(var i = 0; i < bodyCount; i++){
 	var temp = new body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
-	temp.xVel = (Math.random()*1)-0.5;
-	temp.yVel = (Math.random()*1)-0.5;
+	temp.xVel = (Math.random()*0.5)-0.25;
+	temp.yVel = (Math.random()*0.5)-0.25;
 	var m = (Math.random()*900)+50
 	if(Math.random() > 0.95){
 		m = (Math.random()*10000)+1200
