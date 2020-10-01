@@ -317,8 +317,20 @@ class body{
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
-			this.color = "rgb("+red+","+0+","+blue+")";
-			this.density += this.mass/1000;
+			var green = this.density*128;
+			red = red+green;
+			blue = blue+green;
+			this.color = "rgb("+red+","+green+","+blue+")";
+			this.density += 0.00001;
+			if(this.mass > starmax/2){
+				this.density += 0.00001
+			}
+			if(this.mass > starmax){
+				this.density += 0.00002
+			}
+			if(this.density >= 1){
+				this.explode(this,2,0.5);
+			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
