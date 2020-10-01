@@ -241,7 +241,7 @@ class body{
 			parts = 2;
 		}
 		if(this.mass > starmin){
-			parts = Math.floor(Math.random()*((this.mass/explodemin)*2))+2
+			parts = Math.floor(Math.random()*50)+2
 		}
 		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
@@ -323,7 +323,7 @@ class body{
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
-			var green = this.density*128;
+			var green = this.density*200;
 			red = red+green;
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
@@ -335,7 +335,8 @@ class body{
 				this.density += 0.00002
 			}
 			if(this.density >= 1){
-				this.explode(this,2,0.5);
+				this.density = 0.5;
+				this.explode(bodies[0],4);
 			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
@@ -413,7 +414,7 @@ class body{
 						}else{
 							this.yVel += f * ((yoff*-1)/toff);
 						}
-						if(f > tidalmin && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke){
+						if(f > (tidalmin+this.density) && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke){
 							this.explode(bodies[i],1)
                         }
 					}
