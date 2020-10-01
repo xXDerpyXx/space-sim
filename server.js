@@ -463,12 +463,12 @@ setInterval(function(){
 
 var spacing = 1000;
 var bodyCount = 10*10;
-var universeSize = 20000;
+var universeSize = 10000;
 
 for(var i = 0; i < bodyCount; i++){
 	var temp = new body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
-	temp.xVel = (Math.random()*1)-0.5;
-	temp.yVel = (Math.random()*1)-0.5;
+	temp.xVel = (Math.random()*2)-1;
+	temp.yVel = (Math.random()*2)-1;
 	var m = (Math.random()*900)+50
 	if(Math.random() > 0.95){
 		m = (Math.random()*10000)+1200
