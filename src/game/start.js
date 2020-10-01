@@ -406,7 +406,9 @@ function startGame() {
         ctx.fillStyle = "#000000";
         ctx.fillRect(0,0,c.width,c.height);
         for(let i of bodies){
-            draw(i);
+            if(distance(bodies[i],bodies[center]) < 2000){
+                draw(i);
+            } 
         }
         drawMap(bodies, center);
         
