@@ -295,10 +295,12 @@ class body{
 	shedMass(smass,force,density){
 		var parts = Math.floor(Math.random()*20)+10;
 		var tvel = force;
-		for(var i = 0; i < parts; i++){
+		var avgmass = this.mass/parts;
+		this.mass -= smass;
+		for(var i = 0; i < 100; i++){
 			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
-			if(m > totalmass){
-				m = totalmass;
+			if(m > smass){
+				m = smass;
 			}
 			smass -= m;
 			var temp = new body(this.x,this.y);
