@@ -365,12 +365,12 @@ class body{
 			}
 			if(this.density >= 1 && this.density < 1.05){
 				this.density = 1.1;
-				this.explode(bodies[0],2*(this.mass/2000));
+				this.explode(bodies[0],(this.mass/2000));
 			}
 
 			if(this.density >= 2 && this.density < 2.05){
 				this.density = 4;
-				this.shedMass(this.mass/5,5,0.1);
+				this.shedMass(this.mass/5,4,0.1);
 			}
 			if(this.density > 3.5){
 				this.color = "rgb(0,0,0)";
