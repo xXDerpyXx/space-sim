@@ -1,6 +1,7 @@
 const cfg = require('./cfg');
 var startDate = Date.now();
 
+//preparing globals
 var bodies = [];
 var val = "";
 var players = [];
@@ -175,20 +176,20 @@ io.on('connection', function(socket){
 	})
 });
 
-function distance(a,b){
+function distance(a,b){ // distance between bodies
     return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
 }
 
-function angle(a,b){
+function angle(a,b){ // angle between bodies
     return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
 }
 
-function normalize(vec){
+function normalize(vec){ //normalize components of a vector between 0 and 1
 	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
 	return {"x":vec.x/mag,"y":vec.y/mag}
 }
 
-function dotProduct(vec1,vec2){
+function dotProduct(vec1,vec2){ //trigonometric dot product of 2 vectors
 	var ang = angle(vec1,vec2);
 	return {"x":Math.abs(vec1.x*vec2.x*Math.cos(ang)),"y":Math.abs(vec1.y*vec2.y*Math.cos(ang))}
 }
@@ -196,12 +197,12 @@ function dotProduct(vec1,vec2){
 
 var airResistance = 0;
 var gravity = 0;
-var g = 0.00667;
-var starmin = 1000;
-var starmax = 20000;
-var tidalmin = 0.002;
-var explodemin = 20;
-var explodeSpeed = 1;
+var g = 0.00667; //gravitational constant
+var starmin = 1000; //mass at which stars form
+var starmax = 20000; //mass at which a star collapses from sheer mass
+var tidalmin = 0.002; //force at which planets are ripped apart from acceleration
+var explodemin = 20; //minimum fragment size from explosions
+var explodeSpeed = 1; //force multiplier
 
 class body{
     constructor(x,y){
@@ -227,10 +228,10 @@ class body{
 		this.angle = 0;
 	}
 
-	explode(other,force,density){
+	explode(other,force,density){ //creates explosion, deleting the original planet
 
 		if(force == null){
-			force = 0.2
+			force = 0.2 
 		}
 		if(density == null){
 			density = this.density;
@@ -293,7 +294,7 @@ class body{
 
 	}
 
-	shedMass(smass,force,density){
+	shedMass(smass,force,density){ //creates explosion but leaves the planet behind
 		var parts = Math.floor(Math.random()*20)+10;
 		var tvel = force;
 		var avgmass = this.mass/parts;
@@ -324,7 +325,7 @@ class body{
 
 	}
 
-    collide(other){
+    collide(other){ //handle combining collision
         var totalmass = this.mass + other.mass
         var myportion = this.mass/totalmass
         var otherportion = other.mass/totalmass
@@ -336,7 +337,7 @@ class body{
 
     }
 
-    move(){
+    move(){ //handle velocity physics tick
 		if(this.delete){
             return;
         }
@@ -346,12 +347,12 @@ class body{
 
     }
 
-    update(){
+    update(){ //physics tick
 
         if(this.delete){
             return;
 		}
-		if(this.mass > starmin){
+		if(this.mass > starmin){ //star formation
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
@@ -359,24 +360,24 @@ class body{
 			red = red+green;
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
-			this.density += 0.000001;
-			if(this.mass > starmax/2){
+			this.density += 0.000001;// burning fuel
+			if(this.mass > starmax/2){ 
 				this.density += 0.000005
 			}
 			if(this.mass > starmax){
 				this.density += 0.00002
 			}
 			if(this.density >= 1 && this.density < 1.05){
-				this.density = 1.1;
+				this.density = 1.1; //stage 2 material
 				this.explode(bodies[0],(this.mass/2000));
 			}
 
 			if(this.density >= 2 && this.density < 2.05){
-				this.density = 4;
-				this.shedMass(this.mass/5,4,0.1);
+				this.density = 4;//stage 3 material
+				this.shedMass(this.mass/5,4,0.1); // create black hole
 			}
 			if(this.density > 3.5){
-				this.color = "rgb(0,0,0)";
+				this.color = "rgb(0,0,0)"; // colorize black holes
 			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
@@ -438,9 +439,8 @@ class body{
 
 
 					}else{
-						var totalmass = this.mass+bodies[i].mass
 						var r = distance(this,bodies[i]);
-						var f = ((g*((/*this.mass**/bodies[i].mass)/(r*r))))//*(bodies[i].mass/totalmass);
+						var f = ((g*((/*this.mass**/bodies[i].mass)/(r*r))))//gravitational force
 						var xoff = Math.abs(this.x-bodies[i].x)
 						var yoff = Math.abs(this.y-bodies[i].y)
 						var toff = xoff+yoff;
@@ -527,7 +527,6 @@ setInterval(function(){
     }
 },1);
 
-var spacing = 1000;
 var bodyCount = 10*10;
 var universeSize = 20000;
 
@@ -575,6 +574,7 @@ var swarm = [
     /*{swarmSize:1,centerx:250,centery:250,d:200,vel:0.1,m:5,off:Math.PI}*/
 ]
 
+//planet swarm generator
 for(var k = 0; k < swarm.length; k++){
     for(var i = 0; i < swarm[k].swarmSize; i++){
         var period = (Math.PI*2)/swarm[k].swarmSize
