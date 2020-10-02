@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import JoyWrapper from './joystick/';
-import startGame from './start';
+import startGame from './renderer/';
 import PauseMenu from './menu/';
 import Throttle from './throttle/';
 import Map from './map/';

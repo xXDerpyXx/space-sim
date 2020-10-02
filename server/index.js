@@ -156,7 +156,8 @@ io.on('connection', function(socket){
 			return;
 		let userBody = getPlayerBody(socket);
 		io.emit("message", {
-			color: userBody.color
+			color: userBody.color,
+			direction: userBody.angle
 		}, content);
 	});
 

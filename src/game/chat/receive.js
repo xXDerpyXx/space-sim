@@ -6,6 +6,7 @@ import { chatIsShown } from './toggle';
 
 function receiveMessages() {
     d.socket.on("message", (player, content) => {
+        console.log(player)
         let chatDiv = document.getElementById('chatMessages')
         chatDiv.innerHTML += renderToString(
             <Message player={player}>

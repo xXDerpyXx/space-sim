@@ -1,18 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import d from '../d';
-import Events from './events';
-import receiveMessages from './chat/receive';
-import disconnect from './disconnect';
-import { drawMap } from './map/draw';
-
-let shipScale = 1.6;
-var shipShape = new Path2D();
-shipShape.moveTo(0*shipScale, -2*shipScale);
-shipShape.lineTo(-3*shipScale, -4*shipScale);
-shipShape.lineTo(0*shipScale, 4*shipScale);
-shipShape.lineTo(3*shipScale, -4*shipScale);
-shipShape.closePath();
+import d from '../../d';
+import Events from '../events';
+import receiveMessages from '../chat/receive';
+import disconnect from '../disconnect';
+import { drawMap } from '../map/draw';
+import { shipPath2D } from './shipPath';
 
 function startGame() {
     var c = document.getElementById("mainCanvas");
@@ -287,8 +280,8 @@ function startGame() {
                 let a = (body.angle - 90) * (Math.PI/180);
                 ctx.translate(body.x+offset-cOffsetx,body.y+offset-cOffsety);
                 ctx.rotate(a);
-                ctx.stroke(shipShape);
-                ctx.fill(shipShape);
+                ctx.stroke(shipPath2D);
+                ctx.fill(shipPath2D);
                 ctx.rotate(-a);
                 ctx.translate(-(body.x+offset-cOffsetx),-(body.y+offset-cOffsety));
             }

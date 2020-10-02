@@ -3,13 +3,15 @@ import './index.css';
 import d from '../../d';
 import { toggleChat, chatButtonText } from './toggle';
 import send from './send';
+import { ShipSVG } from '../renderer/shipPath';
 
 function Message(props) {
     return(
         <div className="chat-message">
-            <svg className="player-icon" height={16} width={16}>
+            <ShipSVG color={props.player.color} direction={props.player.direction} />
+            {/*<svg className="player-icon" height={16} width={16}>
                 <circle cx={8} cy={8} r={8} fill={props.player.color} />
-            </svg>
+            </svg>*/}
             <span className="chat-message-text">{props.children}</span>
         </div>
     );
