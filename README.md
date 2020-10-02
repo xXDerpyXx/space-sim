@@ -4,7 +4,7 @@
 1. `npm ci`
 
 ### set up a server
-2. copy `cfg.example.json` to `cfg.json` and edit according to your needs.
+2. copy `server/cfg.example.json` to `server/cfg.json` and edit according to your needs.
 3. `npm start`
 
 ### set up a client for developing
