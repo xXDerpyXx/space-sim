@@ -146,7 +146,6 @@ function startGame() {
     }
 
     Events.register();
-    },50)
 
     var cOffsetx = 0;
     var cOffsety = 0
