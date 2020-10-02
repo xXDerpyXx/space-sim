@@ -18,7 +18,7 @@ function startGame() {
     var c = document.getElementById("mainCanvas");
     d.c = c;
     var ctx = c.getContext("2d");
-    
+
     var airResistance = 0;
     var gravity = 0;
     var g = 0.00667;
@@ -28,15 +28,15 @@ function startGame() {
     var bodies = [];
 
     var lastFrame = Date.now();
-    
+
     function distance(a,b){
         return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
     }
-    
+
     function angle(a,b){
         return Math.atan2(b.y - a.y, b.x - a.x);
     }
-    
+
     class body{
         constructor(x,y){
             this.x = x;
@@ -56,9 +56,9 @@ function startGame() {
             this.colliding = false;
             this.angle = 0;
         }
-    
-        
-    
+
+
+
         collide(other){
             //if(this.collided || other.delete)
                 //return;
@@ -86,7 +86,7 @@ function startGame() {
             other.collided = true;
             */
         }
-    
+
         move(){
             this.y += this.yVel;
             this.x += this.xVel;
@@ -99,29 +99,29 @@ function startGame() {
                 this.xVel *= -1*this.bouncyness;
                 this.x = c.width;
             }
-    
+
             if(this.y > c.height){
                 this.yVel *= -1*this.bouncyness;
                 this.y = c.height;
             }
-    
+
             if(this.x < 0){
                 this.xVel *= -1*this.bouncyness;
                 this.x = 0;
             }
-    
+
             if(this.y < 0){
                 this.yVel *= -1*this.bouncyness;
                 this.y = 0;
             }*/
         }
-    
+
         update(){
             if(this.delete){
                 return;
             }
             this.colliding = false;
-    
+
             for(let i = 0; i < bodies.length; i++){
                 if(bodies[i].x != this.x && bodies[i].y != this.y){
                     if(distance(bodies[i],this) < ((this.size/2)+(bodies[i].size/2)) && !this.collided){
@@ -143,9 +143,9 @@ function startGame() {
                                 this.yVel = bodies[i].yVel
                             }
                         }
-                        
-                        
-                        
+
+
+
                     }else{
                         let totalmass = this.mass+bodies[i].mass
                         let r = distance(this,bodies[i]);
@@ -163,15 +163,15 @@ function startGame() {
                         }else{
                             this.yVel += f * ((yoff*-1)/toff);
                         }
-    
+
                     }
                 }
             }
             this.collided = false;
         }
-    
+
     }
-    
+
     /*
     var temp = new body(150,150);
     temp.xVel = 0//(Math.random()*2)-1;
@@ -197,11 +197,11 @@ function startGame() {
         }
     }
     */
-    
+
     var dirs = [false,false,false,false]
-    
-    
-    
+
+
+
     function draw(body) {
         body.size = Math.sqrt((body.mass/body.density)/Math.PI)
         body.path.push([body.x,body.y]);
@@ -214,10 +214,12 @@ function startGame() {
         if(body.path.length > body.pathMax){
             body.path.splice(0,1)
         }
-        var brightnessOffset = 50;
+        var brightnessOffset = 50*(body.density*10);
         //body.size = body.mass/10
         var offset = 0
-        
+        if(body.density > 3.5){
+            return;
+        }
         if(body.mass > starmin){
             for(let i = 0; i < 20; i++){
                 var tcolor = body.color;
@@ -234,7 +236,7 @@ function startGame() {
                 if(bodies[i].mass > starmin){
                     continue;
                 }
-                var d = distance(body,bodies[i]) 
+                var d = distance(body,bodies[i])
                 if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){
                     ctx.strokeStyle = "#000000";
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d
@@ -254,18 +256,18 @@ function startGame() {
         }
 
 
-        
+
         ctx.fillStyle = body.color;
             //this.size/2;
             ctx.strokeStyle = body.color;
             if(body.shipId == null){
-                
+
                 ctx.beginPath();
                 ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size/2,0,2*Math.PI)
                 ctx.fill();
                 ctx.stroke();
-                
-               
+
+
             }else{
                 /*
                 ctx.beginPath();
@@ -290,7 +292,7 @@ function startGame() {
                 ctx.rotate(-a);
                 ctx.translate(-(body.x+offset-cOffsetx),-(body.y+offset-cOffsety));
             }
-        
+
         ctx.shadowBlur = 0;
         ctx.fillStyle = "#FF0000";
         ctx.strokeStyle = "#FF0000";
@@ -308,7 +310,7 @@ function startGame() {
     }
 
     Events.register();
-    
+
     d.intervals.colliding = setInterval(function(){
         var speed = 0.01;
         var walkspeed = 1
@@ -336,10 +338,10 @@ function startGame() {
                 bodies[0].y-=walkspeed;
             }
         }
-    
+
     },50)
-    
-    
+
+
     /*
     temp = new body(2100,2100);
     temp.xVel = 0//(Math.random()*2)-1;
@@ -354,7 +356,7 @@ function startGame() {
         /*{swarmSize:1,centerx:250,centery:250,d:380,vel:0.561,m:2,off:0},*/
         /*{swarmSize:1,centerx:250,centery:250,d:200,vel:0.1,m:5,off:Math.PI}*/
     ]
-    
+
     for(let k = 0; k < swarm.length; k++){
         for(let i = 0; i < swarm[k].swarmSize; i++){
             let period = (Math.PI*2)/swarm[k].swarmSize
@@ -369,7 +371,7 @@ function startGame() {
             bodies.push(temp);
         }
     }
-    
+
     /*
     temp = new body(250,200);
     temp.xVel = 1//(Math.random()*2)-1;
@@ -378,7 +380,7 @@ function startGame() {
     temp.size = m/10;
     temp.mass = m;
     bodies.push(temp);
-    
+
     temp = new body(250,300);
     temp.xVel = -1//(Math.random()*2)-1;
     temp.yVel = 0//(Math.random()*2)-1;
@@ -386,7 +388,7 @@ function startGame() {
     temp.size = m/10;
     temp.mass = m;
     bodies.push(temp);
-    
+
     temp = new body(200,250);
     temp.xVel = 0//(Math.random()*2)-1;
     temp.yVel = -1//(Math.random()*2)-1;
@@ -394,7 +396,7 @@ function startGame() {
     temp.size = m/10;
     temp.mass = m;
     bodies.push(temp);
-    
+
     temp = new body(300,250);
     temp.xVel = 0//(Math.random()*2)-1;
     temp.yVel = 1//(Math.random()*2)-1;
@@ -403,12 +405,12 @@ function startGame() {
     temp.mass = m;
     bodies.push(temp);
     */
-    
+
     //bodies[0].invincible = true;
-    
+
     var cOffsetx = 0;
     var cOffsety = 0
-    
+
     d.intervals.draw = setInterval(function(){
         if(bodies.length > 0){
             cOffsetx = bodies[center].x-c.width/2;
@@ -426,12 +428,12 @@ function startGame() {
             for(let i of bodies){
                 if(distance(i,bodies[center]) < d.c.width*3){
                     draw(i);
-                } 
+                }
             }
         }
-        
+
         drawMap(bodies, center);
-        
+
         if(bodies[center] == null){
             return;
         }
@@ -448,7 +450,7 @@ function startGame() {
         /*for(let i = 0; i < bodies.length; i++){
             bodies[i].update();
         }
-    
+
         for(let i = 0; i < bodies.length; i++){
             bodies[i].move();
         }
@@ -458,7 +460,7 @@ function startGame() {
             }
         }*/
     },50);
-    
+
     var myid = 0;
     d.socket.on("connect",function(){
         myid = d.socket.id;
@@ -474,14 +476,14 @@ function startGame() {
             alert(kickMessage);
         }, 500);
     })
-    
+
     d.socket.on("disconnect", () => {
         setTimeout(() => {
             disconnect();
             alert("Communication between you and the server was interrupted.");
         }, 500);
     });
-    
+
     d.socket.on("bodyupdate",function(b){
         bodies = JSON.parse(b)
         let foundCenter = false;
@@ -499,7 +501,7 @@ function startGame() {
             d.socket.emit("newShip");
         }
     });
-    
+
     d.socket.on("center",function(k){
         center = k;
     });

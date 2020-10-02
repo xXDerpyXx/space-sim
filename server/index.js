@@ -88,7 +88,7 @@ io.on('connection', function(socket){
 		}
 		bodies.splice(players[socket.id].ship,1)
 		players.splice(parseInt(socket.id),1);
-		
+
 		socket.broadcast.emit("delete",socket.id);
 	});
 
@@ -98,7 +98,7 @@ io.on('connection', function(socket){
 			return;
 		players[socket.id].throttle = power;
 	});
-    
+
 
 	socket.on("accelerate", stop => {
 		players[socket.id].accelerating = Boolean(stop);
@@ -227,21 +227,21 @@ class body{
 	}
 
 	explode(other,force,density){
-		
+
 		if(force == null){
 			force = 0.2
 		}
 		if(density == null){
 			density = this.density;
 		}
-		
+
 		this.delete = true;
 		var parts = Math.floor(Math.random()*10)+2
 		if(this.mass/parts < explodemin){
 			parts = 2;
 		}
 		if(this.mass > starmin){
-			parts = Math.floor(Math.random()*50)+2
+			parts = Math.floor(Math.random()*20)+2
 		}
 		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
@@ -278,7 +278,7 @@ class body{
 		}
 		if(totalmass != 0){
 			var temp = new body(this.x,this.y);
-			temp.invincibilityCooldown = 10;
+			temp.invincibilityCooldown = 20;
 			temp.mass = totalmass;
 			var newxvel = r.x*tvel+((Math.random()*tvel/5)-tvel/10);
 			var newyvel = r.y*tvel+((Math.random()*tvel/5)-tvel/10);
@@ -289,9 +289,40 @@ class body{
 			bodies.push(temp);
 		}
 
-		
+
 	}
-	
+
+	shedMass(smass,force,density){
+		var parts = Math.floor(Math.random()*20)+10;
+		var tvel = force;
+		var avgmass = this.mass/parts;
+		this.mass -= smass;
+		for(var i = 0; i < 100; i++){
+			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
+			if(m > smass){
+				m = smass;
+			}
+			smass -= m;
+			var temp = new body(this.x,this.y);
+			temp.invincibilityCooldown = 60;
+			temp.mass = m;
+			var newxvel = this.xVel+((Math.random()*force)-(force/2));
+			var newyvel = this.yVel+((Math.random()*force)-(force/2));
+			temp.xVel = newxvel;
+			temp.yVel = newyvel;
+			temp.color = this.color;
+			temp.density = density;
+			if(m > smass){
+				m = smass;
+			}
+			bodies.push(temp);
+			if(smass <= 0){
+				return;
+			}
+		}
+
+	}
+
     collide(other){
         var totalmass = this.mass + other.mass
         var myportion = this.mass/totalmass
@@ -301,7 +332,7 @@ class body{
 		this.mass += other.mass;
 		this.density = (this.density*myportion)+(other.density*otherportion)
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
-		
+
     }
 
     move(){
@@ -311,11 +342,11 @@ class body{
         this.y += this.yVel;
         this.x += this.xVel;
         this.yVel += gravity;
-        
+
     }
 
     update(){
-		
+
         if(this.delete){
             return;
 		}
@@ -329,20 +360,28 @@ class body{
 			this.color = "rgb("+red+","+green+","+blue+")";
 			this.density += 0.000001;
 			if(this.mass > starmax/2){
-				this.density += 0.000001
+				this.density += 0.000005
 			}
 			if(this.mass > starmax){
-				this.density += 0.000002
+				this.density += 0.00002
 			}
-			if(this.density >= 1){
-				this.density = 0.5;
-				this.explode(bodies[0],2*(this.mass/2000));
+			if(this.density >= 1 && this.density < 1.05){
+				this.density = 1.1;
+				this.explode(bodies[0],(this.mass/2000));
+			}
+
+			if(this.density >= 2 && this.density < 2.05){
+				this.density = 4;
+				this.shedMass(this.mass/5,4,0.1);
+			}
+			if(this.density > 3.5){
+				this.color = "rgb(0,0,0)";
 			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
 		if(this.invincibilityCooldown < 1){
-			
+
 			var speed = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel));
 			for(var i = 0; i < bodies.length; i++){
 				if(this.invincible && bodies[i].nuke){
@@ -364,12 +403,12 @@ class body{
 						if(this.nuke && !bodies[i].invincible && bodies[i].mass > explodemin){
 							this.delete = true;
 							bodies[i].explode(this,bodies[i].size/5);
-							
+
 						}
 						if(this.nuke){
 							continue;
 						}
-						
+
 						var otherspeed = Math.sqrt((bodies[i].xVel*bodies[i].xVel)+(bodies[i].yVel*bodies[i].yVel));
 						if(speed > explodeSpeed && this.mass > explodemin && !this.invincible && this.mass < starmin){
 							this.explode(bodies[i]);
@@ -377,7 +416,7 @@ class body{
 						}else if(otherspeed > explodeSpeed && bodies[i].mass > explodemin && !bodies[i].invincible && bodies[i].mass < starmin){
 							bodies[i].explode(this);
 							return;
-						
+
 						}else{
 							if(this.mass > bodies[i].mass || this.mass == bodies[i].mass){
 								if(!bodies[i].invincible && !bodies[i].nuke){
@@ -393,10 +432,10 @@ class body{
 								}
 							}
 						}
-						
-						
-						
-						
+
+
+
+
 					}else{
 						var totalmass = this.mass+bodies[i].mass
 						var r = distance(this,bodies[i]);
@@ -464,7 +503,7 @@ setInterval(function(){
 			}
 		}
 	}
-    
+
 
 },50)
 
