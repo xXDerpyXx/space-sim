@@ -41,8 +41,12 @@ class ServerBrowser extends React.Component {
             <div>
                 <h1>
                     space-sim
-                    <a href="https://github.com/xXDerpyXx/space-sim" id="githubLogo">
-                        <img src={githubIcon} />
+                    <br />
+                    <a href="https://github.com/xXDerpyXx/space-sim" >
+                        <img className="social-icon" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" />
+                    </a>
+                    <a href="https://discord.gg/mU4xTzK" >
+                        <img className="social-icon" src="https://discord.com/assets/41484d92c876f76b20c7f746221e8151.svg" height="32" />
                     </a>
                 </h1>
 

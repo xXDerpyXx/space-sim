@@ -2,10 +2,9 @@ h1 {
     text-align: center;
 }
 
-#githubLogo {
-    position: relative;
-    margin-left: 10px;
-    top: 6px;
+.social-icon {
+    height: 45px;
+    margin-top: 7px;
 }
 
 #serverList {
