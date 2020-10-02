@@ -241,7 +241,7 @@ class body{
 			parts = 2;
 		}
 		if(this.mass > starmin){
-			parts = Math.floor(Math.random()*50)+2
+			parts = Math.floor(Math.random()*20)+2
 		}
 		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
