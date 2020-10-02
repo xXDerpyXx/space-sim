@@ -2,6 +2,7 @@ import d from '../d';
 import { chatIsShown, toggleChat } from './chat/toggle';
 import sendChat from './chat/send';
 import { isPaused, pause, unpause } from './menu/';
+import { handleChange } from './throttle/';
 
 const directions = {
     "ArrowRight": 0,
@@ -50,10 +51,33 @@ function redirect() {
     }
 }
 
+function changeThrottle(up = true) {
+    let throttleInput = document.getElementById('throttle');
+
+    let newVal = Number(throttleInput.value) + (Number(throttleInput.step) * ((Number(up) * 2) - 1));
+    if (newVal >= Number(throttleInput.min) && newVal <= Number(throttleInput.max)) {
+        throttleInput.value = newVal;
+        handleChange();
+    }
+}
+
 function keydown(e) {
     if (document.activeElement.id == "chatInput")
         return;
+    
     switch (e.code) {
+        case "Minus":
+        case "ControlLeft":
+        case "ControlRight":
+            changeThrottle(false);
+            break;
+
+        case "Equal":
+        case "ShiftLeft":
+        case "ShiftRight":
+            changeThrottle(true);
+            break;
+
         case "Space":
             d.socket.emit("nuke");
             break;

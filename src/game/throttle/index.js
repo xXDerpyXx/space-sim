@@ -25,3 +25,8 @@ class Throttle extends React.Component {
 }
 
 export default Throttle;
+
+export {
+    Throttle,
+    handleChange
+};
