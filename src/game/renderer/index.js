@@ -6,19 +6,16 @@ import receiveMessages from '../chat/receive';
 import disconnect from '../disconnect';
 import { drawMap } from '../map/draw';
 import { shipPath2D } from './shipPath';
-
+//setup canvas
 function startGame() {
     var c = document.getElementById("mainCanvas");
     d.c = c;
     var ctx = c.getContext("2d");
 
-    var airResistance = 0;
-    var gravity = 0;
-    var g = 0.00667;
     var starmin = 1000;
-    var center = 0;
-    var players = [];
-    var bodies = [];
+    var center = 0; //id of client
+    var players = []; //player list, doesn't contain physics details
+    var bodies = []; //object list
 
     var lastFrame = Date.now();
 
@@ -26,7 +23,7 @@ function startGame() {
         return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
     }
 
-    function angle(a,b){
+    function angle(a,b){ //returns angle between 2 points in radians
         return Math.atan2(b.y - a.y, b.x - a.x);
     }
 
@@ -49,147 +46,8 @@ function startGame() {
             this.colliding = false;
             this.angle = 0;
         }
-
-
-
-        collide(other){
-            //if(this.collided || other.delete)
-                //return;
-            //if(other.mass > this.mass){
-                //return;
-            //}
-            let totalmass = this.mass + other.mass
-            let myportion = this.mass/totalmass
-            let otherportion = other.mass/totalmass
-            //console.log(myportion+", "+otherportion)
-            this.xVel = ((this.xVel*myportion) + (other.xVel*otherportion))/2
-            this.yVel = ((this.yVel*myportion) + (other.yVel*otherportion))/2
-            this.mass += other.mass;
-            //this.size = totalmass
-                /*
-            let oldxVel = this.xVel;
-            let oldyVel = this.yVel;
-            let thisProportion = this.mass/other.mass;
-            let otherProportion = other.mass/this.mass;
-            this.xVel = other.xVel * otherProportion;
-            this.yVel = other.yVel * otherProportion;
-            other.yVel = oldyVel * thisProportion;
-            other.xVel = oldxVel * thisProportion;
-            this.collided = true;
-            other.collided = true;
-            */
-        }
-
-        move(){
-            this.y += this.yVel;
-            this.x += this.xVel;
-            this.yVel += gravity;
-            if(this.delete){
-                return;
-            }
-            /*
-            if(this.x > c.width){
-                this.xVel *= -1*this.bouncyness;
-                this.x = c.width;
-            }
-
-            if(this.y > c.height){
-                this.yVel *= -1*this.bouncyness;
-                this.y = c.height;
-            }
-
-            if(this.x < 0){
-                this.xVel *= -1*this.bouncyness;
-                this.x = 0;
-            }
-
-            if(this.y < 0){
-                this.yVel *= -1*this.bouncyness;
-                this.y = 0;
-            }*/
-        }
-
-        update(){
-            if(this.delete){
-                return;
-            }
-            this.colliding = false;
-
-            for(let i = 0; i < bodies.length; i++){
-                if(bodies[i].x != this.x && bodies[i].y != this.y){
-                    if(distance(bodies[i],this) < ((this.size/2)+(bodies[i].size/2)) && !this.collided){
-                        this.colliding = true;
-                        if(this.mass > bodies[i].mass || this.mass == bodies[i].mass){
-                            if(!bodies[i].invincible){
-                                this.collide(bodies[i]);
-                                bodies[i].delete = true;
-                                bodies[i].collided = true;
-                                this.collided = true;
-                            }
-                        }else{
-                            //bodies[i].collide(bodies[i]);
-                            //this.delete = true;
-                            //this.collided = true;
-                            //bodies[i].collided = true;
-                            if(this.invincible){
-                                this.xVel = bodies[i].xVel
-                                this.yVel = bodies[i].yVel
-                            }
-                        }
-
-
-
-                    }else{
-                        let totalmass = this.mass+bodies[i].mass
-                        let r = distance(this,bodies[i]);
-                        let f = ((g*((/*this.mass**/bodies[i].mass)/(r*r))))//*(bodies[i].mass/totalmass);
-                        let xoff = Math.abs(this.x-bodies[i].x)
-                        let yoff = Math.abs(this.y-bodies[i].y)
-                        let toff = xoff+yoff;
-                        if(this.x < bodies[i].x){
-                            this.xVel += f * (xoff/toff);
-                        }else{
-                            this.xVel += f * ((xoff*-1)/toff);
-                        }
-                        if(this.y < bodies[i].y){
-                            this.yVel += f * (yoff/toff);
-                        }else{
-                            this.yVel += f * ((yoff*-1)/toff);
-                        }
-
-                    }
-                }
-            }
-            this.collided = false;
-        }
-
     }
 
-    /*
-    var temp = new body(150,150);
-    temp.xVel = 0//(Math.random()*2)-1;
-    temp.yVel = 0//(Math.random()*2)-1;
-    var m = 2
-    temp.size = m/10;
-    temp.mass = m;
-    temp.pathColor = "#cc7711"
-    temp.color = "#00FF00"
-    bodies.push(temp);*/
-    /*
-    var spacing = 200;
-    for(let i = -15; i < 15; i++){
-        for(let j = -15; j < 15; j++){
-            let temp = new body(100+(i*spacing),100+(j*spacing));
-            temp.xVel = (Math.random()*0.5)-0.25;
-            temp.yVel = (Math.random()*0.5)-0.25;
-            let m = (Math.random()*50)+25
-            temp.size = m;
-            temp.mass = m;
-            if((i+j)%2 == 0)
-            bodies.push(temp);
-        }
-    }
-    */
 
     var dirs = [false,false,false,false]
 
@@ -213,8 +71,8 @@ function startGame() {
         if(body.density > 3.5){
             return;
         }
-        if(body.mass > starmin){
-            for(let i = 0; i < 20; i++){
+        if(body.mass > starmin){ //if star
+            for(let i = 0; i < 20; i++){ //layers of brightness
                 var tcolor = body.color;
                 tcolor = tcolor.replace(")",","+0.05+")").replace("rgb(","rgba(");
                 ctx.fillStyle = tcolor;
@@ -225,24 +83,24 @@ function startGame() {
                 ctx.stroke();
             }
 
-            for(var i = 0; i < bodies.length; i++){
-                if(bodies[i].mass > starmin){
+            for(var i = 0; i < bodies.length; i++){ //draw shadows
+                if(bodies[i].mass > starmin){ // ignore stars
                     continue;
                 }
-                var d = distance(body,bodies[i])
-                if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){
+                var d = distance(body,bodies[i]) //get distance
+                if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
                     ctx.strokeStyle = "#000000";
-                    var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d
-                    var twidth = ctx.lineWidth;
-                    ctx.lineWidth = bodies[i].size
+                    var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d //length from object to edge of light
+                    var twidth = ctx.lineWidth; //save old width
+                    ctx.lineWidth = bodies[i].size //width of shadow
                     if(bodies[i].shipId != null){
                         ctx.lineWidth = bodies[i].size*8
                     }
-                    var a = angle(body,bodies[i]);
+                    var a = angle(body,bodies[i]); // angle from star to planet
                     ctx.beginPath();
                     ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety)
                     ctx.lineTo((bodies[i].x+(Math.cos(a)*slength))-cOffsetx,(bodies[i].y+(Math.sin(a)*slength))-cOffsety)
-                    ctx.stroke();
+                    ctx.stroke(); // draw shadow
                     ctx.lineWidth = twidth;
                 }
             }
@@ -251,7 +109,6 @@ function startGame() {
 
 
         ctx.fillStyle = body.color;
-            //this.size/2;
             ctx.strokeStyle = body.color;
             if(body.shipId == null){
 
@@ -262,21 +119,6 @@ function startGame() {
 
 
             }else{
-                /*
-                ctx.beginPath();
-                ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size*4,0,2*Math.PI)
-                ctx.fill();
-                ctx.stroke();
-                var a = body.angle * (Math.PI/180)
-                var s = 10;
-                var twidth = ctx.lineWidth;
-                ctx.lineWidth = body.size*2;
-                ctx.beginPath();
-                ctx.moveTo(body.x+offset-cOffsetx,body.y+offset-cOffsety)
-                ctx.lineTo(((Math.cos(a)*s)+offset-cOffsetx)+body.x,((Math.sin(a)*s)+offset-cOffsety)+body.y)
-                ctx.stroke();
-                ctx.lineWidth = twidth;
-                */
                 let a = (body.angle - 90) * (Math.PI/180);
                 ctx.translate(body.x+offset-cOffsetx,body.y+offset-cOffsety);
                 ctx.rotate(a);
@@ -286,6 +128,7 @@ function startGame() {
                 ctx.translate(-(body.x+offset-cOffsetx),-(body.y+offset-cOffsety));
             }
 
+        //normal planet drawing
         ctx.shadowBlur = 0;
         ctx.fillStyle = "#FF0000";
         ctx.strokeStyle = "#FF0000";
@@ -303,103 +146,7 @@ function startGame() {
     }
 
     Events.register();
-
-    d.intervals.colliding = setInterval(function(){
-        var speed = 0.01;
-        var walkspeed = 1
-        if(dirs[0]){
-            bodies[0].xVel+=speed;
-            if(bodies[0].colliding){
-                bodies[0].x+=walkspeed;
-            }
-        }
-        if(dirs[1]){
-            bodies[0].xVel-=speed;
-            if(bodies[0].colliding){
-                bodies[0].x-=walkspeed;
-            }
-        }
-        if(dirs[2]){
-            bodies[0].yVel+=speed;
-            if(bodies[0].colliding){
-                bodies[0].y+=walkspeed;
-            }
-        }
-        if(dirs[3]){
-            bodies[0].yVel-=speed;
-            if(bodies[0].colliding){
-                bodies[0].y-=walkspeed;
-            }
-        }
-
     },50)
-
-
-    /*
-    temp = new body(2100,2100);
-    temp.xVel = 0//(Math.random()*2)-1;
-    temp.yVel = 0//(Math.random()*2)-1;
-    m = 700
-    temp.size = m/10;
-    temp.mass = m;
-    //bodies.push(temp);
-    */
-    var swarm = [
-        //{swarmSize:10,centerx:250,centery:250,d:200,vel:0.15,m:20,off:0},
-        /*{swarmSize:1,centerx:250,centery:250,d:380,vel:0.561,m:2,off:0},*/
-        /*{swarmSize:1,centerx:250,centery:250,d:200,vel:0.1,m:5,off:Math.PI}*/
-    ]
-
-    for(let k = 0; k < swarm.length; k++){
-        for(let i = 0; i < swarm[k].swarmSize; i++){
-            let period = (Math.PI*2)/swarm[k].swarmSize
-            let deg = period*i+(swarm[k].off);
-            let tx = (Math.cos(deg)*swarm[k].d)+swarm[k].centerx
-            let ty = (Math.sin(deg)*swarm[k].d)+swarm[k].centery;
-            let temp = new body(tx,ty);
-            temp.xVel = Math.cos(deg+(Math.PI/2))*swarm[k].vel//(Math.random()*2)-1;
-            temp.yVel = Math.sin(deg+(Math.PI/2))*swarm[k].vel//(Math.random()*2)-1;
-            temp.size = swarm[k].m/10;
-            temp.mass = swarm[k].m;
-            bodies.push(temp);
-        }
-    }
-
-    /*
-    temp = new body(250,200);
-    temp.xVel = 1//(Math.random()*2)-1;
-    temp.yVel = 0//(Math.random()*2)-1;
-    m = 20
-    temp.size = m/10;
-    temp.mass = m;
-    bodies.push(temp);
-
-    temp = new body(250,300);
-    temp.xVel = -1//(Math.random()*2)-1;
-    temp.yVel = 0//(Math.random()*2)-1;
-    m = 20
-    temp.size = m/10;
-    temp.mass = m;
-    bodies.push(temp);
-
-    temp = new body(200,250);
-    temp.xVel = 0//(Math.random()*2)-1;
-    temp.yVel = -1//(Math.random()*2)-1;
-    m = 20
-    temp.size = m/10;
-    temp.mass = m;
-    bodies.push(temp);
-
-    temp = new body(300,250);
-    temp.xVel = 0//(Math.random()*2)-1;
-    temp.yVel = 1//(Math.random()*2)-1;
-    m = 20
-    temp.size = m/10;
-    temp.mass = m;
-    bodies.push(temp);
-    */
-
-    //bodies[0].invincible = true;
 
     var cOffsetx = 0;
     var cOffsety = 0
