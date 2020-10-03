@@ -88,7 +88,7 @@ function startGame() {
                     continue;
                 }
                 var d = distance(body,bodies[i]) //get distance
-                if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
+                if(d > (body.size/2) && d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
                     ctx.strokeStyle = "#000000";
                     ctx.fillStyle = "#000000";
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d //length from object to edge of light
@@ -103,16 +103,17 @@ function startGame() {
                     let a = angle(body,bodies[i]); // angle from star to planet
                     ctx.beginPath();
                     //ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety);
+                    var sc = {x:(Math.cos(a)*body.size/2)+body.x,y:(Math.sin(a)*body.size/2)+body.y};//shadow start on star's surface
                     let ra = a+(Math.PI/2);
                     let rx = (Math.cos(ra)*(size/2))+bodies[i].x;
                     let ry = (Math.sin(ra)*(size/2))+bodies[i].y;
-                    let a1 = angle(body, {x: rx, y: ry});
+                    let a1 = angle(sc, {x: rx, y: ry});
                     ctx.moveTo(rx-cOffsetx,ry-cOffsety)
                     ctx.lineTo(((rx+(Math.cos(a1)*slength))-cOffsetx),((ry+(Math.sin(a1)*slength))-cOffsety));
                     let la = a+((Math.PI/2)*3);
                     let lx = (Math.cos(la)*(size/2))+bodies[i].x;
                     let ly = (Math.sin(la)*(size/2))+bodies[i].y;
-                    let a2 = angle(body, {x: lx, y: ly});
+                    let a2 = angle(sc, {x: lx, y: ly});
                     ctx.lineTo(((lx+(Math.cos(a2)*slength))-cOffsetx),((ly+(Math.sin(a2)*slength))-cOffsety));
                     ctx.lineTo(lx-cOffsetx,ly-cOffsety)
                     ctx.closePath();
