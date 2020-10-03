@@ -90,16 +90,31 @@ function startGame() {
                 var d = distance(body,bodies[i]) //get distance
                 if(d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
                     ctx.strokeStyle = "#000000";
+                    ctx.fillStyle = "#000000";
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d //length from object to edge of light
+                    slength *= 2;
                     var twidth = ctx.lineWidth; //save old width
-                    ctx.lineWidth = bodies[i].size //width of shadow
+                    let size = bodies[i].size;
                     if(bodies[i].shipId != null){
-                        ctx.lineWidth = bodies[i].size*8
+                        size *= 8;
                     }
-                    var a = angle(body,bodies[i]); // angle from star to planet
+                    ctx.lineWidth = size; //width of shadow
+                    
+                    let a = angle(body,bodies[i]); // angle from star to planet
                     ctx.beginPath();
-                    ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety)
-                    ctx.lineTo((bodies[i].x+(Math.cos(a)*slength))-cOffsetx,(bodies[i].y+(Math.sin(a)*slength))-cOffsety)
+                    ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety);
+                    let ra = a+Math.PI/2;
+                    let rx = Math.cos(ra)*(size/2)+bodies[i].x;
+                    let ry = Math.sin(ra)*(size/2)+bodies[i].y;
+                    let a1 = angle(body, {x: rx, y: ry});
+                    ctx.lineTo(((bodies[i].x+(Math.cos(a1)*slength))-cOffsetx),((bodies[i].y+(Math.sin(a1)*slength))-cOffsety));
+                    let la = a+((Math.PI/2)*3);
+                    let lx = Math.cos(la)*(size/2)+bodies[i].x;
+                    let ly = Math.sin(la)*(size/2)+bodies[i].y;
+                    let a2 = angle(body, {x: lx, y: ly});
+                    ctx.lineTo(((bodies[i].x+(Math.cos(a2)*slength))-cOffsetx),((bodies[i].y+(Math.sin(a2)*slength))-cOffsety));
+                    ctx.closePath();
+                    ctx.fill(); // draw shadow
                     ctx.stroke(); // draw shadow
                     ctx.lineWidth = twidth;
                 }
