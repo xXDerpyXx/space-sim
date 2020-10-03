@@ -88,7 +88,7 @@ function startGame() {
                     continue;
                 }
                 var d = distance(body,bodies[i]) //get distance
-                if(d > (body.size/2) && d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
+                if(d > (body.size/2)+(bodies[i].size/2) && d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
                     ctx.strokeStyle = "#000000";
                     ctx.fillStyle = "#000000";
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d //length from object to edge of light
