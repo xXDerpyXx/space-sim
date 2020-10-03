@@ -102,16 +102,18 @@ function startGame() {
                     
                     let a = angle(body,bodies[i]); // angle from star to planet
                     ctx.beginPath();
-                    ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety);
-                    let ra = a+Math.PI/2;
-                    let rx = Math.cos(ra)*(size/2)+bodies[i].x;
-                    let ry = Math.sin(ra)*(size/2)+bodies[i].y;
+                    //ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety);
+                    let ra = a+(Math.PI*2);
+                    let rx = (Math.cos(ra)*(size/2))+bodies[i].x;
+                    let ry = (Math.sin(ra)*(size/2))+bodies[i].y;
                     let a1 = angle(body, {x: rx, y: ry});
+                    ctx.moveTo(rx-cOffsetx,ry-cOffsety)
                     ctx.lineTo(((bodies[i].x+(Math.cos(a1)*slength))-cOffsetx),((bodies[i].y+(Math.sin(a1)*slength))-cOffsety));
-                    let la = a+((Math.PI/2)*3);
-                    let lx = Math.cos(la)*(size/2)+bodies[i].x;
-                    let ly = Math.sin(la)*(size/2)+bodies[i].y;
+                    let la = a+((Math.PI*2)*3);
+                    let lx = (Math.cos(la)*(size/2))+bodies[i].x;
+                    let ly = (Math.sin(la)*(size/2))+bodies[i].y;
                     let a2 = angle(body, {x: lx, y: ly});
+                    ctx.moveTo(lx-cOffsetx,ly-cOffsety)
                     ctx.lineTo(((bodies[i].x+(Math.cos(a2)*slength))-cOffsetx),((bodies[i].y+(Math.sin(a2)*slength))-cOffsety));
                     ctx.closePath();
                     ctx.fill(); // draw shadow
