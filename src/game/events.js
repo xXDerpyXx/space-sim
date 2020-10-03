@@ -78,6 +78,10 @@ function keydown(e) {
             changeThrottle(true);
             break;
 
+        case "KeyJ":
+            d.socket.emit("hyperjump");
+            break
+
         case "Space":
             d.socket.emit("nuke");
             break;
