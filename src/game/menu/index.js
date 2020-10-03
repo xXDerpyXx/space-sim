@@ -4,16 +4,17 @@ import './index.css';
 import disconnect from '../disconnect';
 import connect from '../../serverbrowser/connect';
 import ColorPicker from './colorpicker/';
+import toggleUI from './toggleUI';
 import d from '../../d'
 
 function pause() {
     document.getElementById('pauseMenu').style.display = 'block';
-    document.getElementById('pauseButton').style.display = 'none';
+    document.getElementById('pauseButton').style.visibility = 'hidden';
 }
 
 function unpause() {
     document.getElementById('pauseMenu').style.display = 'none';
-    document.getElementById('pauseButton').style.display = 'block';
+    document.getElementById('pauseButton').style.visibility = null;
 }
 
 function isPaused() {
@@ -44,9 +45,10 @@ class PauseMenu extends React.Component {
                 <div id="pauseMenu" style={{display: "none"}}>
                     <center id="pauseMenuContents">
                         <button onClick={unpause}>Resume</button><br />
+                        <ColorPicker />
+                        <button onClick={toggleUI}>Toggle UI</button><br />
                         <button onClick={reconnect}>New ship</button><br />
                         <button onClick={disconnect}>Disconnect</button><br />
-                        <ColorPicker />
                         <label for="controlMethod" style={{color: 'white'}}>Control method: </label>
                         <select id="controlMethod" onChange={changeControl}>
                             <option value={0}>steer</option>

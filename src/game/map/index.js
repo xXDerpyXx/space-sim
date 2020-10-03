@@ -12,8 +12,9 @@ class Map extends React.Component {
                     <canvas id="map" width={150} height={150}></canvas>
                 </div>
 
-                <div style={{
-                    color: 'lightgrey', opacity: 0.28
+                <div id="mapDisplayChecks" style={{
+                    color: 'lightgrey',
+                    opacity: 0.28
                 }}>
                     <input type="checkbox" id="showSelf" />
                     <label for="showSelf">Self</label>
