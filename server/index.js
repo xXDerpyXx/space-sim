@@ -8,6 +8,8 @@ var players = [];
 var userTotal = 0;
 
 const rotationSpeed = 15;
+const hyperjumpBoost = 250;
+const hyperjumpCooldown = 1000; //how long you have to wait between hyperjumps in ms
 
 var app = require('express')();
 
@@ -29,6 +31,7 @@ class player{
 		this.rotatingLeft = false;
 		this.rotatingRight = false;
 		this.ship = null;
+		this.lastJump = 0;
 	}
 }
 
@@ -49,7 +52,7 @@ app.get("/basicinfo", (req, res) => {
 });
 
 function getPlayerBody(socket) {
-	return bodies.filter(body => body.shipId == socket.id)[0];
+	return bodies.find(body => body.shipId == socket.id);
 }
 
 io.on('connection', function(socket){
@@ -119,7 +122,18 @@ io.on('connection', function(socket){
 
 	socket.on("setangle", angle => {
 		if (typeof angle == "number" && angle >= 0)
-			bodies.find(e => e.shipId == socket.id).angle = angle % 360;
+			getPlayerBody(socket).angle = angle % 360;
+	});
+
+	socket.on("hyperjump", () => {
+		let player = players[socket.id];
+		let time = Date.now();
+		if (player.lastJump + hyperjumpCooldown < time) {
+			let ship = getPlayerBody(socket);
+			ship.x += Math.cos(ship.angle * Math.PI / 180) * hyperjumpBoost;
+			ship.y += Math.sin(ship.angle * Math.PI / 180) * hyperjumpBoost;
+			player.lastJump = time;
+		}
 	});
 
 	socket.on("nuke",function(){
