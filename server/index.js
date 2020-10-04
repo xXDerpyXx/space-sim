@@ -1,97 +1,70 @@
+const v = require('./v');
 const cfg = require('./cfg');
 var startDate = Date.now();
 
 //preparing globals
-var bodies = [];
 var val = "";
-var players = [];
-var userTotal = 0;
 
 const rotationSpeed = 15;
-const hyperjumpBoost = 250;
+const hyperjumpBoost = 250; //the distance of a hyperjump
 const hyperjumpCooldown = 1000; //how long you have to wait between hyperjumps in ms
 
-var app = require('express')();
+v.app = v.m.express();
 
-app.use(require('cors')());
+var server = v.app.listen(cfg.port);
+v.io = require('socket.io').listen(server,{pingTimeout: 30000, pingInterval: 100});
+v.io.set('heartbeat timeout', 30000);
+v.io.set('heartbeat interval', 4);
 
-var server = app.listen(cfg.port);
-var io = require('socket.io').listen(server,{pingTimeout: 30000, pingInterval: 100});
-io.set('heartbeat timeout', 30000);
-io.set('heartbeat interval', 4);
 
-class player{
-	constructor(id){
-		this.id = id;
-		this.accelerating = false;
-		this.decelerating = false;
-		this.acceleration = 0;
-		this.throttle = 1;
-		this.direction = 0;
-		this.rotatingLeft = false;
-		this.rotatingRight = false;
-		this.ship = null;
-		this.lastJump = 0;
-	}
-}
 
-//done
-//app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-    res.send("This is a space-sim server.");
-})
-
-app.get("/basicinfo", (req, res) => {
-    res.json({
-        name: cfg.name,
-        players: `${userTotal}/${cfg.playerLimit}`,
-		location: cfg.location,
-		uptime: Date.now() - startDate,
-    });
-});
+v.app.use(require('cors')()); //allow cross-origin resource sharing for all routes
+v.app.use(require('./serverinfo')); //import routes which show info about the server
+v.app.use(v.m.express.static(v.m.path.join(__dirname, 'public'))); //serve all files from the 'server/public' directory
 
 function getPlayerBody(socket) {
-	return bodies.find(body => body.shipId == socket.id);
+	return v.bodies.find(body => body.shipId == socket.id);
 }
 
-io.on('connection', function(socket){
-	if (userTotal >= cfg.playerLimit) {
+const Player = require('./classes/player');
+const Body = require('./classes/body');
+v.io.on('connection', function(socket){
+	if (v.userTotal >= cfg.playerLimit) {
 		socket.emit('kick', 'This server is full!');
 		socket.disconnect(true);
 		return;
 	}
-	userTotal += 1;
+	v.userTotal += 1;
 	socket.emit('newVal',val);
 	socket.emit("resetplayers");
 	console.log('a user connected');
-	console.log('user count: '+userTotal);
-	for(var i = 0; i < bodies.length; i++){
-		if(bodies[i].shipId == socket.id){
-			bodies[i].delete = true;
+	console.log('user count: '+v.userTotal);
+	for(var i = 0; i < v.bodies.length; i++){
+		if(v.bodies[i].shipId == socket.id){
+			v.bodies[i].delete = true;
 		}
 	}
-	players[socket.id] = new player(socket.id);
-	var temp = new body(Math.random()*20,Math.random()*20);
+	v.players[socket.id] = new Player(socket.id);
+	var temp = new Body(Math.random()*20,Math.random()*20);
 	temp.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";
 	temp.mass = 2;
 	temp.shipId = socket.id;
 	temp.invincible = true;
 	temp.density = 1;
-	bodies.push(temp)
-	players[socket.id].ship = bodies.length-1
+	v.bodies.push(temp)
+	v.players[socket.id].ship = v.bodies.length-1
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
 	socket.on('disconnect', function(){
-		userTotal -= 1;
+		v.userTotal -= 1;
 		console.log('a user disconnected');
-		console.log('user count: '+userTotal);
-		for(var i = 0; i < bodies.length; i++){
-			if(bodies[i].shipId == socket.id){
-				players[socket.id].ship = i;
+		console.log('user count: '+v.userTotal);
+		for(var i = 0; i < v.bodies.length; i++){
+			if(v.bodies[i].shipId == socket.id){
+				v.players[socket.id].ship = i;
 			}
 		}
-		bodies.splice(players[socket.id].ship,1)
-		players.splice(parseInt(socket.id),1);
+		v.bodies.splice(v.players[socket.id].ship,1)
+		v.players.splice(parseInt(socket.id),1);
 
 		socket.broadcast.emit("delete",socket.id);
 	});
@@ -100,24 +73,24 @@ io.on('connection', function(socket){
 		power = Number(power);
 		if (isNaN(power) || power < 0 || power > 1)
 			return;
-		players[socket.id].throttle = power;
+		v.players[socket.id].throttle = power;
 	});
 
 
 	socket.on("accelerate", stop => {
-		players[socket.id].accelerating = Boolean(stop);
+		v.players[socket.id].accelerating = Boolean(stop);
 	});
 
 	socket.on("decelerate", stop => {
-		players[socket.id].decelerating = Boolean(stop);
+		v.players[socket.id].decelerating = Boolean(stop);
 	});
 
 	socket.on("rotateleft", stop => {
-		players[socket.id].rotatingLeft = Boolean(stop);
+		v.players[socket.id].rotatingLeft = Boolean(stop);
 	});
 
 	socket.on("rotateright", stop => {
-		players[socket.id].rotatingRight = Boolean(stop);
+		v.players[socket.id].rotatingRight = Boolean(stop);
 	});
 
 	socket.on("setangle", angle => {
@@ -126,7 +99,7 @@ io.on('connection', function(socket){
 	});
 
 	socket.on("hyperjump", () => {
-		let player = players[socket.id];
+		let player = v.players[socket.id];
 		let time = Date.now();
 		if (player.lastJump + hyperjumpCooldown < time) {
 			let ship = getPlayerBody(socket);
@@ -137,40 +110,40 @@ io.on('connection', function(socket){
 	});
 
 	socket.on("nuke",function(){
-		for(var i = 0; i < bodies.length; i++){
-			if(bodies[i].shipId == socket.id){
-				var nuke = new body(bodies[i].x,bodies[i].y);
+		for(var i = 0; i < v.bodies.length; i++){
+			if(v.bodies[i].shipId == socket.id){
+				var nuke = new Body(v.bodies[i].x,v.bodies[i].y);
 				nuke.nuke = true;
-				nuke.xVel = bodies[i].xVel;
-				nuke.yVel = bodies[i].yVel;
+				nuke.xVel = v.bodies[i].xVel;
+				nuke.yVel = v.bodies[i].yVel;
 				nuke.mass = 10;
 				nuke.color = "#FFFF00";
-				//bodies.push(nuke);
+				//v.bodies.push(nuke);
 				return;
 			}
 		}
 	});
 
 	socket.on("newShip",function(){
-		for(var i = 0; i < bodies.length; i++){
-			if(bodies[i].shipId == socket.id){
-				bodies[i].delete = true;
+		for(var i = 0; i < v.bodies.length; i++){
+			if(v.bodies[i].shipId == socket.id){
+				v.bodies[i].delete = true;
 			}
 		}
-		var temp = new body(0,0);
+		var temp = new Body(0,0);
 		temp.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";
 		temp.mass = 2;
 		temp.shipId = socket.id;
 		temp.density = 1;
-		bodies.push(temp)
-		players[socket.id].ship = bodies.length-1
+		v.bodies.push(temp)
+		v.players[socket.id].ship = v.bodies.length-1
 	});
 
 	socket.on("sendMessage", content => {
 		if (typeof content != "string" || content.length > 100)
 			return;
 		let userBody = getPlayerBody(socket);
-		io.emit("message", {
+		v.io.emit("message", {
 			color: userBody.color,
 			direction: userBody.angle
 		}, content);
@@ -190,331 +163,39 @@ io.on('connection', function(socket){
 	})
 });
 
-function distance(a,b){ // distance between bodies
-    return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
-}
-
-function angle(a,b){ // angle between bodies
-    return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
-}
-
-function normalize(vec){ //normalize components of a vector between 0 and 1
-	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
-	return {"x":vec.x/mag,"y":vec.y/mag}
-}
-
-function dotProduct(vec1,vec2){ //trigonometric dot product of 2 vectors
-	var ang = angle(vec1,vec2);
-	return {"x":Math.abs(vec1.x*vec2.x*Math.cos(ang)),"y":Math.abs(vec1.y*vec2.y*Math.cos(ang))}
-}
-
-
-var airResistance = 0;
-var gravity = 0;
-var g = 0.00667; //gravitational constant
-var starmin = 1000; //mass at which stars form
-var starmax = 20000; //mass at which a star collapses from sheer mass
-var tidalmin = 0.002; //force at which planets are ripped apart from acceleration
-var explodemin = 20; //minimum fragment size from explosions
-var explodeSpeed = 1; //force multiplier
-
-class body{
-    constructor(x,y){
-        this.x = x;
-        this.y = y;
-        this.xVel = 0;
-        this.yVel = 0;
-        this.bouncyness = 0.5;
-        this.mass = 10;
-        this.size = 10;
-        this.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";;
-        this.collided = false;
-        this.delete = false;
-        this.path = [];
-        this.pathMax = 100;
-        this.pathColor = "#0000FF";
-        this.invincible = false;
-		this.colliding = false;
-		this.shipId = null;
-		this.density = 0.1;
-		this.invincibilityCooldown = 0;
-		this.nuke = false;
-		this.angle = 0;
-	}
-
-	explode(other,force,density){ //creates explosion, deleting the original planet
-
-		if(force == null){
-			force = 0.2 
-		}
-		if(density == null){
-			density = this.density;
-		}
-
-		this.delete = true;
-		var parts = Math.floor(Math.random()*10)+2
-		if(this.mass/parts < explodemin){
-			parts = 2;
-		}
-		if(this.mass > starmin){
-			parts = Math.floor(Math.random()*20)+2
-		}
-		//var plane = angle(this,other)
-		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
-		var v = {"x":this.xVel,"y":this.yVel}
-		var refang = dotProduct(v,n)
-		var r = {"x":v.x-(2*refang.x*n.x*n.x),"y":v.y-(2*refang.y*n.y*n.y)}
-		var tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
-		if(other == this){
-			r = {"x":0,"y":0};
-		}
-		r = normalize(r);
-		var totalmass = this.mass;
-		var avgmass = this.mass/parts;
-		for(var i = 0; i < parts; i++){
-			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
-			if(m > totalmass){
-				m = totalmass;
-			}
-			totalmass -= m;
-			var temp = new body(this.x,this.y);
-			temp.invincibilityCooldown = 20;
-			temp.mass = m;
-			var newxvel = r.x*tvel+((Math.random()*force)-(force/2));
-			var newyvel = r.y*tvel+((Math.random()*force)-(force/2));
-			temp.xVel = newxvel;
-			temp.yVel = newyvel;
-			temp.color = this.color;
-			temp.density = density;
-			bodies.push(temp);
-			if(totalmass == 0){
-				return;
-			}
-
-		}
-		if(totalmass != 0){
-			var temp = new body(this.x,this.y);
-			temp.invincibilityCooldown = 20;
-			temp.mass = totalmass;
-			var newxvel = r.x*tvel+((Math.random()*tvel/5)-tvel/10);
-			var newyvel = r.y*tvel+((Math.random()*tvel/5)-tvel/10);
-			temp.xVel = newxvel;
-			temp.yVel = newyvel;
-			temp.color = this.color;
-			temp.density = density;
-			bodies.push(temp);
-		}
-
-
-	}
-
-	shedMass(smass,force,density){ //creates explosion but leaves the planet behind
-		var parts = Math.floor(Math.random()*20)+10;
-		var tvel = force;
-		var avgmass = this.mass/parts;
-		this.mass -= smass;
-		for(var i = 0; i < 100; i++){
-			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
-			if(m > smass){
-				m = smass;
-			}
-			smass -= m;
-			var temp = new body(this.x,this.y);
-			temp.invincibilityCooldown = 60;
-			temp.mass = m;
-			var newxvel = this.xVel+((Math.random()*force)-(force/2));
-			var newyvel = this.yVel+((Math.random()*force)-(force/2));
-			temp.xVel = newxvel;
-			temp.yVel = newyvel;
-			temp.color = this.color;
-			temp.density = density;
-			if(m > smass){
-				m = smass;
-			}
-			bodies.push(temp);
-			if(smass <= 0){
-				return;
-			}
-		}
-
-	}
-
-    collide(other){ //handle combining collision
-        var totalmass = this.mass + other.mass
-        var myportion = this.mass/totalmass
-        var otherportion = other.mass/totalmass
-        this.xVel = ((this.xVel*myportion) + (other.xVel*otherportion))/2
-        this.yVel = ((this.yVel*myportion) + (other.yVel*otherportion))/2
-		this.mass += other.mass;
-		this.density = (this.density*myportion)+(other.density*otherportion)
-		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
-
-    }
-
-    move(){ //handle velocity physics tick
-		if(this.delete){
-            return;
-        }
-        this.y += this.yVel;
-        this.x += this.xVel;
-        this.yVel += gravity;
-
-    }
-
-    update(){ //physics tick
-
-        if(this.delete){
-            return;
-		}
-		if(this.mass > starmin){ //star formation
-			var percent = this.mass/(starmax-starmin);
-			var red = Math.round(255*percent);
-			var blue = Math.round((1-percent)*255);
-			var green = this.density*200;
-			red = red+green;
-			blue = blue+green;
-			this.color = "rgb("+red+","+green+","+blue+")";
-			this.density += 0.000001;// burning fuel
-			if(this.mass > starmax/2){ 
-				this.density += 0.000005
-			}
-			if(this.mass > starmax){
-				this.density += 0.00002
-			}
-			if(this.density >= 1 && this.density < 1.05){
-				this.density = 1.1; //stage 2 material
-				this.explode(bodies[0],(this.mass/2000));
-			}
-
-			if(this.density >= 2 && this.density < 2.05){
-				this.density = 4;//stage 3 material
-				this.shedMass(this.mass/5,4,0.1); // create black hole
-			}
-			if(this.density > 3.5){
-				this.color = "rgb(0,0,0)"; // colorize black holes
-			}
-		}
-		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
-        this.colliding = false;
-		if(this.invincibilityCooldown < 1){
-
-			var speed = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel));
-			for(var i = 0; i < bodies.length; i++){
-				if(this.invincible && bodies[i].nuke){
-					continue;
-				}
-				if(bodies[i].invincible && this.nuke){
-					continue;
-				}
-				if(bodies[i].invincibilityCooldown > 0 || bodies[i].delete){
-					continue;
-				}
-				if(bodies[i].nuke || bodies[i].delete || this.delete){
-					continue;
-				}
-				//bodies[i].size = Math.sqrt(Math.PI/(bodies[i].mass/bodies[i].density))
-				if(bodies[i].x != this.x && bodies[i].y != this.y){
-					if(distance(bodies[i],this) < ((this.size/2)+(bodies[i].size/2)) && !this.collided){
-						this.colliding = true;
-						if(this.nuke && !bodies[i].invincible && bodies[i].mass > explodemin){
-							this.delete = true;
-							bodies[i].explode(this,bodies[i].size/5);
-
-						}
-						if(this.nuke){
-							continue;
-						}
-
-						var otherspeed = Math.sqrt((bodies[i].xVel*bodies[i].xVel)+(bodies[i].yVel*bodies[i].yVel));
-						if(speed > explodeSpeed && this.mass > explodemin && !this.invincible && this.mass < starmin){
-							this.explode(bodies[i]);
-							return;
-						}else if(otherspeed > explodeSpeed && bodies[i].mass > explodemin && !bodies[i].invincible && bodies[i].mass < starmin){
-							bodies[i].explode(this);
-							return;
-
-						}else{
-							if(this.mass > bodies[i].mass || this.mass == bodies[i].mass){
-								if(!bodies[i].invincible && !bodies[i].nuke){
-									this.collide(bodies[i]);
-									bodies[i].delete = true;
-									bodies[i].collided = true;
-									this.collided = true;
-								}
-							}else{
-								if(this.invincible){
-									this.xVel = bodies[i].xVel
-									this.yVel = bodies[i].yVel
-								}
-							}
-						}
-
-
-
-
-					}else{
-						var r = distance(this,bodies[i]);
-						var f = ((g*((/*this.mass**/bodies[i].mass)/(r*r))))//gravitational force
-						var xoff = Math.abs(this.x-bodies[i].x)
-						var yoff = Math.abs(this.y-bodies[i].y)
-						var toff = xoff+yoff;
-						if(this.x < bodies[i].x){
-							this.xVel += f * (xoff/toff);
-						}else{
-							this.xVel += f * ((xoff*-1)/toff);
-						}
-						if(this.y < bodies[i].y){
-							this.yVel += f * (yoff/toff);
-						}else{
-							this.yVel += f * ((yoff*-1)/toff);
-						}
-						if(f > (tidalmin+this.density) && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke){
-							this.explode(bodies[i],1)
-                        }
-					}
-				}
-			}
-			this.collided = false;
-		}else{
-			this.invincibilityCooldown--;
-		}
-    }
-
-}
-
 
 setInterval(function(){
-	for(var i = 0; i < bodies.length; i++){
-		if(bodies[i].shipId != null){
-			var player = players[bodies[i].shipId];
-			//io.to(id).emit("center",i);
+	for(var i = 0; i < v.bodies.length; i++){
+		if(v.bodies[i].shipId != null){
+			var player = v.players[v.bodies[i].shipId];
+			//v.io.to(id).emit("center",i);
 			var speed = 0.1;
-			var walkspeed = 1;
+			var walkspeed = 3.2;
 
-			let xVel = Math.cos(bodies[i].angle * Math.PI / 180);
-			let yVel = Math.sin(bodies[i].angle * Math.PI / 180);
-			bodies[i].xVel += xVel * player.acceleration;
-			bodies[i].yVel += yVel * player.acceleration;
+			let xVel = Math.cos(v.bodies[i].angle * Math.PI / 180);
+			let yVel = Math.sin(v.bodies[i].angle * Math.PI / 180);
+			v.bodies[i].xVel += xVel * player.acceleration;
+			v.bodies[i].yVel += yVel * player.acceleration;
 
 			if (player.accelerating || player.decelerating) {
 				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
 				player.acceleration = (speed * player.throttle) * moving;
 
-				if(bodies[i].colliding){
-					let xWalk = xVel*walkspeed;
-					let yWalk = yVel*walkspeed;
-					bodies[i].x+=xWalk;
-					bodies[i].y+=yWalk;
-					bodies[i].xVel+=xWalk;
-					bodies[i].yVel+=yWalk;
+				if(v.bodies[i].colliding){
+					let xWalk = xVel*walkspeed*(player.acceleration/speed);
+					let yWalk = yVel*walkspeed*(player.acceleration/speed);
+					v.bodies[i].x+=xWalk;
+					v.bodies[i].y+=yWalk;
+					v.bodies[i].xVel+=xWalk;
+					v.bodies[i].yVel+=yWalk;
 				}
 			} else {
 				player.acceleration = 0;
 			}
 			if (player.rotatingLeft || player.rotatingRight) {
-				bodies[i].angle += rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
-				bodies[i].angle += 360; //make sure the direction is positive
-				bodies[i].angle %= 360; //if the direction is now more than 360, correct that
+				v.bodies[i].angle += rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
+				v.bodies[i].angle += 360; //make sure the direction is positive
+				v.bodies[i].angle %= 360; //if the direction is now more than 360, correct that
 			}
 		}
 	}
@@ -523,88 +204,24 @@ setInterval(function(){
 },50)
 
 setInterval(function(){
-	io.emit("bodyupdate",JSON.stringify(bodies));
+	v.io.emit("bodyupdate",JSON.stringify(v.bodies));
 },50)
 
 setInterval(function(){
-    for(var i = 0; i < bodies.length; i++){
-        bodies[i].update();
+    for(var i = 0; i < v.bodies.length; i++){
+        v.bodies[i].update();
     }
 
-    for(var i = 0; i < bodies.length; i++){
-        bodies[i].move();
+    for(var i = 0; i < v.bodies.length; i++){
+        v.bodies[i].move();
     }
-    for(var i = bodies.length-1; i >= 0; i--){
-        if(bodies[i].delete){
-            bodies.splice(i,1);
+    for(var i = v.bodies.length-1; i >= 0; i--){
+        if(v.bodies[i].delete){
+            v.bodies.splice(i,1);
         }
     }
 },1);
 
-var bodyCount = 10*10;
-var universeSize = 20000;
-
-for(var i = 0; i < bodyCount; i++){
-	var temp = new body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
-	temp.xVel = (Math.random()*0.5)-0.25;
-	temp.yVel = (Math.random()*0.5)-0.25;
-	var m = (Math.random()*900)+50
-	if(Math.random() > 0.95){
-		m = (Math.random()*10000)+1200
-	}
-	temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
-	temp.mass = m;
-	//if((i+j)%2 == 0)
-	bodies.push(temp);
-}
-
-
-/*
-for(var i = -15; i < 15; i++){
-    for(var j = -15; j < 15; j++){
-        var temp = new body(100+(i*spacing),100+(j*spacing));
-        temp.xVel = (Math.random()*1)-0.5;
-        temp.yVel = (Math.random()*1)-0.5;
-        var m = (Math.random()*600)+10
-        temp.size = Math.sqrt((temp.mass/temp.density)/Math.PI)
-        temp.mass = m;
-        if((i+j)%2 == 0)
-        bodies.push(temp);
-    }
-}
-*/
-/*
-temp = new body(250,250);
-temp.xVel = 0//(Math.random()*2)-1;
-temp.yVel = 0//(Math.random()*2)-1;
-m = 600
-temp.size = m/10;
-temp.mass = m;
-bodies.push(temp);
-*/
-var swarm = [
-    //{swarmSize:10,centerx:250,centery:250,d:600,vel:0.1,m:40,off:0},
-    /*{swarmSize:1,centerx:250,centery:250,d:380,vel:0.561,m:2,off:0},*/
-    /*{swarmSize:1,centerx:250,centery:250,d:200,vel:0.1,m:5,off:Math.PI}*/
-]
-
-//planet swarm generator
-for(var k = 0; k < swarm.length; k++){
-    for(var i = 0; i < swarm[k].swarmSize; i++){
-        var period = (Math.PI*2)/swarm[k].swarmSize
-        var deg = period*i+(swarm[k].off);
-        var tx = (Math.cos(deg)*swarm[k].d)+swarm[k].centerx
-        var ty = (Math.sin(deg)*swarm[k].d)+swarm[k].centery;
-        temp = new body(tx,ty);
-        temp.xVel = Math.cos(deg+(Math.PI/2))*swarm[k].vel//(Math.random()*2)-1;
-        temp.yVel = Math.sin(deg+(Math.PI/2))*swarm[k].vel//(Math.random()*2)-1;
-        temp.size = swarm[k].m/10;
-        temp.mass = swarm[k].m;
-        bodies.push(temp);
-    }
-}
-
+v.fn.start();
 
 console.log(`Server up on port ${cfg.port}!`);
-
-//ref();

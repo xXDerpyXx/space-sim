@@ -57,7 +57,7 @@ class ServerBrowser extends React.Component {
 
                 <label>Direct connect:</label>
                 <br />
-                <input id="toConnect" placeholder="IP/Address" onKeyUp={e => {
+                <input id="toConnect" placeholder="Address" onKeyUp={e => {
                     if (e.key === 'Enter')
                         directConnect();
                 }} />
