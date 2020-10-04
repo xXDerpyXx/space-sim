@@ -19,16 +19,16 @@ function startGame() {
 
     var lastFrame = Date.now();
 
-    function distance(a,b){
+    function distance(a,b) {
         return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
     }
 
-    function angle(a,b){ //returns angle between 2 points in radians
+    function angle(a,b) { //returns angle between 2 points in radians
         return Math.atan2(b.y - a.y, b.x - a.x);
     }
 
     class body{
-        constructor(x,y){
+        constructor(x,y) {
             this.x = x;
             this.y = y;
             this.xVel = 0;
@@ -58,21 +58,18 @@ function startGame() {
         body.path.push([body.x,body.y]);
         ctx.strokeStyle = "#FF0000";//body.pathColor;
         ctx.moveTo(body.path[0][0]-cOffsetx,body.path[0][1]-cOffsety);
-        for(let i = 0; i < body.path.length; i++){
-            ctx.lineTo(body.path[i][0]-cOffsetx,body.path[i][1]-cOffsety);
-        }
+        for (let i of body.path)
+            ctx.lineTo(i[0]-cOffsetx,i[1]-cOffsety);
         ctx.stroke();
-        if(body.path.length > body.pathMax){
-            body.path.splice(0,1)
-        }
+        if (body.path.length > body.pathMax)
+            body.path.splice(0,1);
         var brightnessOffset = 50*(body.density*10);
         //body.size = body.mass/10
         var offset = 0
-        if(body.density > 3.5){
+        if (body.density > 3.5)
             return;
-        }
-        if(body.mass > starmin){ //if star
-            for(let i = 0; i < 20; i++){ //layers of brightness
+        if (body.mass > starmin) { //if star
+            for (let i = 0; i < 20; i++) { //layers of brightness
                 var tcolor = body.color;
                 tcolor = tcolor.replace(")",","+0.05+")").replace("rgb(","rgba(");
                 ctx.fillStyle = tcolor;
@@ -83,36 +80,36 @@ function startGame() {
                 ctx.stroke();
             }
 
-            for(var i = 0; i < bodies.length; i++){ //draw shadows
-                if(bodies[i].mass > starmin){ // ignore stars
+            for (let i of bodies) { //draw shadows
+                if (i.mass > starmin) { // ignore stars
                     continue;
                 }
-                var d = distance(body,bodies[i]) //get distance
-                if(d > (body.size/2)+(bodies[i].size/2) && d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)){ //if in light
+                var d = distance(body,i) //get distance
+                if (d > (body.size/2)+(i.size/2) && d < (body.size/2)+((20*(body.size/starmin))*brightnessOffset)) { //if in light
                     ctx.strokeStyle = "#000000";
                     ctx.fillStyle = "#000000";
                     var slength = ((body.size/2)+((20*(body.size/starmin))*brightnessOffset)) - d //length from object to edge of light
                     slength *= 2;
                     var twidth = ctx.lineWidth; //save old width
-                    let size = bodies[i].size;
-                    if(bodies[i].shipId != null){
+                    let size = i.size;
+                    if (i.shipId != null) {
                         size *= 8;
                     }
                     ctx.lineWidth = 1;//= size; //width of shadow
                     
-                    let a = angle(body,bodies[i]); // angle from star to planet
+                    let a = angle(body,i); // angle from star to planet
                     ctx.beginPath();
-                    //ctx.moveTo(bodies[i].x-cOffsetx,bodies[i].y-cOffsety);
+                    //ctx.moveTo(i.x-cOffsetx,i.y-cOffsety);
                     var sc = {x:(Math.cos(a)*body.size/2)+body.x,y:(Math.sin(a)*body.size/2)+body.y};//shadow start on star's surface
                     let ra = a+(Math.PI/2);
-                    let rx = (Math.cos(ra)*(size/2))+bodies[i].x;
-                    let ry = (Math.sin(ra)*(size/2))+bodies[i].y;
+                    let rx = (Math.cos(ra)*(size/2))+i.x;
+                    let ry = (Math.sin(ra)*(size/2))+i.y;
                     let a1 = angle(sc, {x: rx, y: ry});
                     ctx.moveTo(rx-cOffsetx,ry-cOffsety)
                     ctx.lineTo(((rx+(Math.cos(a1)*slength))-cOffsetx),((ry+(Math.sin(a1)*slength))-cOffsety));
                     let la = a+((Math.PI/2)*3);
-                    let lx = (Math.cos(la)*(size/2))+bodies[i].x;
-                    let ly = (Math.sin(la)*(size/2))+bodies[i].y;
+                    let lx = (Math.cos(la)*(size/2))+i.x;
+                    let ly = (Math.sin(la)*(size/2))+i.y;
                     let a2 = angle(sc, {x: lx, y: ly});
                     ctx.lineTo(((lx+(Math.cos(a2)*slength))-cOffsetx),((ly+(Math.sin(a2)*slength))-cOffsety));
                     ctx.lineTo(lx-cOffsetx,ly-cOffsety)
@@ -128,7 +125,7 @@ function startGame() {
 
         ctx.fillStyle = body.color;
             ctx.strokeStyle = body.color;
-            if(body.shipId == null){
+            if (body.shipId == null) {
 
                 ctx.beginPath();
                 ctx.arc(body.x+offset-cOffsetx,body.y+offset-cOffsety,body.size/2,0,2*Math.PI)
@@ -136,7 +133,7 @@ function startGame() {
                 ctx.stroke();
 
 
-            }else{
+            } else {
                 let a = (body.angle - 90) * (Math.PI/180);
                 ctx.translate(body.x+offset-cOffsetx,body.y+offset-cOffsety);
                 ctx.rotate(a);
@@ -156,7 +153,7 @@ function startGame() {
         var scale = 20;
         ctx.lineTo((body.xVel*scale)+body.x-cOffsetx,(body.yVel*scale)+body.y-cOffsety);
         ctx.stroke();
-        if(body.nuke){
+        if (body.nuke) {
             ctx.fillStyle = "#FFFF00";
             ctx.fillText("*",body.x,body.y)
         }
@@ -168,22 +165,22 @@ function startGame() {
     var cOffsetx = 0;
     var cOffsety = 0
 
-    d.intervals.draw = setInterval(function(){
-        if(bodies.length > 0){
+    d.intervals.draw = setInterval(function() {
+        if (bodies.length > 0) {
             cOffsetx = bodies[center].x-c.width/2;
             cOffsety = bodies[center].y-c.height/2;
         }
         players = [];
-        for(let i in bodies){
-            if(i != center && bodies[i].shipId != null){
+        for (let i in bodies) {
+            if (i != center && bodies[i].shipId != null) {
                 players.push(i);
             }
         }
         ctx.fillStyle = "#000000";
         ctx.fillRect(0,0,c.width,c.height);
-        if(bodies[center] != undefined){
-            for(let i of bodies){
-                if(distance(i,bodies[center]) < d.c.width*3){
+        if (bodies[center] != undefined) {
+            for (let i of bodies) {
+                if (distance(i,bodies[center]) < d.c.width*3) {
                     draw(i);
                 }
             }
@@ -191,7 +188,7 @@ function startGame() {
 
         drawMap(bodies, center);
 
-        if(bodies[center] == null){
+        if (bodies[center] == null) {
             return;
         }
 
@@ -204,22 +201,10 @@ function startGame() {
         document.getElementById("FPSDisplay").innerHTML = Math.round(1000 / (currentFrame - lastFrame));
 
         lastFrame = currentFrame;
-        /*for(let i = 0; i < bodies.length; i++){
-            bodies[i].update();
-        }
-
-        for(let i = 0; i < bodies.length; i++){
-            bodies[i].move();
-        }
-        for(let i = bodies.length-1; i >= 0; i--){
-            if(bodies[i].delete){
-                bodies.splice(i,1);
-            }
-        }*/
     },50);
 
     var myid = 0;
-    d.socket.on("connect",function(){
+    d.socket.on("connect",function() {
         myid = d.socket.id;
     });
 
@@ -241,25 +226,25 @@ function startGame() {
         }, 500);
     });
 
-    d.socket.on("bodyupdate",function(b){
-        bodies = JSON.parse(b)
+    d.socket.on("bodyupdate",function(b) {
+        bodies = JSON.parse(b);
         let foundCenter = false;
-        for(let i in bodies){
-            if(bodies[i].shipId != null){
+        for (let i in bodies) {
+            if (bodies[i].shipId != null) {
                 let id = bodies[i].shipId
-                if(id == myid){
+                if (id == myid) {
                     center = i;
                     foundCenter = true;
                 }
             }
         }
-        if(!foundCenter){
+        if (!foundCenter) {
             center = 0;
             d.socket.emit("newShip");
         }
     });
 
-    d.socket.on("center",function(k){
+    d.socket.on("center",function(k) {
         center = k;
     });
 

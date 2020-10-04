@@ -15,7 +15,8 @@ module.exports = function start() {
     v.bodies = []; //make a new empty array where all the bodies will go
     v.players = [];
 
-    for (let i = 0; i < bodyCount; i++) {
+    let i = 0;
+    while (i++ < bodyCount) {
         let newBody = new Body((Math.random()*universeSize*2)-universeSize,(Math.random()*universeSize*2)-universeSize);
         newBody.xVel = (Math.random()*0.5)-0.25;
         newBody.yVel = (Math.random()*0.5)-0.25;

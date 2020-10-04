@@ -28,7 +28,7 @@ function getPlayerBody(socket) {
 
 const Player = require('./classes/player');
 const Body = require('./classes/body');
-v.io.on('connection', function(socket){
+v.io.on('connection', function(socket) {
 	if (v.userTotal >= cfg.playerLimit) {
 		socket.emit('kick', 'This server is full!');
 		socket.disconnect(true);
@@ -39,11 +39,7 @@ v.io.on('connection', function(socket){
 	socket.emit("resetplayers");
 	console.log('a user connected');
 	console.log('user count: '+v.userTotal);
-	for(var i = 0; i < v.bodies.length; i++){
-		if(v.bodies[i].shipId == socket.id){
-			v.bodies[i].delete = true;
-		}
-	}
+	v.bodies.filter(e => e.shipId == socket.id).forEach(e => e.delete = true); //delete any bodies which have the same socket id as the connecting player
 	v.players[socket.id] = new Player(socket.id);
 	var temp = new Body(Math.random()*20,Math.random()*20);
 	temp.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";
@@ -54,15 +50,13 @@ v.io.on('connection', function(socket){
 	v.bodies.push(temp)
 	v.players[socket.id].ship = v.bodies.length-1
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
-	socket.on('disconnect', function(){
+	socket.on('disconnect', function() {
 		v.userTotal -= 1;
 		console.log('a user disconnected');
 		console.log('user count: '+v.userTotal);
-		for(var i = 0; i < v.bodies.length; i++){
-			if(v.bodies[i].shipId == socket.id){
+		for (let i in v.bodies)
+			if (v.bodies[i].shipId == socket.id)
 				v.players[socket.id].ship = i;
-			}
-		}
 		v.bodies.splice(v.players[socket.id].ship,1)
 		v.players.splice(parseInt(socket.id),1);
 
@@ -109,27 +103,21 @@ v.io.on('connection', function(socket){
 		}
 	});
 
-	socket.on("nuke",function(){
-		for(var i = 0; i < v.bodies.length; i++){
-			if(v.bodies[i].shipId == socket.id){
-				var nuke = new Body(v.bodies[i].x,v.bodies[i].y);
-				nuke.nuke = true;
-				nuke.xVel = v.bodies[i].xVel;
-				nuke.yVel = v.bodies[i].yVel;
-				nuke.mass = 10;
-				nuke.color = "#FFFF00";
-				//v.bodies.push(nuke);
-				return;
-			}
-		}
+	socket.on("nuke",function() {
+		let ship = getPlayerBody(socket);
+
+		var nuke = new Body(ship.x,ship.y);
+		nuke.nuke = true;
+		nuke.xVel = ship.xVel;
+		nuke.yVel = ship.yVel;
+		nuke.mass = 10;
+		nuke.color = "#FFFF00";
+		//v.bodies.push(nuke);
+		return;
 	});
 
-	socket.on("newShip",function(){
-		for(var i = 0; i < v.bodies.length; i++){
-			if(v.bodies[i].shipId == socket.id){
-				v.bodies[i].delete = true;
-			}
-		}
+	socket.on("newShip",function() {
+		getPlayerBody(socket).delete = true;
 		var temp = new Body(0,0);
 		temp.color = "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")";
 		temp.mass = 2;
@@ -155,71 +143,64 @@ v.io.on('connection', function(socket){
 		color = hex.match(/^#([0-9a-f]{6})$/i)[1];
 		if (color) {
 			let vals = [];
-			for (let i = 0; i < 6; i += 2) {
+			for (let i = 0; i < 6; i += 2)
 				vals.push(parseInt(color.substr(i, 2), 16));
-			}
 			getPlayerBody(socket).color = `rgb(${vals.join(",")})`;
 		}
 	})
 });
 
 
-setInterval(function(){
-	for(var i = 0; i < v.bodies.length; i++){
-		if(v.bodies[i].shipId != null){
-			var player = v.players[v.bodies[i].shipId];
+setInterval(function() {
+	for (let body of v.bodies)
+		if (body.shipId != null) {
+			var player = v.players[body.shipId];
 			//v.io.to(id).emit("center",i);
 			var speed = 0.1;
 			var walkspeed = 3.2;
 
-			let xVel = Math.cos(v.bodies[i].angle * Math.PI / 180);
-			let yVel = Math.sin(v.bodies[i].angle * Math.PI / 180);
-			v.bodies[i].xVel += xVel * player.acceleration;
-			v.bodies[i].yVel += yVel * player.acceleration;
+			let xVel = Math.cos(body.angle * Math.PI / 180);
+			let yVel = Math.sin(body.angle * Math.PI / 180);
+			body.xVel += xVel * player.acceleration;
+			body.yVel += yVel * player.acceleration;
 
 			if (player.accelerating || player.decelerating) {
 				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
 				player.acceleration = (speed * player.throttle) * moving;
 
-				if(v.bodies[i].colliding){
+				if (body.colliding) {
 					let xWalk = xVel*walkspeed*(player.acceleration/speed);
 					let yWalk = yVel*walkspeed*(player.acceleration/speed);
-					v.bodies[i].x+=xWalk;
-					v.bodies[i].y+=yWalk;
-					v.bodies[i].xVel+=xWalk;
-					v.bodies[i].yVel+=yWalk;
+					body.x+=xWalk;
+					body.y+=yWalk;
+					body.xVel+=xWalk;
+					body.yVel+=yWalk;
 				}
-			} else {
+			} else
 				player.acceleration = 0;
-			}
 			if (player.rotatingLeft || player.rotatingRight) {
-				v.bodies[i].angle += rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
-				v.bodies[i].angle += 360; //make sure the direction is positive
-				v.bodies[i].angle %= 360; //if the direction is now more than 360, correct that
+				body.angle += rotationSpeed * (Number(player.rotatingRight) + -Number(player.rotatingLeft));
+				body.angle += 360; //make sure the direction is positive
+				body.angle %= 360; //if the direction is now more than 360, correct that
 			}
 		}
-	}
 
 
-},50)
+},50);
 
-setInterval(function(){
+setInterval(function() {
 	v.io.emit("bodyupdate",JSON.stringify(v.bodies));
-},50)
+},50);
 
-setInterval(function(){
-    for(var i = 0; i < v.bodies.length; i++){
-        v.bodies[i].update();
-    }
-
-    for(var i = 0; i < v.bodies.length; i++){
-        v.bodies[i].move();
-    }
-    for(var i = v.bodies.length-1; i >= 0; i--){
-        if(v.bodies[i].delete){
+setInterval(function() {
+    for (let body of v.bodies) {
+        body.update();
+        body.move();
+	}
+	
+    for (let i in v.bodies)
+        if (v.bodies[i].delete)
             v.bodies.splice(i,1);
-        }
-    }
 },1);
 
 v.fn.start();

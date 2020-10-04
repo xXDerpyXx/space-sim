@@ -20,7 +20,7 @@ function Message(props) {
 class Chat extends React.Component {
     state = {
         messages: [],
-    }
+    };
 
     render() {
         return (

@@ -28,8 +28,8 @@ const directions = {
 var keysDown = [];
 
 function sum(a) {
-    var s = 0;
-    for (var i = 0; i < a.length; i++) s += a[i];
+    let s = 0;
+    for (let i of a) s += a[i];
     return s;
 } 
  
@@ -196,15 +196,13 @@ function mousemove(e) {
 }
 
 function mousedown(e) {
-    if (controlMethod.value == "2") {
+    if (controlMethod.value == "2")
         d.socket.emit("accelerate", true);
-    }
 }
 
 function mouseup(e) {
-    if (controlMethod.value == "2") {
+    if (controlMethod.value == "2")
         d.socket.emit("accelerate", false);
-    }
 }
         
 function resize(e) {

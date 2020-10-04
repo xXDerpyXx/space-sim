@@ -1,5 +1,5 @@
-class Player{
-	constructor(id){
+class Player {
+	constructor(id) {
 		this.id = id;
 		this.accelerating = false;
 		this.decelerating = false;

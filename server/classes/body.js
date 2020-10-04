@@ -1,19 +1,19 @@
 const v = require('../v');
 
-function distance(a,b){ // distance between bodies
+function distance(a,b) { // distance between bodies
     return Math.abs(Math.sqrt(((a.x-b.x)*(a.x-b.x))+((a.y-b.y)*(a.y-b.y))));
 }
 
-function angle(a,b){ // angle between bodies
+function angle(a,b) { // angle between bodies
     return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
 }
 
-function normalize(vec){ //normalize components of a vector between 0 and 1
+function normalize(vec) { //normalize components of a vector between 0 and 1
 	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
 	return {"x":vec.x/mag,"y":vec.y/mag}
 }
 
-function dotProduct(vec1,vec2){ //trigonometric dot product of 2 vectors
+function dotProduct(vec1,vec2) { //trigonometric dot product of 2 vectors
 	var ang = angle(vec1,vec2);
 	return {"x":Math.abs(vec1.x*vec2.x*Math.cos(ang)),"y":Math.abs(vec1.y*vec2.y*Math.cos(ang))}
 }
@@ -27,8 +27,8 @@ var tidalmin = 0.002; //force at which planets are ripped apart from acceleratio
 var explodemin = 20; //minimum fragment size from explosions
 var explodeSpeed = 1; //force multiplier
 
-class Body{
-    constructor(x,y){
+class Body {
+    constructor(x,y) {
         this.x = x;
         this.y = y;
         this.xVel = 0;
@@ -51,38 +51,33 @@ class Body{
 		this.angle = 0;
 	}
 
-    explode(other,force,density){ //creates explosion, deleting the original planet
-        if(force == null){
-			force = 0.2 
-		}
-		if(density == null){
+    explode(other,force,density) { //creates explosion, deleting the original planet
+        if (force == null)
+			force = 0.2;
+		if (density == null)
 			density = this.density;
-		}
 
 		this.delete = true;
-		var parts = Math.floor(Math.random()*10)+2
-		if(this.mass/parts < explodemin){
+		var parts = Math.floor(Math.random()*10)+2;
+		if (this.mass/parts < explodemin)
 			parts = 2;
-		}
-		if(this.mass > starmin){
+		if (this.mass > starmin)
 			parts = Math.floor(Math.random()*20)+2
-		}
 		//var plane = angle(this,other)
 		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
 		var refang = dotProduct({"x":this.xVel,"y":this.yVel},n)
 		var r = {"x":v.x-(2*refang.x*n.x*n.x),"y":v.y-(2*refang.y*n.y*n.y)}
 		var tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
-		if(other == this){
+		if (other == this)
 			r = {"x":0,"y":0};
-		}
 		r = normalize(r);
 		var totalmass = this.mass;
 		var avgmass = this.mass/parts;
-		for(var i = 0; i < parts; i++){
+		let i = 0;
+		while (i++ < parts) {
 			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
-			if(m > totalmass){
+			if (m > totalmass)
 				m = totalmass;
-			}
 			totalmass -= m;
 			var temp = new Body(this.x,this.y);
 			temp.invincibilityCooldown = 20;
@@ -94,12 +89,10 @@ class Body{
 			temp.color = this.color;
 			temp.density = density;
 			v.bodies.push(temp);
-			if(totalmass == 0){
+			if (totalmass == 0)
 				return;
-			}
-
 		}
-		if(totalmass != 0){
+		if (totalmass != 0) {
 			var temp = new Body(this.x,this.y);
 			temp.invincibilityCooldown = 20;
 			temp.mass = totalmass;
@@ -115,16 +108,15 @@ class Body{
 
 	}
 
-    shedMass(smass,force,density){ //creates explosion but leaves the planet behind
+    shedMass(smass,force,density) { //creates explosion but leaves the planet behind
         var parts = Math.floor(Math.random()*20)+10;
 		var tvel = force;
 		var avgmass = this.mass/parts;
 		this.mass -= smass;
-		for(var i = 0; i < 100; i++){
+		for (var i = 0; i < 100; i++) {
 			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
-			if(m > smass){
+			if (m > smass)
 				m = smass;
-			}
 			smass -= m;
 			var temp = new Body(this.x,this.y);
 			temp.invincibilityCooldown = 60;
@@ -135,18 +127,16 @@ class Body{
 			temp.yVel = newyvel;
 			temp.color = this.color;
 			temp.density = density;
-			if(m > smass){
+			if (m > smass)
 				m = smass;
-			}
 			v.bodies.push(temp);
-			if(smass <= 0){
+			if (smass <= 0)
 				return;
-			}
 		}
 
 	}
 
-    collide(other){ //handle combining collision
+    collide(other) { //handle combining collision
         var totalmass = this.mass + other.mass
         var myportion = this.mass/totalmass
         var otherportion = other.mass/totalmass
@@ -158,18 +148,16 @@ class Body{
     }
 
     move() { //handle velocity physics tick
-		if(this.delete){
+		if (this.delete)
             return;
-        }
         this.y += this.yVel;
         this.x += this.xVel;
         this.yVel += gravity;
     }
 
     update() { //physics tick
-        if (this.delete) {
+        if (this.delete)
             return;
-		}
 		if (this.mass > starmin) { //star formation
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
@@ -179,109 +167,93 @@ class Body{
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
 			this.density += 0.000001;// burning fuel
-			if(this.mass > starmax/2){ 
+			if (this.mass > starmax/2)
 				this.density += 0.000005
-			}
-			if(this.mass > starmax){
+			if (this.mass > starmax)
 				this.density += 0.00002
-			}
-			if(this.density >= 1 && this.density < 1.05){
+			if (this.density >= 1 && this.density < 1.05) {
 				this.density = 1.1; //stage 2 material
 				this.explode(v.bodies[0],(this.mass/2000));
 			}
 
-			if(this.density >= 2 && this.density < 2.05){
+			if (this.density >= 2 && this.density < 2.05) {
 				this.density = 4;//stage 3 material
 				this.shedMass(this.mass/5,4,0.1); // create black hole
 			}
-			if(this.density > 3.5){
+			if (this.density > 3.5)
 				this.color = "rgb(0,0,0)"; // colorize black holes
-			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
-		if(this.invincibilityCooldown < 1){
+		if (this.invincibilityCooldown < 1) {
 
             var speed = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel));
-			for(var i = 0; i < v.bodies.length; i++){
-				if(this.invincible && v.bodies[i].nuke){
+			for (let body of v.bodies) {
+				if (this.invincible && body.nuke)
 					continue;
-				}
-				if(v.bodies[i].invincible && this.nuke){
+				if (body.invincible && this.nuke)
 					continue;
-				}
-				if(v.bodies[i].invincibilityCooldown > 0 || v.bodies[i].delete){
+				if (body.invincibilityCooldown > 0 || body.delete)
 					continue;
-				}
-				if(v.bodies[i].nuke || v.bodies[i].delete || this.delete){
+				if (body.nuke || body.delete || this.delete)
 					continue;
-				}
-				//v.bodies[i].size = Math.sqrt(Math.PI/(v.bodies[i].mass/v.bodies[i].density))
-				if(v.bodies[i].x != this.x && v.bodies[i].y != this.y){
-					if(distance(v.bodies[i],this) < ((this.size/2)+(v.bodies[i].size/2)) && !this.collided){
+				if (body.x != this.x && body.y != this.y) {
+					if (distance(body,this) < ((this.size/2)+(body.size/2)) && !this.collided) {
 						this.colliding = true;
-						if(this.nuke && !v.bodies[i].invincible && v.bodies[i].mass > explodemin){
+						if (this.nuke && !body.invincible && body.mass > explodemin) {
 							this.delete = true;
-							v.bodies[i].explode(this,v.bodies[i].size/5);
-
+							body.explode(this,body.size/5);
 						}
-						if(this.nuke){
+						if (this.nuke)
 							continue;
-						}
 
-						var otherspeed = Math.sqrt((v.bodies[i].xVel*v.bodies[i].xVel)+(v.bodies[i].yVel*v.bodies[i].yVel));
-						if(speed > explodeSpeed && this.mass > explodemin && !this.invincible && this.mass < starmin){
-							this.explode(v.bodies[i]);
+						var otherspeed = Math.sqrt((body.xVel*body.xVel)+(body.yVel*body.yVel));
+						if (speed > explodeSpeed && this.mass > explodemin && !this.invincible && this.mass < starmin) {
+							this.explode(body);
 							return;
-						}else if(otherspeed > explodeSpeed && v.bodies[i].mass > explodemin && !v.bodies[i].invincible && v.bodies[i].mass < starmin){
-							v.bodies[i].explode(this);
+						} else if (otherspeed > explodeSpeed && body.mass > explodemin && !body.invincible && body.mass < starmin) {
+							body.explode(this);
 							return;
-
-						}else{
-							if(this.mass > v.bodies[i].mass || this.mass == v.bodies[i].mass){
-								if(!v.bodies[i].invincible && !v.bodies[i].nuke){
-									this.collide(v.bodies[i]);
-									v.bodies[i].delete = true;
-									v.bodies[i].collided = true;
+						} else {
+							if (this.mass > body.mass || this.mass == body.mass) {
+								if (!body.invincible && !body.nuke) {
+									this.collide(body);
+									body.delete = true;
+									body.collided = true;
 									this.collided = true;
 								}
-							}else{
-								if(this.invincible){
-									this.xVel = v.bodies[i].xVel
-									this.yVel = v.bodies[i].yVel
-								}
+							} else if (this.invincible) {
+								this.xVel = body.xVel
+								this.yVel = body.yVel
 							}
 						}
-
-
-
-
-					}else{
-						var r = distance(this,v.bodies[i]);
-						var f = ((g*((/*this.mass**/v.bodies[i].mass)/(r*r))))//gravitational force
-						var xoff = Math.abs(this.x-v.bodies[i].x)
-						var yoff = Math.abs(this.y-v.bodies[i].y)
+					} else {
+						var r = distance(this,body);
+						var f = ((g*((/*this.mass**/body.mass)/(r*r))))//gravitational force
+						var xoff = Math.abs(this.x-body.x)
+						var yoff = Math.abs(this.y-body.y)
 						var toff = xoff+yoff;
-						if(this.x < v.bodies[i].x){
+
+						if (this.x < body.x) {
 							this.xVel += f * (xoff/toff);
-						}else{
+						} else {
 							this.xVel += f * ((xoff*-1)/toff);
 						}
-						if(this.y < v.bodies[i].y){
+						
+						if (this.y < body.y) {
 							this.yVel += f * (yoff/toff);
-						}else{
+						} else {
 							this.yVel += f * ((yoff*-1)/toff);
 						}
-						if(f > (tidalmin+this.density) && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke){
-							this.explode(v.bodies[i],1)
-                        }
+
+						if (f > (tidalmin+this.density) && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke)
+							this.explode(body,1)
 					}
 				}
 			}
 			this.collided = false;
-		}else{
+		} else
 			this.invincibilityCooldown--;
-		}
     }
 }
 
