@@ -2,6 +2,8 @@ const bodyCount = 10*10;
 const universeSize = 20000;
 
 module.exports = function start() {
+    console.log('Starting game...');
+
     var Body = require('./classes/body');
     var v = require('./v');
 
@@ -24,4 +26,6 @@ module.exports = function start() {
         newBody.mass = (Math.random() > 0.95 ? (Math.random()*10000)+1200 : (Math.random()*900)+50);
         v.bodies.push(newBody);
     }
+
+    console.log('Game started!');
 }

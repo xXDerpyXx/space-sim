@@ -37,8 +37,7 @@ v.io.on('connection', function(socket) {
 	v.userTotal += 1;
 	socket.emit('newVal',val);
 	socket.emit("resetplayers");
-	console.log('a user connected');
-	console.log('user count: '+v.userTotal);
+	console.log(`a user connected. user count: ${v.userTotal}`);
 	v.bodies.filter(e => e.shipId == socket.id).forEach(e => e.delete = true); //delete any bodies which have the same socket id as the connecting player
 	v.players[socket.id] = new Player(socket.id);
 	var temp = new Body(Math.random()*20,Math.random()*20);
@@ -52,8 +51,7 @@ v.io.on('connection', function(socket) {
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
 	socket.on('disconnect', function() {
 		v.userTotal -= 1;
-		console.log('a user disconnected');
-		console.log('user count: '+v.userTotal);
+		console.log(`a user disconnected. user count: ${v.userTotal}`);
 		for (let i in v.bodies)
 			if (v.bodies[i].shipId == socket.id)
 				v.players[socket.id].ship = i;
@@ -202,6 +200,8 @@ setInterval(function() {
         if (v.bodies[i].delete)
             v.bodies.splice(i,1);
 },1);
+
+setInterval(v.fn.start, v.cfg.gameLength * 1000 || 60 * 60 * 1000);
 
 v.fn.start();
 
