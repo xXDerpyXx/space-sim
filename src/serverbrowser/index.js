@@ -23,6 +23,11 @@ function directConnect() {
     connect(server);
 }
 
+async function refresh() {
+    await ReactDOM.render(<div />, d.root);
+    ReactDOM.render(<ServerBrowser />, d.root);
+}
+
 class ServerBrowser extends React.Component {
     constructor(props) {
         super(props); 
@@ -61,7 +66,11 @@ class ServerBrowser extends React.Component {
                 <br />
                 <br />
 
-                <label>Official serverlist:</label>
+                <label>
+                    Official serverlist
+                    <button onClick={refresh} style={{fontSize: '18px'}}>⟳</button>
+                    :
+                </label>
                 <table id="serverList">
                     <thead>
                         <tr>
