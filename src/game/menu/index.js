@@ -48,7 +48,7 @@ class PauseMenu extends React.Component {
                         <ColorPicker />
                         <button onClick={toggleUI}>Toggle UI</button><br />
                         <button onClick={reconnect}>New ship</button><br />
-                        <button onClick={() => disconnect()}>Disconnect</button><br />
+                        <button onClick={disconnect}>Disconnect</button><br />
                         <label for="controlMethod" style={{color: 'white'}}>Control method: </label>
                         <select id="controlMethod" onChange={changeControl}>
                             <option value={0}>steer</option>

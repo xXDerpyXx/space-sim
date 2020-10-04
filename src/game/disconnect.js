@@ -4,7 +4,7 @@ import ServerBrowser from '../serverbrowser';
 import d from '../d';
 import Events from './events';
 
-function disconnect(alertMessage) {
+function disconnect() {
     if (d.socket == null)
         return;
     Events.unregister();
@@ -14,8 +14,6 @@ function disconnect(alertMessage) {
     clearInterval(d.intervals.colliding);
     clearInterval(d.intervals.draw);
     ReactDOM.render(<ServerBrowser />, d.root);
-    if (alertMessage != null)
-        alert(alertMessage);
 }
 
 export default disconnect;
