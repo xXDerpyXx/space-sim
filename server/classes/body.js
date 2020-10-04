@@ -89,7 +89,7 @@ class Body {
 			temp.color = this.color;
 			temp.density = density;
 			v.bodies.push(temp);
-			if (totalmass == 0)
+			if (totalmass <= 0)
 				return;
 		}
 		if (totalmass != 0) {
@@ -110,7 +110,6 @@ class Body {
 
     shedMass(smass,force,density) { //creates explosion but leaves the planet behind
         var parts = Math.floor(Math.random()*20)+10;
-		var tvel = force;
 		var avgmass = this.mass/parts;
 		this.mass -= smass;
 		for (var i = 0; i < 100; i++) {
@@ -143,7 +142,7 @@ class Body {
         this.xVel = ((this.xVel*myportion) + (other.xVel*otherportion))/2
         this.yVel = ((this.yVel*myportion) + (other.yVel*otherportion))/2
 		this.mass += other.mass;
-		this.density = (this.density*myportion)+(other.density*otherportion)
+		this.density = Math.round(((this.density*myportion)+(other.density*otherportion))*100)/100
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
     }
 
