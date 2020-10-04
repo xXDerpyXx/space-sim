@@ -214,16 +214,14 @@ function startGame() {
 
     d.socket.on("kick", kickMessage => {
         setTimeout(() => {
-            disconnect();
-            alert(kickMessage);
+            disconnect(kickMessage);
         }, 500);
     })
 
     d.socket.on("disconnect", () => {
         setTimeout(() => {
-            disconnect();
-            alert("Communication between you and the server was interrupted.");
-        }, 500);
+            disconnect("Communication between you and the server was interrupted.");
+        }, 750);
     });
 
     d.socket.on("bodyupdate",function(b) {
