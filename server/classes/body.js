@@ -66,12 +66,10 @@ class Body {
 		//var plane = angle(this,other)
 		let n = normalize({"x":this.x-other.x,"y":this.y-other.y});
 		let refang = dotProduct({"x":this.xVel,"y":this.yVel},n)
-		//console.log(refang);
 		let r = {"x":this.xVel-(2*refang.x*n.x*n.x),"y":this.yVel-(2*refang.y*n.y*n.y)}
 		let tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
 		//if (other == this)
 			//r = {"x":0,"y":0};
-		//console.log(r);
 		r = normalize(r);
 		let totalmass = this.mass;
 		let avgmass = this.mass/parts;
@@ -87,7 +85,6 @@ class Body {
 			temp.mass = m;
 			let newxvel = r.x*tvel+((Math.random()*force)-(force/2));
 			let newyvel = r.y*tvel+((Math.random()*force)-(force/2));
-			console.log("======\nnew velocities: "+newxvel+","+newyvel+"\n=====");
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
 			temp.color = this.color;
