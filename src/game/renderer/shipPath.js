@@ -33,7 +33,7 @@ function ShipSVG(props) {
     SVGData += "Z";
 
     return (
-        <svg className="player-icon" height={SVGSize} width={SVGSize} transform={`rotate(${props.direction - 90})`}>
+        <svg className={`player-icon-${props.type}`} height={SVGSize} width={SVGSize} transform={`rotate(${props.direction - 90})`}>
             <path d={SVGData} fill={props.color} />
         </svg>
     );

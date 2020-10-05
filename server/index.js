@@ -49,7 +49,9 @@ v.io.on('connection', function(socket) {
 	v.bodies.push(temp)
 	v.players[socket.id].ship = v.bodies.length-1
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
+
 	socket.on('disconnect', function() {
+		let userBody = getPlayerBody(socket);
 		v.userTotal -= 1;
 		console.log(`a user disconnected. user count: ${v.userTotal}`);
 		for (let i in v.bodies)
@@ -57,6 +59,15 @@ v.io.on('connection', function(socket) {
 				v.players[socket.id].ship = i;
 		v.bodies.splice(v.players[socket.id].ship,1)
 		v.players.splice(parseInt(socket.id),1);
+
+		v.io.emit("message", {
+			content: "left.",
+			type: "action",
+			sender: {
+				color: userBody.color,
+				direction: userBody.angle,
+			}
+		});
 
 		socket.broadcast.emit("delete",socket.id);
 	});
@@ -130,9 +141,13 @@ v.io.on('connection', function(socket) {
 			return;
 		let userBody = getPlayerBody(socket);
 		v.io.emit("message", {
-			color: userBody.color,
-			direction: userBody.angle
-		}, content);
+			content: content,
+			type: "chat",
+			sender: {
+				color: userBody.color,
+				direction: userBody.angle,
+			}
+		});
 	});
 
 	socket.on("changeColor", hex => {
@@ -140,12 +155,37 @@ v.io.on('connection', function(socket) {
 			return;
 		color = hex.match(/^#([0-9a-f]{6})$/i)[1];
 		if (color) {
+			let userBody = getPlayerBody(socket);
+			let oldColor = userBody.color;
 			let vals = [];
 			for (let i = 0; i < 6; i += 2)
 				vals.push(parseInt(color.substr(i, 2), 16));
-			getPlayerBody(socket).color = `rgb(${vals.join(",")})`;
+			userBody.color = `rgb(${vals.join(",")})`;
+
+			v.io.emit("message", {
+				content: "changed their color to",
+				type: "action",
+				sender: {
+					color: oldColor,
+					direction: userBody.angle,
+				},
+				receiver: {
+					color: userBody.color,
+					direction: userBody.angle,
+				},
+				append: ".",
+			});
 		}
-	})
+	});
+
+	v.io.emit("message", {
+		content: "joined.",
+		type: "action",
+		sender: {
+			color: temp.color,
+			direction: temp.angle,
+		}
+	});
 });
 
 
