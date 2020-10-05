@@ -34,6 +34,9 @@ class Chat extends React.Component {
                     (<span id="messagesSentNum">0</span>)
                 </button>
                 <div id="chatBox">
+                    <div id="playersOnline">
+                        Players online: <span id="playerCount" />
+                    </div>
                     <div id="chatMessages">
                         {this.state.messages}
                         {/*<Message player={{colour: "#654321"}}>

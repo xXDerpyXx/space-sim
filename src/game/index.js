@@ -16,8 +16,7 @@ class Game extends React.Component {
                 <canvas id="mainCanvas" />
                 <div id="info">
                     velocity: <span id="speedspan"></span>km/s<br />
-                    x: <span id="xcoord"></span> y: <span id="ycoord"></span><br />
-                    players online: <span id="playersOnline"></span>
+                    x: <span id="xcoord"></span> y: <span id="ycoord"></span>
                 </div>
                 <JoyWrapper />
                 <PauseMenu />
