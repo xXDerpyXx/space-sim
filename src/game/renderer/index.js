@@ -197,7 +197,7 @@ function startGame() {
         document.getElementById("speedspan").innerHTML = Math.round(Math.sqrt((bodies[center].yVel*bodies[center].yVel)+(bodies[center].xVel*bodies[center].xVel))*100)/100
         document.getElementById("xcoord").innerHTML = Math.round(bodies[center].x)
         document.getElementById("ycoord").innerHTML = Math.round(bodies[center].y)
-        document.getElementById("playersOnline").innerHTML = players.length + 1;
+        document.getElementById("playerCount").innerHTML = players.length + 1;
         document.getElementById("FPSDisplay").innerHTML = Math.round(1000 / (currentFrame - lastFrame));
 
         lastFrame = currentFrame;

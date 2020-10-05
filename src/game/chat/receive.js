@@ -5,14 +5,9 @@ import d from '../../d';
 import { chatIsShown } from './toggle';
 
 function receiveMessages() {
-    d.socket.on("message", (player, content) => {
-        console.log(player)
+    d.socket.on("message", message => {
         let chatDiv = document.getElementById('chatMessages')
-        chatDiv.innerHTML += renderToString(
-            <Message player={player}>
-                {content}
-            </Message>
-        );
+        chatDiv.innerHTML += renderToString(<Message message={message} />);
         let children = document.getElementById('chatMessages').children;
         let lastMessage = children[children.length - 1];
         let scrollTopMax = chatDiv.scrollHeight - chatDiv.clientHeight - chatDiv.clientTop;

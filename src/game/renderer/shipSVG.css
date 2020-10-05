@@ -1,4 +1,9 @@
-.player-icon {
+.player-icon-sender {
     margin-bottom: -3px;
     margin-right: 5px;
+}
+
+.player-icon-receiver {
+    margin-bottom: -3px;
+    margin-left: 5px;
 }
