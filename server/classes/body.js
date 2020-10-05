@@ -188,7 +188,7 @@ class Body {
 				this.density += 0.00002
 			if (this.density >= 1 && this.density < 1.05) {
 				this.density = 1.1; //stage 2 material
-				this.explode(this,(this.mass/2000),1.1);
+				this.explode(this,2,1.1);
 			}
 
 			if (this.density >= 2 && this.density < 2.05) {
@@ -261,7 +261,7 @@ class Body {
 							this.yVel += f * ((yoff*-1)/toff);
 						}
 
-						if (f > (tidalmin+this.density) && this.mass > explodemin && this.mass < starmin && this.shipId == null && !this.nuke)
+						if (f > (tidalmin+this.density) && this.mass > explodemin && (this.mass < starmin || body.density > 3) && this.shipId == null && !this.nuke)
 							this.explode(body,1)
 					}
 				}
