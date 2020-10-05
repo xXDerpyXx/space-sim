@@ -10,6 +10,9 @@ function angle(a,b) { // angle between bodies
 
 function normalize(vec) { //normalize components of a vector between 0 and 1
 	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
+	if(mag == 0){
+		return {"x":vec.x,"y":vec.y}
+	}
 	return {"x":vec.x/mag,"y":vec.y/mag}
 }
 
@@ -70,11 +73,14 @@ class Body {
 		let tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
 		//if (other == this)
 			//r = {"x":0,"y":0};
+		console.log(r)
 		r = normalize(r);
 		let totalmass = this.mass;
 		let avgmass = this.mass/parts;
 		let i = 0;
-		//console.log(r);
+		console.log(r);
+		console.log(force);
+		console.log(tvel);
 		while (i++ < parts) {
 			let m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
 			if (m > totalmass)
@@ -156,7 +162,7 @@ class Body {
 	update() { //physics tick
 		for(let k in this){
 			if(this[k]+" " == "NaN "){
-				//console.log("found something wrong");
+				console.log("found something wrong");
 				//console.log(k);
 				//console.log(this.mass);
 				//for(let l in this){
