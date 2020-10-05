@@ -29,7 +29,7 @@ var keysDown = [];
 
 function sum(a) {
     let s = 0;
-    for (let i of a) s += a[i];
+    for (let i of a) s += i;
     return s;
 } 
  

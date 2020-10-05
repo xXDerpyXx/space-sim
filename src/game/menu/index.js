@@ -69,6 +69,7 @@ class PauseMenu extends React.Component {
     }
 
     componentDidMount() {
+        document.getElementById('controlMethod').value = 1;
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) //if client's device is a mobile device
             document.getElementById('controlMethod').value = 3;
         changeControl();
