@@ -89,7 +89,7 @@ class Body {
 			temp.color = this.color;
 			temp.density = density;
 			v.bodies.push(temp);
-			if (totalmass == 0)
+			if (totalmass <= 0)
 				return;
 		}
 		if (totalmass != 0) {
@@ -110,7 +110,6 @@ class Body {
 
     shedMass(smass,force,density) { //creates explosion but leaves the planet behind
         var parts = Math.floor(Math.random()*20)+10;
-		var tvel = force;
 		var avgmass = this.mass/parts;
 		this.mass -= smass;
 		for (var i = 0; i < 100; i++) {
@@ -127,8 +126,6 @@ class Body {
 			temp.yVel = newyvel;
 			temp.color = this.color;
 			temp.density = density;
-			if (m > smass)
-				m = smass;
 			v.bodies.push(temp);
 			if (smass <= 0)
 				return;
@@ -143,7 +140,7 @@ class Body {
         this.xVel = ((this.xVel*myportion) + (other.xVel*otherportion))/2
         this.yVel = ((this.yVel*myportion) + (other.yVel*otherportion))/2
 		this.mass += other.mass;
-		this.density = (this.density*myportion)+(other.density*otherportion)
+		this.density = Math.round(((this.density*myportion)+(other.density*otherportion))*100)/100
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
     }
 
@@ -162,7 +159,7 @@ class Body {
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
-			var green = this.density*200;
+			var green = Math.round(this.density*200);
 			red = red+green;
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
@@ -173,12 +170,12 @@ class Body {
 				this.density += 0.00002
 			if (this.density >= 1 && this.density < 1.05) {
 				this.density = 1.1; //stage 2 material
-				this.explode(v.bodies[0],(this.mass/2000));
+				this.explode(this,(this.mass/2000),1.1);
 			}
 
 			if (this.density >= 2 && this.density < 2.05) {
 				this.density = 4;//stage 3 material
-				this.shedMass(this.mass/5,4,0.1); // create black hole
+				this.shedMass(Math.round(this.mass/5),4,0.1); // create black hole
 			}
 			if (this.density > 3.5)
 				this.color = "rgb(0,0,0)"; // colorize black holes
