@@ -126,8 +126,6 @@ class Body {
 			temp.yVel = newyvel;
 			temp.color = this.color;
 			temp.density = density;
-			if (m > smass)
-				m = smass;
 			v.bodies.push(temp);
 			if (smass <= 0)
 				return;
@@ -161,7 +159,7 @@ class Body {
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
-			var green = this.density*200;
+			var green = Math.round(this.density*200);
 			red = red+green;
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
@@ -172,12 +170,12 @@ class Body {
 				this.density += 0.00002
 			if (this.density >= 1 && this.density < 1.05) {
 				this.density = 1.1; //stage 2 material
-				this.explode(v.bodies[0],(this.mass/2000));
+				this.explode(this,(this.mass/2000),1.1);
 			}
 
 			if (this.density >= 2 && this.density < 2.05) {
 				this.density = 4;//stage 3 material
-				this.shedMass(this.mass/5,4,0.1); // create black hole
+				this.shedMass(Math.round(this.mass/5),4,0.1); // create black hole
 			}
 			if (this.density > 3.5)
 				this.color = "rgb(0,0,0)"; // colorize black holes
