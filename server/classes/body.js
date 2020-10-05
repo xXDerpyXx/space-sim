@@ -58,32 +58,36 @@ class Body {
 			density = this.density;
 
 		this.delete = true;
-		var parts = Math.floor(Math.random()*10)+2;
+		let parts = Math.floor(Math.random()*10)+2;
 		if (this.mass/parts < explodemin)
 			parts = 2;
 		if (this.mass > starmin)
 			parts = Math.floor(Math.random()*20)+2
 		//var plane = angle(this,other)
-		var n = normalize({"x":this.x-other.x,"y":this.y-other.y});
-		var refang = dotProduct({"x":this.xVel,"y":this.yVel},n)
-		var r = {"x":v.x-(2*refang.x*n.x*n.x),"y":v.y-(2*refang.y*n.y*n.y)}
-		var tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
-		if (other == this)
-			r = {"x":0,"y":0};
+		let n = normalize({"x":this.x-other.x,"y":this.y-other.y});
+		let refang = dotProduct({"x":this.xVel,"y":this.yVel},n)
+		//console.log(refang);
+		let r = {"x":this.xVel-(2*refang.x*n.x*n.x),"y":this.yVel-(2*refang.y*n.y*n.y)}
+		let tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
+		//if (other == this)
+			//r = {"x":0,"y":0};
+		//console.log(r);
 		r = normalize(r);
-		var totalmass = this.mass;
-		var avgmass = this.mass/parts;
+		let totalmass = this.mass;
+		let avgmass = this.mass/parts;
 		let i = 0;
+		//console.log(r);
 		while (i++ < parts) {
-			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
+			let m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
 			if (m > totalmass)
 				m = totalmass;
 			totalmass -= m;
-			var temp = new Body(this.x,this.y);
+			let temp = new Body(this.x,this.y);
 			temp.invincibilityCooldown = 20;
 			temp.mass = m;
-			var newxvel = r.x*tvel+((Math.random()*force)-(force/2));
-			var newyvel = r.y*tvel+((Math.random()*force)-(force/2));
+			let newxvel = r.x*tvel+((Math.random()*force)-(force/2));
+			let newyvel = r.y*tvel+((Math.random()*force)-(force/2));
+			console.log("======\nnew velocities: "+newxvel+","+newyvel+"\n=====");
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
 			temp.color = this.color;
@@ -93,11 +97,11 @@ class Body {
 				return;
 		}
 		if (totalmass != 0) {
-			var temp = new Body(this.x,this.y);
+			let temp = new Body(this.x,this.y);
 			temp.invincibilityCooldown = 20;
 			temp.mass = totalmass;
-			var newxvel = r.x*tvel+((Math.random()*tvel/5)-tvel/10);
-			var newyvel = r.y*tvel+((Math.random()*tvel/5)-tvel/10);
+			let newxvel = r.x*tvel+((Math.random()*tvel/5)-tvel/10);
+			let newyvel = r.y*tvel+((Math.random()*tvel/5)-tvel/10);
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
 			temp.color = this.color;
@@ -109,19 +113,19 @@ class Body {
 	}
 
     shedMass(smass,force,density) { //creates explosion but leaves the planet behind
-        var parts = Math.floor(Math.random()*20)+10;
-		var avgmass = this.mass/parts;
+        let parts = Math.floor(Math.random()*20)+10;
+		let avgmass = this.mass/parts;
 		this.mass -= smass;
-		for (var i = 0; i < 100; i++) {
-			var m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
+		for (let i = 0; i < 100; i++) {
+			let m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
 			if (m > smass)
 				m = smass;
 			smass -= m;
-			var temp = new Body(this.x,this.y);
+			let temp = new Body(this.x,this.y);
 			temp.invincibilityCooldown = 60;
 			temp.mass = m;
-			var newxvel = this.xVel+((Math.random()*force)-(force/2));
-			var newyvel = this.yVel+((Math.random()*force)-(force/2));
+			let newxvel = this.xVel+((Math.random()*force)-(force/2));
+			let newyvel = this.yVel+((Math.random()*force)-(force/2));
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
 			temp.color = this.color;
@@ -152,7 +156,18 @@ class Body {
         this.yVel += gravity;
     }
 
-    update() { //physics tick
+	update() { //physics tick
+		for(let k in this){
+			if(this[k]+" " == "NaN "){
+				//console.log("found something wrong");
+				//console.log(k);
+				//console.log(this.mass);
+				//for(let l in this){
+					//console.log(l+": "+this[l]);
+				//}
+				this.delete = true;
+			}
+		}
         if (this.delete)
             return;
 		if (this.mass > starmin) { //star formation
