@@ -3,5 +3,17 @@
     "name": "Newly created server",
     "location": "eu",
     "playerLimit": 10,
-    "gameLength": 3600
+    "gameLength": 3600,
+
+    "fuel": {
+        "max": 1000,
+        "starting": 200,
+        "usage": {
+            "multiplier": 0.11,
+            "exponential": {
+                "start": 0.25,
+                "multiplier": 1
+            }
+        }
+    }
 }
