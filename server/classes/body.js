@@ -73,14 +73,10 @@ class Body {
 		let tvel = Math.sqrt((this.xVel*this.xVel)+(this.yVel*this.yVel))
 		//if (other == this)
 			//r = {"x":0,"y":0};
-		console.log(r)
 		r = normalize(r);
 		let totalmass = this.mass;
 		let avgmass = this.mass/parts;
 		let i = 0;
-		console.log(r);
-		console.log(force);
-		console.log(tvel);
 		while (i++ < parts) {
 			let m = Math.floor(avgmass + ((Math.random()*avgmass)-(avgmass/2)));
 			if (m > totalmass)
@@ -160,17 +156,9 @@ class Body {
     }
 
 	update() { //physics tick
-		for(let k in this){
-			if (this[k]+" " == "NaN ") {
-				console.log("found something wrong");
-				//console.log(k);
-				//console.log(this.mass);
-				//for(let l in this){
-					//console.log(l+": "+this[l]);
-				//}
+		for (let k in this)
+			if (Number.isNaN(this[k]))
 				this.delete = true;
-			}
-		}
         if (this.delete)
             return;
 		if (this.mass > starmin) { //star formation
@@ -200,7 +188,7 @@ class Body {
 			if (this.density > 3.5 && this.mass > 1000) {
 				if (Math.random() > 0.99)
 					this.shedMass(Math.round(this.mass/100),6,0.1);
-			}else if (this.density > 3.5) {
+			} else if (this.density > 3.5) {
 				if (Math.random() > 0.99)
 					this.shedMass(10,6,this.density);
 			}

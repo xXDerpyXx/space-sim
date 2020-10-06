@@ -2,11 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import JoyWrapper from './joystick/';
-import startGame from './renderer/';
 import PauseMenu from './menu/';
 import Throttle from './throttle/';
+import FuelGauge from './fuelGauge/';
 import Map from './map/';
 import { getMapCanvas } from './map/draw';
+import startGame from './renderer/';
+import getServerInfo from './getServerInfo';
 import Chat from './chat/';
 
 class Game extends React.Component {
@@ -21,6 +23,7 @@ class Game extends React.Component {
                 <JoyWrapper />
                 <PauseMenu />
                 <Throttle />
+                <FuelGauge />
                 <Map />
                 <Chat />
             </div>
@@ -29,6 +32,7 @@ class Game extends React.Component {
 
     componentDidMount() {
         getMapCanvas();
+        getServerInfo();
         startGame();
     }
 }

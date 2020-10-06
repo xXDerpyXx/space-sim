@@ -1,3 +1,5 @@
+const v = require('../v');
+
 class Player {
 	constructor(id) {
 		this.id = id;
@@ -5,6 +7,7 @@ class Player {
 		this.decelerating = false;
 		this.acceleration = 0;
 		this.throttle = 1;
+		this.fuel = v.cfg.fuel.starting;
 		this.direction = 0;
 		this.rotatingLeft = false;
 		this.rotatingRight = false;

@@ -204,6 +204,7 @@ function startGame() {
     },50);
 
     var myid = 0;
+
     d.socket.on("connect",function() {
         myid = d.socket.id;
     });
@@ -222,6 +223,10 @@ function startGame() {
         setTimeout(() => {
             disconnect("Communication between you and the server was interrupted.");
         }, 750);
+    });
+
+    d.socket.on("fuelUpdate", fuel => {
+        d.fuel.current = fuel;
     });
 
     d.socket.on("bodyupdate",function(b) {

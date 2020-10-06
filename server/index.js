@@ -203,17 +203,29 @@ setInterval(function() {
 			body.yVel += yVel * player.acceleration;
 
 			if (player.accelerating || player.decelerating) {
-				let moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
-				player.acceleration = (speed * player.throttle) * moving;
+				let fuelNeeded = player.throttle * v.cfg.fuel.usage.multiplier;
+				if (player.throttle > v.cfg.fuel.usage.exponential.start)
+					fuelNeeded += (((((player.throttle - v.cfg.fuel.usage.exponential.start) * 100) ** 2) * 0.0001) * v.cfg.fuel.usage.exponential.multiplier) * v.cfg.fuel.usage.multiplier;
 
-				if (body.colliding) {
-					let xWalk = xVel*walkspeed*(player.acceleration/speed);
-					let yWalk = yVel*walkspeed*(player.acceleration/speed);
-					body.x+=xWalk;
-					body.y+=yWalk;
-					body.xVel+=xWalk;
-					body.yVel+=yWalk;
+				let moving = 0;
+				if (player.fuel >= fuelNeeded) //if the player has enough fuel to accelerate
+					moving = Number(player.accelerating) + -Number(player.decelerating); //will return +1 if accelerating, -1 if decelerating, 0 if both
+
+				if (moving != 0) {
+					player.fuel -= fuelNeeded; //use the fuel needed
+					v.io.to(body.shipId).emit('fuelUpdate', player.fuel); //tell the player's client their new fuel value
+
+					if (body.colliding) {
+						let xWalk = xVel*walkspeed*(player.acceleration/speed);
+						let yWalk = yVel*walkspeed*(player.acceleration/speed);
+						body.x+=xWalk;
+						body.y+=yWalk;
+						body.xVel+=xWalk;
+						body.yVel+=yWalk;
+					}
 				}
+				
+				player.acceleration = (speed * player.throttle) * moving;
 			} else
 				player.acceleration = 0;
 			if (player.rotatingLeft || player.rotatingRight) {
