@@ -131,7 +131,7 @@ class Body {
 			let newyvel = this.yVel+((Math.random()*force)-(force/2));
 			temp.xVel = newxvel;
 			temp.yVel = newyvel;
-			temp.color = this.color;
+			//temp.color = this.color;
 			temp.density = density;
 			v.bodies.push(temp);
 			if (smass <= 0)
@@ -182,18 +182,27 @@ class Body {
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
 			this.density += 0.000001;// burning fuel
-			if (this.mass > starmax/2)
-				this.density += 0.000005
-			if (this.mass > starmax)
-				this.density += 0.00002
-			if (this.density >= 1 && this.density < 1.05) {
-				this.density = 1.1; //stage 2 material
-				this.explode(this,2,1.1);
+			if(this.density < 4){
+				if (this.mass > starmax/2)
+					this.density += 0.000005
+				if (this.mass > starmax)
+					this.density += 0.00002
+				if (this.density >= 1 && this.density < 1.05) {
+					this.density = 1.1; //stage 2 material
+					this.explode(this,2,1.1);
+				}
 			}
-
 			if (this.density >= 2 && this.density < 2.05) {
 				this.density = 4;//stage 3 material
 				this.shedMass(Math.round(this.mass/5),4,0.1); // create black hole
+			}
+
+			if (this.density > 3.5 && this.mass > 1000){
+				if(Math.random() > 0.99)
+					this.shedMass(Math.round(this.mass/100),6,0.1);
+			}else if(this.density > 3.5){
+				if(Math.random() > 0.99)
+					this.shedMass(10,6,this.density);
 			}
 			if (this.density > 3.5)
 				this.color = "rgb(0,0,0)"; // colorize black holes
