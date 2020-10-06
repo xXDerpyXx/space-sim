@@ -10,7 +10,7 @@ function angle(a,b) { // angle between bodies
 
 function normalize(vec) { //normalize components of a vector between 0 and 1
 	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
-	if(mag == 0){
+	if (mag == 0) {
 		return {"x":vec.x,"y":vec.y}
 	}
 	return {"x":vec.x/mag,"y":vec.y/mag}
@@ -161,7 +161,7 @@ class Body {
 
 	update() { //physics tick
 		for(let k in this){
-			if(this[k]+" " == "NaN "){
+			if (this[k]+" " == "NaN ") {
 				console.log("found something wrong");
 				//console.log(k);
 				//console.log(this.mass);
@@ -182,7 +182,7 @@ class Body {
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
 			this.density += 0.000001;// burning fuel
-			if(this.density < 4){
+			if (this.density < 4) {
 				if (this.mass > starmax/2)
 					this.density += 0.000005
 				if (this.mass > starmax)
@@ -197,11 +197,11 @@ class Body {
 				this.shedMass(Math.round(this.mass/5),4,0.1); // create black hole
 			}
 
-			if (this.density > 3.5 && this.mass > 1000){
-				if(Math.random() > 0.99)
+			if (this.density > 3.5 && this.mass > 1000) {
+				if (Math.random() > 0.99)
 					this.shedMass(Math.round(this.mass/100),6,0.1);
-			}else if(this.density > 3.5){
-				if(Math.random() > 0.99)
+			}else if (this.density > 3.5) {
+				if (Math.random() > 0.99)
 					this.shedMass(10,6,this.density);
 			}
 			if (this.density > 3.5)
