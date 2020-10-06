@@ -47,7 +47,9 @@ v.io.on('connection', function(socket) {
 	temp.invincible = true;
 	temp.density = 1;
 	v.bodies.push(temp)
-	v.players[socket.id].ship = v.bodies.length-1
+	v.players[socket.id].ship = v.bodies.length-1;
+	socket.emit("fuelUpdate", v.players[socket.id].fuel); //tell the user's client how much fuel it's just been given
+	 
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
 
 	socket.on('disconnect', function() {
