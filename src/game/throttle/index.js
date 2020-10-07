@@ -1,27 +1,46 @@
 import React from 'react';
+import { Slider } from '@material-ui/core';
 import './index.css';
 import d from '../../d';
 
-function handleChange() {
-    let power = Number(document.getElementById('throttle').value);
-    document.getElementById('throttleDisplay').innerHTML = power.toFixed(2);
+const defaultThrottle = 0.2;
+
+function handleChange(power) {
+    document.getElementById('throttleLevel').innerHTML = power.toFixed(2);
     d.socket.emit('throttle', power);
 }
 
-class Throttle extends React.Component {
-    render() {
-        return (
-            <div id="throttleDiv">
-                <input id="throttle" type='range' orient='vertical' onChange={handleChange} min={0} max={1} step={0.01}></input>
-                <span id="throttleDisplay" style={{color: 'white'}}></span>
-            </div>
-        );
-    }
+function Throttle() {
+    let [value, setValue] = React.useState(defaultThrottle);
 
-    componentDidMount() {
-        document.getElementById('throttle').value = 0.2;
-        handleChange();
-    }
+    d.throttleSlider = {
+        value,
+        setValue,
+    };
+
+    React.useEffect(() => handleSliderChange(null, value)); //runs after render
+
+    let handleSliderChange = (event, newValue) => {
+        setValue(newValue);
+        handleChange(newValue)
+    };
+
+    return (
+        <div id="throttleDiv">
+            <Slider
+                min={0}
+                max={1}
+                step={0.01}
+                value={value}
+                onChange={handleSliderChange}
+                valueLabelDisplay="off"
+                valueLabelFormat={value => value.toFixed(2)}
+            />
+            <span id="throttleLevel">
+                0.25
+            </span>
+        </div>
+    );
 }
 
 export default Throttle;

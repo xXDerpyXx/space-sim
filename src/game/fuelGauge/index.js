@@ -26,8 +26,8 @@ function FuelGauge() {
             nrOfLevels={35}
             percent={0}
             colors={[
-                "#c92e2e",
-                "#8ce329"
+                "#ffffff",
+                "#3849ff"
             ]}
             percent={currentPercent}
             animDelay={0}

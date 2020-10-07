@@ -22,8 +22,8 @@ class Game extends React.Component {
                 </div>
                 <JoyWrapper />
                 <PauseMenu />
-                <Throttle />
                 <FuelGauge />
+                <Throttle />
                 <Map />
                 <Chat />
             </div>
