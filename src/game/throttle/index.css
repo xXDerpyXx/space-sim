@@ -18,6 +18,11 @@
     background-size: 240px 10px;
 }
 
+#throttleDiv .MuiSlider-valueLabel {
+    font-size: 8px;
+    text-align: center;
+}
+
 #throttleLevel {
     color: white;
     margin-left: 15px;

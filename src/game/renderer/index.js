@@ -229,6 +229,10 @@ function startGame() {
         d.fuel.current = fuel;
     });
 
+    d.socket.on("fuelUsageUpdate", fuelUsage => {
+        d.fuel.currentUsage = fuelUsage;
+    });
+
     d.socket.on("bodyupdate",function(b) {
         bodies = JSON.parse(b);
         let foundCenter = false;

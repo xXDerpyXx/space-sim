@@ -9,6 +9,7 @@ var d = {
     fuel: {
         current: 1,
         max: 1,
+        currentUsage: 1,
     }
 };
 
