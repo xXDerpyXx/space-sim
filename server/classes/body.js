@@ -195,6 +195,7 @@ class Body {
         if (this.delete)
             return;
 		if (this.mass > starmin) { //star formation
+			this.type = "star";
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);
@@ -228,10 +229,20 @@ class Body {
 			if (this.density > 3.5)
 				this.color = "rgb(0,0,0)"; // colorize black holes
 		}else{
-			if(this.density < 1){
-				if(this.type != "gasgiant"){
+			if (this.density < 1) {
+				if (this.type != "gasgiant") {
 					this.type = "gasgiant";
 					this.texture = randomGasGiant(this);
+				}
+			} else if (this.density < 2) {
+				if (this.type != "lightrock") {
+					this.type = "lightrock";
+					//this.texture = randomGasGiant(this);
+				}
+			} else if (this.density >= 2) {
+				if (this.type != "heavyrock") {
+					this.type = "heavyrock";
+					//this.texture = randomGasGiant(this);
 				}
 			}
 		}
