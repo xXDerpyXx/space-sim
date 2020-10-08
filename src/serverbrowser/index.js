@@ -77,7 +77,7 @@ class ServerBrowser extends React.Component {
                             <th>Name</th>
                             <th>Address</th>
                             <th>Players</th>
-                            <th>Uptime</th>
+                            <th>Time left</th>
                             <th>Location</th>
                         </tr>
                     </thead>
@@ -112,7 +112,7 @@ class ServerBrowser extends React.Component {
                                 <td>{serverInfo.name}</td>
                                 <td>{server.url}</td>
                                 <td>{serverInfo.players}</td>
-                                <td>{serverInfo.uptime ? serverInfo.uptime : null}</td>
+                                <td>{serverInfo.timeLeft ? Math.round(serverInfo.timeLeft / 1000) : null}</td>
                                 <td>{serverInfo.location}</td>
                                 {/*<td><button className="connectButton" onClick={() => connect(server)}>Connect</button></td>*/}
                             </tr>

@@ -263,7 +263,7 @@ setInterval(function() {
             v.bodies.splice(i,1);
 },1);
 
-setInterval(v.fn.start, v.cfg.gameLength * 1000 || 60 * 60 * 1000);
+setInterval(v.fn.start, v.cfg.gameLength * 1000);
 
 v.fn.start();
 
