@@ -157,7 +157,7 @@ function startGame() {
             ctx.fillStyle = "#FFFF00";
             ctx.fillText("*",body.x,body.y)
         }
-        let twidth = ctx.lineWidth
+        twidth = ctx.lineWidth
         if(body.texture){
             for(let t of body.texture){
                 ctx.strokeStyle = t.color;
