@@ -33,19 +33,19 @@ function splitRGB(color){
 function randomGasGiant(body){
 	let size = body.size;
 	let lines = [];
-	let r = size/2;
+	let r = size*2;
 	let center = {x:r,y:r};
-	let cloudwidth = this.size/7
+	let cloudwidth = 10;//this.size/7
 	for(var i = 0; i < (Math.random()*5)+3;i++){
 		let cloud = {};
 		let rangle = Math.random()*Math.PI*2;
-		cloud.sx = Math.cos(rangle)*r;
-		cloud.sy = Math.sin(rangle)*r;
+		cloud.sx = (Math.cos(rangle)*r)+center.x;
+		cloud.sy = (Math.sin(rangle)*r)+center.y;
 		cloud.ey = cloud.sy;
-		cloud.ex = ((size.x-cloud.sx)*-1)+size.x;
-		cloud.width = (Math.random()*cloudwidth);
+		cloud.ex = size-cloud.sx;
+		cloud.width = (Math.random()*cloudwidth)+(cloudwidth/2);
 		let base = splitRGB(body.color);
-		cloud.color = "rgb("+Math.abs(base.red-20)+","+Math.abs(base.green-20)+","+Math.abs(base.blue-20)+")";
+		cloud.color = "rgb("+Math.abs(base.red-100)+","+Math.abs(base.green-100)+","+Math.abs(base.blue-100)+")";
 		lines.push(cloud);
 		
 	}
@@ -196,6 +196,7 @@ class Body {
             return;
 		if (this.mass > starmin) { //star formation
 			this.type = "star";
+			this.texture = [];
 			var percent = this.mass/(starmax-starmin);
 			var red = Math.round(255*percent);
 			var blue = Math.round((1-percent)*255);

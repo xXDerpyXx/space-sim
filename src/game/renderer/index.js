@@ -159,7 +159,7 @@ function startGame() {
         }
         for(let t of body.texture){
             ctx.strokeStyle = t.color;
-            ctx.strokeWidth = t.width;
+            ctx.lineWidth = t.width;
             ctx.beginPath();
             ctx.moveTo((t.sx+body.x)-cOffsetx,(t.sy+body.y)-cOffsety)
             ctx.lineTo((t.ex+body.x)-cOffsetx,(t.ey+body.y)-cOffsety)
