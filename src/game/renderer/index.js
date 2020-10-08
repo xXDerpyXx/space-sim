@@ -157,15 +157,18 @@ function startGame() {
             ctx.fillStyle = "#FFFF00";
             ctx.fillText("*",body.x,body.y)
         }
-        for(let t of body.texture){
-            ctx.strokeStyle = t.color;
-            ctx.lineWidth = t.width;
-            ctx.beginPath();
-            ctx.moveTo((t.sx+body.x)-cOffsetx,(t.sy+body.y)-cOffsety)
-            ctx.lineTo((t.ex+body.x)-cOffsetx,(t.ey+body.y)-cOffsety)
-            ctx.stroke();
-
+        let twidth = ctx.lineWidth
+        if(body.texture){
+            for(let t of body.texture){
+                ctx.strokeStyle = t.color;
+                ctx.lineWidth = t.width;
+                ctx.beginPath();
+                ctx.moveTo((t.sx+body.x)-cOffsetx,(t.sy+body.y)-cOffsety)
+                ctx.lineTo((t.ex+body.x)-cOffsetx,(t.ey+body.y)-cOffsety)
+                ctx.stroke();
+            }
         }
+        ctx.lineWidth = twidth;
         //ctx.fillRect(this.x-offset,this.y-offset,this.size,this.size);
     }
 
