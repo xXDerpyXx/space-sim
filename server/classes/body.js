@@ -9,7 +9,7 @@ function angle(a,b) { // angle between bodies
 }
 
 function normalize(vec) { //normalize components of a vector between 0 and 1
-	var mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
+	let mag = Math.sqrt((vec.x*vec.x)+(vec.y*vec.y))
 	if (mag == 0) {
 		return {"x":vec.x,"y":vec.y}
 	}
@@ -17,8 +17,39 @@ function normalize(vec) { //normalize components of a vector between 0 and 1
 }
 
 function dotProduct(vec1,vec2) { //trigonometric dot product of 2 vectors
-	var ang = angle(vec1,vec2);
+	let ang = angle(vec1,vec2);
 	return {"x":Math.abs(vec1.x*vec2.x*Math.cos(ang)),"y":Math.abs(vec1.y*vec2.y*Math.cos(ang))}
+}
+
+function splitRGB(color){
+	var match = color.match(/rgb?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+  return {
+    red: match[1],
+    green: match[2],
+    blue: match[3] }
+
+}
+
+function randomGasGiant(body){
+	let size = body.size;
+	let lines = [];
+	let r = size/2;
+	let center = {x:r,y:r};
+	let cloudwidth = this.size/7
+	for(var i = 0; i < (Math.random()*5)+3;i++){
+		let cloud = {};
+		let rangle = Math.random()*Math.PI*2;
+		cloud.sx = Math.cos(rangle)*r;
+		cloud.sy = Math.sin(rangle)*r;
+		cloud.ey = cloud.sy;
+		cloud.ex = ((size.x-cloud.sx)*-1)+size.x;
+		cloud.width = (Math.random()*cloudwidth);
+		let base = splitRGB(body.color);
+		cloud.color = "rgb("+Math.abs(base.red-20)+","+Math.abs(base.green-20)+","+Math.abs(base.blue-20)+")";
+		lines.push(cloud);
+		
+	}
+	return lines;
 }
 
 var airResistance = 0;
@@ -52,6 +83,8 @@ class Body {
 		this.invincibilityCooldown = 0;
 		this.nuke = false;
 		this.angle = 0;
+		this.texture = [];
+		this.type = "none"
 	}
 
     explode(other,force,density) { //creates explosion, deleting the original planet
@@ -59,7 +92,7 @@ class Body {
 			force = 0.2;
 		if (density == null)
 			density = this.density;
-
+		
 		this.delete = true;
 		let parts = Math.floor(Math.random()*10)+2;
 		if (this.mass/parts < explodemin)
@@ -194,6 +227,13 @@ class Body {
 			}
 			if (this.density > 3.5)
 				this.color = "rgb(0,0,0)"; // colorize black holes
+		}else{
+			if(this.density < 1){
+				if(this.type != "gasgiant"){
+					this.type = "gasgiant";
+					this.texture = randomGasGiant(this);
+				}
+			}
 		}
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
         this.colliding = false;
