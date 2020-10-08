@@ -34,7 +34,7 @@ function Throttle() {
                 value={value}
                 onChange={handleSliderChange}
                 valueLabelDisplay="auto"
-                valueLabelFormat={newValue => `Fuel usage: ${d.fuel.currentUsage.toFixed(2)}`}
+                valueLabelFormat={newValue => `Fuel usage: ${(d.fuel.currentUsage*100).toFixed(1)}`}
             />
             <span id="throttleLevel">
                 0.25
