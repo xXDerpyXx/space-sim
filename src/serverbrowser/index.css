@@ -7,6 +7,10 @@ h1 {
     margin-top: 7px;
 }
 
+.centered{
+    text-align: center;
+}
+
 #serverList {
     width: 99%;
     margin: 0 auto;

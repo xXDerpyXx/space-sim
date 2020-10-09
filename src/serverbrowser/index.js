@@ -121,9 +121,9 @@ class ServerBrowser extends React.Component {
                             <tr key={prevState.servers.length} onClick={() => connect(server)}>
                                 <td>{serverInfo.name}</td>
                                 <td>{server.url}</td>
-                                <td>{serverInfo.players}</td>
-                                <td>{serverInfo.timeLeft ? toTime(Math.round(serverInfo.timeLeft / 1000)) : null}</td>
-                                <td>{serverInfo.location}</td>
+                                <td class="centered">{serverInfo.players}</td>
+                                <td class="centered">{serverInfo.timeLeft ? toTime(Math.round(serverInfo.timeLeft / 1000)) : null}</td>
+                                <td class="centered">{serverInfo.location}</td>
                                 {/*<td><button className="connectButton" onClick={() => connect(server)}>Connect</button></td>*/}
                             </tr>
                         )]
