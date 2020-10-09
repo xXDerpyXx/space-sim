@@ -1,24 +1,29 @@
 #throttleDiv {
+    width: 290px;
     position: absolute;
-    left: 0;
-    top: 50%;
-    margin-top: -100px;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -4px);
+    margin: 0 auto;
 }
 
-input[type=range][orient=vertical] {
+#throttleDiv .MuiSlider-root {
+    width: 240px;
     opacity: 0.6;
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical;
-    width: 8px;
-    height: 200px;
-    /*transform: scaleX(-1);*/
-    padding: 0 5px;
+    top: 7px;
 }
 
-#throttleDisplay {
-    opacity: 0.4;
-    position: absolute;
-    top: 50%;
-    margin-top: -10px;
-    margin-left: 5px;
+#throttleDiv .MuiSlider-track {
+    background-image: linear-gradient(to right, green, red);
+    background-size: 240px 10px;
+}
+
+#throttleDiv .MuiSlider-valueLabel {
+    font-size: 8px;
+    text-align: center;
+}
+
+#throttleLevel {
+    color: white;
+    margin-left: 15px;
 }

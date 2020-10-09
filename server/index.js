@@ -49,6 +49,7 @@ v.io.on('connection', function(socket) {
 	v.bodies.push(temp)
 	v.players[socket.id].ship = v.bodies.length-1;
 	socket.emit("fuelUpdate", v.players[socket.id].fuel); //tell the user's client how much fuel it's just been given
+	socket.emit("fuelUsageUpdate", getFuelUsage(v.players[socket.id].throttle));
 	 
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
 
@@ -79,6 +80,7 @@ v.io.on('connection', function(socket) {
 		if (isNaN(power) || power < 0 || power > 1)
 			return;
 		v.players[socket.id].throttle = power;
+		socket.emit("fuelUsageUpdate", getFuelUsage(v.players[socket.id].throttle));
 	});
 
 
@@ -190,6 +192,14 @@ v.io.on('connection', function(socket) {
 	});
 });
 
+function getFuelUsage(throttle) {
+	let fuelUsage = throttle;
+	if (throttle > v.cfg.fuel.usage.exponential.start)
+		fuelUsage += ((((throttle - v.cfg.fuel.usage.exponential.start) * 100) ** 2) * 0.0001) * v.cfg.fuel.usage.exponential.multiplier;
+	fuelUsage *= v.cfg.fuel.usage.multiplier;
+	return fuelUsage;
+}
+
 
 setInterval(function() {
 	for (let body of v.bodies)
@@ -205,9 +215,7 @@ setInterval(function() {
 			body.yVel += yVel * player.acceleration;
 
 			if (player.accelerating || player.decelerating) {
-				let fuelNeeded = player.throttle * v.cfg.fuel.usage.multiplier;
-				if (player.throttle > v.cfg.fuel.usage.exponential.start)
-					fuelNeeded += (((((player.throttle - v.cfg.fuel.usage.exponential.start) * 100) ** 2) * 0.0001) * v.cfg.fuel.usage.exponential.multiplier) * v.cfg.fuel.usage.multiplier;
+				let fuelNeeded = getFuelUsage(player.throttle);
 
 				let moving = 0;
 				if (player.fuel >= fuelNeeded) //if the player has enough fuel to accelerate
@@ -260,7 +268,7 @@ setInterval(function() {
             v.bodies.splice(i,1);
 },1);
 
-setInterval(v.fn.start, v.cfg.gameLength * 1000 || 60 * 60 * 1000);
+setInterval(v.fn.start, v.cfg.gameLength * 1000);
 
 v.fn.start();
 

@@ -6,7 +6,7 @@ function basicInfo() {
         name: v.cfg.name,
         players: `${v.userTotal}/${v.cfg.playerLimit}`,
 		location: v.cfg.location,
-		uptime: Date.now() - v.startDate,
+        timeLeft: v.startDate + (v.cfg.gameLength * 1000) - Date.now(),
     };
 }
 

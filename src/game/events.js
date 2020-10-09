@@ -52,12 +52,11 @@ function redirect() {
 }
 
 function changeThrottle(up = true) {
-    let throttleInput = document.getElementById('throttle');
-
-    let newVal = Number(throttleInput.value) + (Number(throttleInput.step) * ((Number(up) * 2) - 1));
-    if (newVal >= Number(throttleInput.min) && newVal <= Number(throttleInput.max)) {
-        throttleInput.value = newVal;
-        handleChange();
+    let newVal = Math.round((Number(d.throttleSlider.value) + (Number(0.01) * ((Number(up) * 2) - 1))) * 100) / 100;
+    console.log(d);
+    if (newVal >= 0 && newVal <= 1) {
+        d.throttleSlider.setValue(newVal);
+        handleChange(newVal);
     }
 }
 
