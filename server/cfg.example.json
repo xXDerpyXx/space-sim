@@ -4,7 +4,7 @@
     "location": "eu",
     "playerLimit": 10,
     "gameLength": 3600,
-
+    "debug": false,
     "fuel": {
         "max": 1000,
         "starting": 200,

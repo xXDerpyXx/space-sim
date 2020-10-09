@@ -245,6 +245,11 @@ setInterval(function() {
 },50);
 
 setInterval(function() {
+	if (cfg.debug)
+		console.log("body count: "+v.bodies.length);
+},10000);
+
+setInterval(function() {
     for (let body of v.bodies) {
         body.update();
         body.move();
