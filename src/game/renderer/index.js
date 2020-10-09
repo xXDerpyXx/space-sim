@@ -155,12 +155,17 @@ function startGame() {
         ctx.stroke();
         if (body.nuke) {
             ctx.fillStyle = "#FFFF00";
+            ctx.strokeStyle = "#FFFF00";
             ctx.fillText("*",body.x,body.y)
         }
         twidth = ctx.lineWidth
+        ctx.strokeStyle = "#0000FF";
+        ctx.lineWidth = 100;
         if(body.texture){
+            if(body.texture[0])
+                ctx.strokeStyle = body.texture[0].color;
             for(let t of body.texture){
-                ctx.strokeStyle = t.color;
+                ctx.strokeStyle = t.color;     
                 ctx.lineWidth = t.width;
                 ctx.beginPath();
                 ctx.moveTo((t.sx+body.x)-cOffsetx,(t.sy+body.y)-cOffsety)

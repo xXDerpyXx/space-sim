@@ -23,6 +23,13 @@ function dotProduct(vec1,vec2) { //trigonometric dot product of 2 vectors
 
 function splitRGB(color){
 	var match = color.match(/rgb?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+	if(match == null){
+		return {
+			red: 0,
+			green: 0,
+			blue: 0 }
+		
+	}
   return {
     red: match[1],
     green: match[2],
@@ -33,20 +40,21 @@ function splitRGB(color){
 function randomGasGiant(body){
 	let size = body.size;
 	let lines = [];
-	let r = size*2;
+	let r = size/2;
 	let center = {x:r,y:r};
-	let cloudwidth = 10;//this.size/7
+	let cloudwidth = r/7
+	let rangle = Math.random()*Math.PI*2;
+	let base = splitRGB(body.color);
 	for(var i = 0; i < (Math.random()*5)+3;i++){
 		let cloud = {};
-		let rangle = Math.random()*Math.PI*2;
-		cloud.sx = (Math.cos(rangle)*r)+center.x;
-		cloud.sy = (Math.sin(rangle)*r)+center.y;
+		cloud.sx = (Math.cos(rangle)*r);
+		cloud.sy = (Math.sin(rangle)*r);
 		cloud.ey = cloud.sy;
-		cloud.ex = size-cloud.sx;
+		cloud.ex = cloud.sx*-1;
 		cloud.width = (Math.random()*cloudwidth)+(cloudwidth/2);
-		let base = splitRGB(body.color);
 		cloud.color = "rgb("+Math.abs(base.red-100)+","+Math.abs(base.green-100)+","+Math.abs(base.blue-100)+")";
 		lines.push(cloud);
+		rangle += Math.random()*(Math.PI/2)
 		
 	}
 	return lines;
@@ -144,6 +152,19 @@ class Body {
 
 	}
 
+	texturize(){
+		if (this.density < 1) {
+			this.type = "gasgiant";
+			this.texture = randomGasGiant(this);
+		} else if (this.density < 2) {
+			this.type = "lightrock";
+			this.texture = [];
+		} else if (this.density >= 2) {
+				this.type = "heavyrock";
+			this.texture = [];
+		}
+	}
+
     shedMass(smass,force,density) { //creates explosion but leaves the planet behind
         let parts = Math.floor(Math.random()*20)+10;
 		let avgmass = this.mass/parts;
@@ -163,9 +184,12 @@ class Body {
 			//temp.color = this.color;
 			temp.density = density;
 			v.bodies.push(temp);
-			if (smass <= 0)
+			if (smass <= 0){
+				this.texturize()
 				return;
+			}
 		}
+		this.texturize()
 
 	}
 
@@ -178,6 +202,7 @@ class Body {
 		this.mass += other.mass;
 		this.density = Math.round(((this.density*myportion)+(other.density*otherportion))*100)/100
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
+		this.texturize();
     }
 
     move() { //handle velocity physics tick
@@ -193,7 +218,8 @@ class Body {
 			if (Number.isNaN(this[k]))
 				this.delete = true;
         if (this.delete)
-            return;
+			return;
+		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
 		if (this.mass > starmin) { //star formation
 			this.type = "star";
 			this.texture = [];
@@ -247,7 +273,7 @@ class Body {
 				}
 			}
 		}
-		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
+		
         this.colliding = false;
 		if (this.invincibilityCooldown < 1) {
 

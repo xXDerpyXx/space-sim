@@ -6,6 +6,16 @@ import connect from './connect';
 import d from '../d';
 import serverList from './serverlist';
 
+function toTime(n) {
+    let output = "";
+    if (n > 86400)
+        output += Math.floor(n / 86400)+":";
+    if (n > 3600)
+        output += (Math.floor((n / 3600) % 24)).toString().padStart(2, "0")+":";
+    output += (Math.floor((n / 60) % 60)).toString().padStart(2, "0")+":"+(n % 60).toString().padStart(2, "0");
+    return output;
+}
+
 function directConnect() {
     let address = document.getElementById('toConnect').value;
     while (address[address.length - 1] == '/')
@@ -112,7 +122,7 @@ class ServerBrowser extends React.Component {
                                 <td>{serverInfo.name}</td>
                                 <td>{server.url}</td>
                                 <td>{serverInfo.players}</td>
-                                <td>{serverInfo.timeLeft ? Math.round(serverInfo.timeLeft / 1000) : null}</td>
+                                <td>{serverInfo.timeLeft ? toTime(Math.round(serverInfo.timeLeft / 1000)) : null}</td>
                                 <td>{serverInfo.location}</td>
                                 {/*<td><button className="connectButton" onClick={() => connect(server)}>Connect</button></td>*/}
                             </tr>
