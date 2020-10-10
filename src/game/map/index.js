@@ -17,16 +17,16 @@ class Map extends React.Component {
                     opacity: 0.28
                 }}>
                     <input type="checkbox" id="showSelf" />
-                    <label for="showSelf">Self</label>
+                    <label htmlFor="showSelf">Self</label>
                     <br />
                     <input type="checkbox" id="showPlayers" />
-                    <label for="showPlayers">Players</label>
+                    <label htmlFor="showPlayers">Players</label>
                     <br />
                     <input type="checkbox" id="showStars" />
-                    <label for="showStars">Stars</label>
+                    <label htmlFor="showStars">Stars</label>
                     <br />
                     <input type="checkbox" id="showPlanets" />
-                    <label for="showPlanets">Planets</label>
+                    <label htmlFor="showPlanets">Planets</label>
                 </div>
             </div>
         );
