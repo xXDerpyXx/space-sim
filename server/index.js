@@ -46,6 +46,7 @@ v.io.on('connection', function(socket) {
 	temp.shipId = socket.id;
 	temp.invincible = true;
 	temp.density = 1;
+	temp.angularMomentum = 0;
 	v.bodies.push(temp)
 	v.players[socket.id].ship = v.bodies.length-1;
 	socket.emit("fuelUpdate", v.players[socket.id].fuel); //tell the user's client how much fuel it's just been given

@@ -90,7 +90,8 @@ class Body {
 		this.density = 0.1;
 		this.invincibilityCooldown = 0;
 		this.nuke = false;
-		this.angle = 0;
+		this.angle = Math.random()*Math.PI*2;
+		this.angularMomentum = (Math.random()/10)-(0.05);
 		this.texture = [];
 		this.type = "none"
 	}
@@ -210,7 +211,8 @@ class Body {
             return;
         this.y += this.yVel;
         this.x += this.xVel;
-        this.yVel += gravity;
+		this.yVel += gravity;
+		this.angle += this.angularMomentum;
     }
 
 	update() { //physics tick

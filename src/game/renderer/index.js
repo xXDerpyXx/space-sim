@@ -45,6 +45,7 @@ function startGame() {
             this.invincible = false;
             this.colliding = false;
             this.angle = 0;
+            this.angularMomentum = 0;
         }
     }
 
@@ -167,9 +168,14 @@ function startGame() {
             for(let t of body.texture){
                 ctx.strokeStyle = t.color;     
                 ctx.lineWidth = t.width;
+                let temp = {"sx":t.sx,"sy":t.sy,"ex":t.ex,"ey":t.ey};
+                temp.sx = (t.sx * Math.cos(body.angle)) - (t.sy * Math.sin(body.angle))
+                temp.sy = (t.sx * Math.sin(body.angle)) + (t.sy * Math.cos(body.angle))
+                temp.ex = (t.ex * Math.cos(body.angle)) - (t.ey * Math.sin(body.angle))
+                temp.ey = (t.ex * Math.sin(body.angle)) + (t.ey * Math.cos(body.angle))
                 ctx.beginPath();
-                ctx.moveTo((t.sx+body.x)-cOffsetx,(t.sy+body.y)-cOffsety)
-                ctx.lineTo((t.ex+body.x)-cOffsetx,(t.ey+body.y)-cOffsety)
+                ctx.moveTo((temp.sx+body.x)-cOffsetx,(temp.sy+body.y)-cOffsety)
+                ctx.lineTo((temp.ex+body.x)-cOffsetx,(temp.ey+body.y)-cOffsety)
                 ctx.stroke();
             }
         }

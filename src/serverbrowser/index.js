@@ -96,9 +96,7 @@ class ServerBrowser extends React.Component {
                         {this.state.servers}
                     </tbody>
                 </table>
-
-                <br />
-                
+                <br/>   
             </div>
         );
     }
