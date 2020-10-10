@@ -60,6 +60,35 @@ function randomGasGiant(body){
 	return lines;
 }
 
+function randomRockyPlanet(body){
+	let size = body.size;
+	let lines = [];
+	let r = size/2;
+	let center = {x:r,y:r};
+	let cloudwidth = r/14
+	let rangle = 0
+	let base = splitRGB(body.color);
+	let variance = 0;
+	for(var i = 0; i < (Math.random()*8)+4;i++){
+		let cloud = {};
+		variance = Math.random()*r;
+		rangle = Math.random()*Math.PI*2;
+		cloud.sx = (Math.cos(rangle)*variance);
+		cloud.sy = (Math.sin(rangle)*variance);
+		rangle = Math.random()*Math.PI*2;
+		variance = Math.random()*r;
+		let darkness = Math.round(Math.random()*100)
+		cloud.ey = (Math.cos(rangle)*variance);
+		cloud.ex = (Math.sin(rangle)*variance);
+		cloud.width = (Math.random()*cloudwidth)+(cloudwidth/2);
+		cloud.color = "rgb("+Math.abs(base.red-darkness)+","+Math.abs(base.green-darkness)+","+Math.abs(base.blue-darkness)+")";
+		lines.push(cloud);
+		rangle += Math.random()*(Math.PI/2)
+		
+	}
+	return lines;
+}
+
 var airResistance = 0;
 var gravity = 0;
 var g = 0.00667; //gravitational constant
@@ -91,7 +120,7 @@ class Body {
 		this.invincibilityCooldown = 0;
 		this.nuke = false;
 		this.angle = Math.random()*Math.PI*2;
-		this.angularMomentum = (Math.random()/10)-(0.05);
+		this.angularMomentum = (Math.random()/100)-(0.005);
 		this.texture = [];
 		this.type = "none"
 	}
@@ -154,12 +183,12 @@ class Body {
 	}
 
 	texturize(){
-		if (this.density < 1) {
+		if (this.density < 0.5) {
 			this.type = "gasgiant";
 			this.texture = randomGasGiant(this);
 		} else if (this.density < 2) {
 			this.type = "lightrock";
-			this.texture = [];
+			this.texture = randomRockyPlanet(this);
 		} else if (this.density >= 2) {
 				this.type = "heavyrock";
 			this.texture = [];
@@ -203,6 +232,7 @@ class Body {
 		this.mass += other.mass;
 		this.density = Math.round(((this.density*myportion)+(other.density*otherportion))*100)/100
 		this.size = Math.sqrt((this.mass/this.density)/Math.PI)
+		this.angularMomentum = (this.angularMomentum*myportion)+(other.angularMomentum*otherportion)
 		this.texturize();
     }
 
@@ -232,20 +262,20 @@ class Body {
 			red = red+green;
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
-			this.density += 0.000001;// burning fuel
+			this.density += 0.00001;// burning fuel
 			if (this.density < 4) {
 				if (this.mass > starmax/2)
-					this.density += 0.000005
+					this.density += 0.00005
 				if (this.mass > starmax)
-					this.density += 0.00002
+					this.density += 0.0002
 				if (this.density >= 1 && this.density < 1.05) {
 					this.density = 1.1; //stage 2 material
-					this.explode(this,2,1.1);
+					this.explode(this,0.1,1.1);
 				}
 			}
 			if (this.density >= 2 && this.density < 2.05) {
 				this.density = 4;//stage 3 material
-				this.shedMass(Math.round(this.mass/5),4,0.1); // create black hole
+				this.shedMass(Math.round(this.mass/5),1,0.1); // create black hole
 			}
 
 			if (this.density > 3.5 && this.mass > 1000) {
