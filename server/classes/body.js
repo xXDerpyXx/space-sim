@@ -345,8 +345,10 @@ class Body {
 									this.collided = true;
 								}
 							} else if (this.invincible) {
-								this.xVel = body.xVel
-								this.yVel = body.yVel
+								let vel = body.angularMomentum*(distance(this,body))
+								this.xVel = body.xVel + (vel*Math.cos(body.angle))
+								this.yVel = body.yVel + (vel*Math.sin(body.angle))
+								
 							}
 						}
 					} else {
