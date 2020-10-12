@@ -196,7 +196,7 @@ class Body {
 	}
 
     shedMass(smass,force,density) { //creates explosion but leaves the planet behind
-        let parts = Math.floor(Math.random()*20)+10;
+        let parts = Math.floor(Math.random()*10)+5;
 		let avgmass = this.mass/parts;
 		this.mass -= smass;
 		for (let i = 0; i < 100; i++) {
@@ -262,12 +262,12 @@ class Body {
 			red = red+green;
 			blue = blue+green;
 			this.color = "rgb("+red+","+green+","+blue+")";
-			this.density += 0.00001;// burning fuel
+			this.density += 0.000001;// burning fuel
 			if (this.density < 4) {
 				if (this.mass > starmax/2)
-					this.density += 0.00005
+					this.density += 0.000005
 				if (this.mass > starmax)
-					this.density += 0.0002
+					this.density += 0.00002
 				if (this.density >= 1 && this.density < 1.05) {
 					this.density = 1.1; //stage 2 material
 					this.explode(this,0.1,1.1);
