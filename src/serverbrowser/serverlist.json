@@ -1,5 +1,6 @@
 [
     {"url": "localhost:3979", "secure": false},
     {"url": "derpy.live:3979", "secure": false},
-    {"url": "ss.flynna.uk", "secure": true}
+    {"url": "ss.flynna.uk", "secure": true},
+    {"url": "sss2.flynna.uk", "secure": true}
 ]
