@@ -51,6 +51,8 @@ v.io.on('connection', function(socket) {
 	v.players[socket.id].ship = v.bodies.length-1;
 	socket.emit("fuelUpdate", v.players[socket.id].fuel); //tell the user's client how much fuel it's just been given
 	socket.emit("fuelUsageUpdate", getFuelUsage(v.players[socket.id].throttle));
+
+	let colorChanged = false;
 	 
 	//socket.emit('getNum',Math.floor((Math.random()*100)+1));
 
@@ -167,28 +169,31 @@ v.io.on('connection', function(socket) {
 				vals.push(parseInt(color.substr(i, 2), 16));
 			userBody.color = `rgb(${vals.join(",")})`;
 
-			v.io.emit("message", {
-				content: "changed their color to",
-				type: "action",
-				sender: {
-					color: oldColor,
-					direction: userBody.angle,
-				},
-				receiver: {
-					color: userBody.color,
-					direction: userBody.angle,
-				},
-				append: ".",
-			});
-		}
-	});
-
-	v.io.emit("message", {
-		content: "joined.",
-		type: "action",
-		sender: {
-			color: temp.color,
-			direction: temp.angle,
+			if (colorChanged) {
+				if (oldColor != userBody.color)
+					v.io.emit("message", {
+						content: "changed their color to",
+						type: "action",
+						sender: {
+							color: oldColor,
+							direction: userBody.angle,
+						},
+						receiver: {
+							color: userBody.color,
+							direction: userBody.angle,
+						},
+						append: ".",
+					});
+			} else
+				v.io.emit("message", {
+					content: "joined.",
+					type: "action",
+					sender: {
+						color: temp.color,
+						direction: temp.angle,
+					}
+				});
+			colorChanged = true;
 		}
 	});
 });
