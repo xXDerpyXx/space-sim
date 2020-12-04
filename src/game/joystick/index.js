@@ -23,13 +23,17 @@ class JoyWrapper extends React.Component {
     }
 
     managerListener(manager) {
+        let throttleAmount;
         manager.on('start', () => {
+            throttleAmount = Number(d.throttleSlider.value);
             d.socket.emit('accelerate', true);
         });
         manager.on('end', () => {
+            d.socket.emit('throttle', throttleAmount);
             d.socket.emit('accelerate', false);
         });
         manager.on('move', (e, stick) => {
+            d.socket.emit('throttle', throttleAmount * (stick.distance / 50));
             d.socket.emit('setangle', 360 - stick.angle.degree)
         });
     }
