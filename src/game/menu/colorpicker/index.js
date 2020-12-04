@@ -5,7 +5,7 @@ import d from '../../../d';
 
 class ColorPicker extends React.Component {
     state = {
-        background: '#000000',
+        background: '#ffffff',
     };
 
     handleClick = () => {
@@ -13,6 +13,7 @@ class ColorPicker extends React.Component {
     };
 
     handleChangeComplete = (color, event = null) => {
+        localStorage.color = color.hex;
         d.socket.emit('changeColor', color.hex);
     };
 
@@ -35,10 +36,14 @@ class ColorPicker extends React.Component {
     ];
 
     render() {
+        if (!localStorage.hasOwnProperty('color'))
+            localStorage.color = '#ffffff';
+        d.socket.emit('changeColor', localStorage.color);
+        
         return (
             <div>
                 <button onClick={this.handleClick}>Toggle ship color picker</button>
-                {this.state.displayColorPicker ? <SketchPicker width="130px" disableAlpha={true} presetColors={this.colors} onChangeComplete={this.handleChangeComplete} /> : null}
+                {this.state.displayColorPicker ? <SketchPicker width="130px" disableAlpha={true} color={localStorage.color} presetColors={this.colors} onChangeComplete={this.handleChangeComplete} /> : null}
             </div>
         );
     }

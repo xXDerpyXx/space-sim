@@ -35,6 +35,7 @@ function changeControl() {
     } else {
         joystickDiv.style.display = 'none';
     }
+    localStorage.controlMethod = method;
 }
 
 class PauseMenu extends React.Component {
@@ -50,7 +51,7 @@ class PauseMenu extends React.Component {
                         <button onClick={reconnect}>New ship</button><br />
                         <button onClick={() => disconnect()}>Disconnect</button><br />
                         <label htmlFor="controlMethod" style={{color: 'white'}}>Control method: </label>
-                        <select id="controlMethod" onChange={changeControl}>
+                        <select id="controlMethod" onChange={changeControl} defaultValue={localStorage.hasOwnProperty('controlMethod') ? Number(localStorage.controlMethod) : 1}>
                             <option value={0}>steer</option>
                             <option value={1}>d-pad</option>
                             <option value={2}>mouse</option>
@@ -69,8 +70,7 @@ class PauseMenu extends React.Component {
     }
 
     componentDidMount() {
-        document.getElementById('controlMethod').value = 1;
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) //if client's device is a mobile device
+        if (!localStorage.hasOwnProperty('controlMethod') && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) //if client's device is a mobile device
             document.getElementById('controlMethod').value = 3;
         changeControl();
     }
