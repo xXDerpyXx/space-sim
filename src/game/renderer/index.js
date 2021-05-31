@@ -152,7 +152,7 @@ function startGame() {
         //ctx.fillRect(this.x-cOffsetx,this.y-cOffsety,1,1)
         ctx.beginPath();
         ctx.moveTo(body.x-cOffsetx,body.y-cOffsety)
-        var scale = 20;
+        var scale = 40;
         ctx.lineTo(((body.xVel-vOffsetx)*scale)+body.x-cOffsetx,((body.yVel-vOffsety)*scale)+body.y-cOffsety);
         ctx.stroke();
         if (body.nuke) {
