@@ -153,7 +153,7 @@ function startGame() {
         ctx.beginPath();
         ctx.moveTo(body.x-cOffsetx,body.y-cOffsety)
         var scale = 20;
-        ctx.lineTo((body.xVel*scale)+body.x-cOffsetx,(body.yVel*scale)+body.y-cOffsety);
+        ctx.lineTo(((body.xVel-vOffsetx)*scale)+body.x-cOffsetx,((body.yVel-vOffsety)*scale)+body.y-cOffsety);
         ctx.stroke();
         if (body.nuke) {
             ctx.fillStyle = "#FFFF00";
@@ -186,11 +186,15 @@ function startGame() {
 
     var cOffsetx = 0;
     var cOffsety = 0
+    var vOffsetx = 0;
+    var vOffsety = 0;
 
     d.intervals.draw = setInterval(function() {
         if (bodies.length > 0) {
             cOffsetx = bodies[center].x-c.width/2;
             cOffsety = bodies[center].y-c.height/2;
+            vOffsetx = bodies[center].xVel;
+            vOffsety = bodies[center].yVel;
         }
         players = [];
         for (let i in bodies) {
